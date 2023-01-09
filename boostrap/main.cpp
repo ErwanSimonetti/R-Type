@@ -60,25 +60,23 @@ class sparse_array {
             this->_data = other._data;
             return *this;
         } // move assignment operator
-        reference_type operator []( size_t idx )
+        reference_type operator[]( size_t idx )
         {
             return _data[idx];
         };
 
-        const_reference_type operator []( size_t idx ) const
+        const_reference_type operator[]( size_t idx ) const
         {
             return _data[idx];
         }
+
         iterator begin() { return _data.begin(); };  
-        const_iterator begin () const { return *_data.begin(); };
-        const_iterator cbegin () const;
-        iterator end ();
-        const_iterator end () const;
-        const_iterator cend () const;
-        size_type size () const
-        {
-            return _data.size();
-        };
+        const_iterator begin () const { return _data.begin(); };
+        const_iterator cbegin () const { return  _data.cbegin(); };
+        iterator end() { return _data.end(); };
+        const_iterator end () const { return _data.end(); };
+        const_iterator cend () const { return _data.cend(); };
+        size_type size () const { return _data.size(); };
 
         reference_type insert_at(size_type pos , Component const& it)
         {
@@ -117,5 +115,4 @@ int main(void)
     sparse_array<char> ok;
     ok = a;
     std::cout << a[1] << std::endl;
-    std::cout << ok[1] << std::endl;
 }
