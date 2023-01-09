@@ -1,0 +1,19 @@
+#!/bin/sh
+
+BINARY_SERVER="./r-type_server"
+BINARY_CLIENT="./r-type_client"
+CMAKE_DIRECTORY_SERVER="./server/build"
+CMAKE_DIRECTORY_CLIENT="./client/build"
+USAGE="error: expected exactly 1 parameter ('client', 'server', 'clean')."
+
+if [ $# -eq 1 ]; then
+    if [ $1 = "server" ]; then
+        mkdir $CMAKE_DIRECTORY_SERVER && cd $CMAKE_DIRECTORY_SERVER && cmake .. && cmake --build . && mv $BINARY_SERVER ../.. && cd ..
+    elif [ $1 == "client" ]; then
+        mkdir $CMAKE_DIRECTORY_CLIENT && cd $CMAKE_DIRECTORY_CLIENT && cmake .. && cmake --build . && mv $BINARY_CLIENT ../.. && cd ..
+    elif [ $1 = "clean" ]; then
+        rm -rf $CMAKE_DIRECTORY_SERVER $CMAKE_DIRECTORY_CLIENT && rm -rf $BINARY_SERVER $BINARY_CLIENT
+    fi
+else
+    echo $USAGE
+fi
