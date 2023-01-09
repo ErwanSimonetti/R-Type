@@ -7,7 +7,7 @@
 
 CC =		g++
 
-SRC =		main.cpp
+SRC =		src/main.cpp
 
 SRCTEST	=	src/tests/sample_test.cpp
 
