@@ -1,0 +1,25 @@
+pull_request_rules:
+  - name: ask devs to review PR
+    conditions:
+      - base=main
+      - -closed
+    actions:
+      request_reviews:
+        users:
+          - QuentinCn
+          - ErwanSimonetti
+          - BlanchoMartin
+          - HKtueur1
+          - Azzzen
+        random_count: 2
+
+  - name: Automatic merge on approval
+    conditions:
+      - base=main
+      - "#approved-reviews-by>=2"
+      - "#review-threads-unresolved=0"
+      - "#changes-requested-reviews-by=0"
+      - label!=manual merge
+    actions:
+      merge:
+        method: rebase
