@@ -12,7 +12,7 @@ if [ $# -eq 1 ]; then
     elif [ $1 == "client" ]; then
         mkdir $CMAKE_DIRECTORY_CLIENT && cd $CMAKE_DIRECTORY_CLIENT && cmake .. && cmake --build . && cd .. && mv $BINARY_CLIENT .. && cd ..
     elif [ $1 = "clean" ]; then
-        rm -rf $CMAKE_DIRECTORY_SERVER $CMAKE_DIRECTORY_CLIENT && rm -rf $BINARY_SERVER $BINARY_CLIENT
+        rm -rf $CMAKE_DIRECTORY_SERVER $CMAKE_DIRECTORY_CLIENT && rm -rf $BINARY_SERVER $BINARY_CLIENT && rm -rf client/*_test && rm -rf server/*_test
     fi
 else
     echo $USAGE
