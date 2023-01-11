@@ -15,6 +15,8 @@
 #include <any>
 #include <string>
 #include <algorithm>
+#include <unordered_map>
+#include <functional>
 
 class entity {
     public:
