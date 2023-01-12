@@ -171,9 +171,10 @@ class registry
         };
         entity spawn_entity();
 
+        //wtf does that mean ? ar we meant to store them ?
         template <class Component>
         entity entity_from_index(std::size_t idx) {
-            // return _components_arrays.find(std::type_index(typeid(Component)))->second[idx];
+            // return _components_arrays.find(std::type_index(typeid(Component)))->second[idx];x    
         };
 
         void kill_entity(entity const &e) {
@@ -182,25 +183,25 @@ class registry
             };
         };
 
+        // not sure about this one
         template <typename Component>
-        typename sparse_array<Component>::reference_type add_component(entity const &to, Component &&c);
+        typename sparse_array<Component>::reference_type add_component(entity const &to, Component &&c) {
+            std::any_cast<sparse_array<Component>&>(_components_arrays.find(std::type_index(typeid(Component)))->second).insert_at(to, std::forward<Component>(c));
+        };
+
         template <typename Component, typename ... Params>
-        typename sparse_array<Component>::reference_type emplace_component(entity const &to, Params &&... p);
+        typename sparse_array<Component>::reference_type emplace_component(entity const &to, Params &&... p) {
+
+        };
 
         template <typename Component>
         void remove_component(entity const &from) {
-            sparse_array<Component> vec = std::any_cast<sparse_array<Component>>(_components_arrays.find(std::type_index(typeid(Component)))->second);
-            // auto it = std::find(vec.begin(), vec.end(), from);
-            std::cout << vec << '\n';
-            printf("you ar gay %d\n", from);
-            vec.erase(from);
-            // if (it != vec.end())
-            //     vec.erase(it - vec.begin());
+            std::any_cast<sparse_array<Component>&>(_components_arrays.find(std::type_index(typeid(Component)))->second).erase(from);
         }
 
+    private:
         std::unordered_map<std::type_index, std::any> _components_arrays;
         std::vector<std::function<void(registry &, entity const &)>> _function_stored;
-    private:
 };
 
 int main(void)
@@ -222,7 +223,7 @@ int main(void)
     reg.get_components<int>().insert_at(1, 1);
     reg.get_components<int>().insert_at(0, 2);
 
-    std::cout << "function stored size = " << reg._function_stored.size() << '\n';
+    // std::cout << "function stored size = " << reg._function_stored.size() << '\n';
     printf("chars: \n");
     std::cout << reg.get_components<char>();
     printf("___________________\nint: \n");
