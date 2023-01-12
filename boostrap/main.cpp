@@ -89,6 +89,7 @@ public:
 
     reference_type insert_at(size_type pos, Component const &it)
     {
+        std::cout << "jaj\n";
         if (_data.size() < pos + 1)
             _data.resize(pos + 1);
         _data[pos] = it;
@@ -97,18 +98,26 @@ public:
 
     reference_type insert_at(size_type pos, Component &&it)
     {
+        std::cout << "joj\n";
         if (_data.size() < pos + 1)
             _data.resize(pos + 1);
         _data[pos] = it;
         return _data[pos];
     };
 
-    // template <class ... Params >
-    // reference_type emplace_at ( size_type pos , Params &&...); // optional
+
+    // template <class Component, class ... Params>
+    // reference_type recurs_emplace_at(size_type pos , Component &&c, Params &&...p) {
+    //     insert_at(pos, c);
+    //     recurs_emplace_at<Params>(pos, p...);
+    // }; // optional
+
+    // template <class ... Params>
+    // reference_type emplace_at (size_type pos , Params &&...p); // optional
 
     void erase(size_type pos)
     {
-        _data[pos] = 0;
+        _data.erase(_data.begin() + pos);
     };
 
     size_type get_index(value_type const &it) const
@@ -144,7 +153,13 @@ struct NamedType
     size_t id_;
 };
 
+class A {
+    friend class registry;
 
+    private:
+        A(const int &i){ x = i;};
+        int x;
+};
 
 class registry
 {
@@ -154,7 +169,7 @@ class registry
             static sparse_array<Component> newElem;
             _components_arrays.emplace(std::type_index(typeid(Component)), newElem);
             auto lambda = []  (registry &regis, entity const &it) -> void {
-                regis.remove_component<Component>(it); 
+                regis.remove_component<Component>(it);
             };
             _function_stored.push_back(lambda);
             return newElem;
@@ -169,6 +184,8 @@ class registry
         sparse_array<Component> const &get_components() const {
             return std::any_cast<sparse_array<Component>&>(_components_arrays.find(std::type_index(typeid(Component)))->second);
         };
+
+
         entity spawn_entity();
 
         //wtf does that mean ? ar we meant to store them ?
@@ -189,9 +206,11 @@ class registry
             std::any_cast<sparse_array<Component>&>(_components_arrays.find(std::type_index(typeid(Component)))->second).insert_at(to, std::forward<Component>(c));
         };
 
-        template <typename Component, typename ... Params>
+        template <typename Component, typename... Params>
         typename sparse_array<Component>::reference_type emplace_component(entity const &to, Params &&... p) {
-
+            // Component c(p...);
+            A a(1);
+            // get_components<Component>().insert_at(to, std::forward<Component>(a));
         };
 
         template <typename Component>
@@ -217,24 +236,33 @@ int main(void)
 
     registry reg;
     reg.register_component<char>();
-    reg.register_component<int>();
-    reg.get_components<char>().insert_at(0, 'J');
-    reg.get_components<char>().insert_at(1, 'a');
-    reg.get_components<int>().insert_at(1, 1);
-    reg.get_components<int>().insert_at(0, 2);
+    reg.register_component<A>();
+    // reg.register_component<int>();
+    // reg.get_components<char>().insert_at(0, 'J');
+    // reg.get_components<char>().insert_at(1, 'a');
+    // reg.get_components<int>().insert_at(1, 1);
+    // reg.get_components<int>().insert_at(0, 2);
 
     // std::cout << "function stored size = " << reg._function_stored.size() << '\n';
-    printf("chars: \n");
-    std::cout << reg.get_components<char>();
-    printf("___________________\nint: \n");
-    std::cout << reg.get_components<int>();
+    // printf("chars: \n");
+    // std::cout << reg.get_components<char>();
+    // printf("___________________\nint: \n");
+    // std::cout << reg.get_components<int>();
 
     // reg.remove_component<char>(reg.get_components<char>()[0]);
     // reg.unregister_component<char>(reg, entity(1));
     // reg.(entity(1));
-    printf("__________________\nchars: \n");
-    reg.kill_entity(entity(0));
+    // printf("__________________\nchars: \n");
+    // reg.kill_entity(entity(0));
+    // std::cout << reg.get_components<char>();
+    reg.emplace_component<A>(j, 1);
+
+
+    printf("chars: \n");
     std::cout << reg.get_components<char>();
+    printf("___________________\nint: \n");
+    // std::cout << reg.get_components<int>();
+
     // reg.remove_component()
     // req.register_component<>()
 
