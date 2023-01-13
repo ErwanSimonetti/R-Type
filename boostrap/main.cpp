@@ -18,6 +18,7 @@
 #include <unordered_map>
 #include <functional>
 #include <optional>
+#include <SFML/Graphics.hpp>
 
 class entity {
     friend class registry;
@@ -37,24 +38,6 @@ struct A {
 
     private: int x;
 };
-
-typedef struct position {
-    position() = default;
-    void build_component(const int &x, const int &y) {
-        _x = x;
-        _y = y;
-    }
-    int _x;
-    int _y;
-} position_t;
-
-typedef struct velocity {
-    // velocity(int speed) : _speed(speed) {}
-    void build_component(const int &speed) {
-        _speed = speed;
-    }
-    int _speed;
-} velocity_t;
 
 // class A {
     
@@ -253,6 +236,47 @@ class registry
         std::vector<std::function<void(registry &, entity const &)>> _function_stored;
 };
 
+
+typedef struct position {
+    position() = default;
+    void build_component(const int &x, const int &y) {
+        _x = x;
+        _y = y;
+    }
+    int _x;
+    int _y;
+} position_t;
+
+typedef struct velocity {
+    // velocity(int speed) : _speed(speed) {}
+    void build_component(const int &speed) {
+        _speed = speed;
+    }
+    int _speed;
+} velocity_t;
+
+typedef struct drawable {
+    drawable() = default;
+    void build_component(int height, int width, std::string sprite) {
+        _height = height;
+        _width = width;
+        _sprite = sprite;
+    }
+    void draw(sf::RenderWindow &win);
+
+    std::string _sprite;
+    int _height;
+    int _width;
+} drawable_t;
+
+typedef struct controllable {
+    controllable() = default;
+    void build_component(position_t pos) {
+        _position = pos;
+    }
+    position_t _position;
+} controllable_t;
+
 int main(void)
 {
     
@@ -268,6 +292,7 @@ int main(void)
     // reg.register_component<char>();
     reg.register_component<position_t>();
     reg.register_component<velocity_t>();
+    reg.register_component<drawable_t>();
     // reg.register_component<position_t>();
     // reg.register_component<int>();
     // reg.get_components<char>().insert_at(0, 'J');
