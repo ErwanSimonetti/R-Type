@@ -17,8 +17,10 @@
 #include <algorithm>
 #include <unordered_map>
 #include <functional>
+#include <optional>
 
 class entity {
+    friend class registry;
     public:
         explicit entity(size_t id) : _id(id) {}
         template <typename T, typename = std::enable_if_t<std::is_convertible_v<T, size_t>>>
@@ -29,11 +31,50 @@ class entity {
         size_t _id;
 };
 
+struct A {
+    A() : x(5) {}
+    ~A() {}
+
+    private: int x;
+};
+
+typedef struct position {
+    position() = default;
+    void build_component(const int &x, const int &y) {
+        _x = x;
+        _y = y;
+    }
+    int _x;
+    int _y;
+} position_t;
+
+typedef struct velocity {
+    // velocity(int speed) : _speed(speed) {}
+    void build_component(const int &speed) {
+        _speed = speed;
+    }
+    int _speed;
+} velocity_t;
+
+// class A {
+    
+//     template <typename Component>
+//     friend class sparse_array;
+
+//     private:
+//         A(const int &i){ x = i + 1;};
+//         A() = default;
+//         // build_component()
+//         public:
+//         int x;
+// };
+
 template <typename Component>
 class sparse_array
 {
+    // friend A::A();
 public:
-    using value_type = Component; // optional component type
+    using value_type = std::optional<Component>; // optional component type
     using reference_type = value_type &;
     using const_reference_type = value_type const &;
     using container_t = std::vector<value_type>; // optionally add your allocator template here.
@@ -66,6 +107,7 @@ public:
         this->_data = other._data;
         return *this;
     } // move assignment operator
+
     reference_type operator[](size_t idx)
     {
         return _data[idx];
@@ -89,7 +131,6 @@ public:
 
     reference_type insert_at(size_type pos, Component const &it)
     {
-        std::cout << "jaj\n";
         if (_data.size() < pos + 1)
             _data.resize(pos + 1);
         _data[pos] = it;
@@ -98,7 +139,6 @@ public:
 
     reference_type insert_at(size_type pos, Component &&it)
     {
-        std::cout << "joj\n";
         if (_data.size() < pos + 1)
             _data.resize(pos + 1);
         _data[pos] = it;
@@ -132,12 +172,12 @@ public:
         return index;
     };
 
-    friend std::ostream &operator<<( std::ostream &output, const sparse_array &D ) {
-        for (size_t i = 0; i != D.size(); i++) {
-            output << D[i] << std::endl ;
-        }
-        return output;            
-    }
+    // friend std::ostream &operator<<( std::ostream &output, const sparse_array &D ) {
+    //     for (size_t i = 0; i != D.size(); i++) {
+    //         output << std::cout << D[i] << std::endl ;
+    //     }
+    //     return output;            
+    // }
 
 
 private:
@@ -151,14 +191,6 @@ struct NamedType
     explicit NamedType(size_t id) : id_(id) {}
     operator size_t() const { return id_; }
     size_t id_;
-};
-
-class A {
-    friend class registry;
-
-    private:
-        A(const int &i){ x = i;};
-        int x;
 };
 
 class registry
@@ -208,9 +240,7 @@ class registry
 
         template <typename Component, typename... Params>
         typename sparse_array<Component>::reference_type emplace_component(entity const &to, Params &&... p) {
-            // Component c(p...);
-            A a(1);
-            // get_components<Component>().insert_at(to, std::forward<Component>(a));
+            get_components<Component>()[to].value().build_component(p...);
         };
 
         template <typename Component>
@@ -235,8 +265,10 @@ int main(void)
     // a.insert_at(0, 'a');
 
     registry reg;
-    reg.register_component<char>();
-    reg.register_component<A>();
+    // reg.register_component<char>();
+    reg.register_component<position_t>();
+    reg.register_component<velocity_t>();
+    // reg.register_component<position_t>();
     // reg.register_component<int>();
     // reg.get_components<char>().insert_at(0, 'J');
     // reg.get_components<char>().insert_at(1, 'a');
@@ -254,13 +286,23 @@ int main(void)
     // reg.(entity(1));
     // printf("__________________\nchars: \n");
     // reg.kill_entity(entity(0));
-    // std::cout << reg.get_components<char>();
-    reg.emplace_component<A>(j, 1);
+    position pos;
+    velocity_t vel;
+    reg.add_component<position_t>(j, std::move(pos));
+    reg.add_component<velocity_t>(j, std::move(vel));
+    // std::cout << reg.get_components<position_t>();
+    // std::cout << std::any_cast<sparse_array<position_t>&>(reg.get_components<position_t>())[5]._x << "\n";
+    reg.emplace_component<position_t>(j, 1, 2);
+    reg.emplace_component<velocity_t>(j, 7);
+
+    std::cout << reg.get_components<position_t>()[j].value()._x << " ";
+    std::cout << reg.get_components<position_t>()[j].value()._y << "\n";
+    std::cout << reg.get_components<velocity_t>()[j].value()._speed << "\n";
 
 
-    printf("chars: \n");
-    std::cout << reg.get_components<char>();
-    printf("___________________\nint: \n");
+    // printf("chars: \n"); 
+    // std::cout << reg.get_components<A>();
+    // printf("___________________\nint: \n");
     // std::cout << reg.get_components<int>();
 
     // reg.remove_component()
