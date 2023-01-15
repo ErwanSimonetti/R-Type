@@ -20,6 +20,14 @@
 #include <optional>
 #include <SFML/Graphics.hpp>
 
+struct NoEntityFound : public std::exception
+{
+	const char * what () const throw ()
+    {
+    	return "Can't find an entity matching this index";
+    }
+};
+
 class entity {
     friend class registry;
     public:
@@ -36,7 +44,7 @@ struct A {
     A() : x(5) {}
     ~A() {}
 
-    private: int x;
+    private:int x;
 };
 
 // class A {
@@ -201,13 +209,21 @@ class registry
         };
 
 
-        entity spawn_entity();
+        entity spawn_entity() {
+            size_t id_entity = 0;
+            if (!_entities.empty())
+                id_entity = _entities.at(_entities.size() - 1) + 1;
+            entity new_entity(id_entity);
+            _entities.emplace_back(new_entity);
+            return new_entity;
+        }
 
         //wtf does that mean ? ar we meant to store them ?
-        template <class Component>
         entity entity_from_index(std::size_t idx) {
-            // return _components_arrays.find(std::type_index(typeid(Component)))->second[idx];x    
-        };
+            if (idx > _entities.size() - 1)
+                throw NoEntityFound();
+            return (_entities.at(idx));
+        }
 
         void kill_entity(entity const &e) {
             for(auto &element : _function_stored) {
@@ -234,6 +250,7 @@ class registry
     private:
         std::unordered_map<std::type_index, std::any> _components_arrays;
         std::vector<std::function<void(registry &, entity const &)>> _function_stored;
+        std::vector<entity> _entities;
 };
 
 
@@ -324,6 +341,26 @@ int main(void)
     std::cout << reg.get_components<position_t>()[j].value()._y << "\n";
     std::cout << reg.get_components<velocity_t>()[j].value()._speed << "\n";
 
+    entity test = reg.spawn_entity();
+    std::cout << "entity test =" << test << std::endl;
+    entity test2 = reg.spawn_entity();
+    std::cout << "entity test2 =" << test2 << std::endl;
+    entity test3 = reg.spawn_entity();
+    std::cout << "entity test3 =" << test3 << std::endl;
+    std::cout << "entity at index 0 = " << reg.entity_from_index(0) << std::endl;
+    std::cout << "entity at index 1 = " << reg.entity_from_index(1) << std::endl;
+    std::cout << "entity at index 2 = " << reg.entity_from_index(2) << std::endl;
+    try
+    {
+        entity test4 = reg.entity_from_index(3);
+    }
+    catch(const std::exception& e)
+    {
+        std::cout << "error caught" << std::endl;
+        entity test4 = reg.spawn_entity(); // maybe we want to spawn an entity to avoid crashing the whole program when we can't find a specific one
+    }
+    std::cout << "entity at index 3 = " << reg.entity_from_index(3) << std::endl;
+    
 
     // printf("chars: \n"); 
     // std::cout << reg.get_components<A>();
