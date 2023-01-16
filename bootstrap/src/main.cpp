@@ -7,6 +7,19 @@
 
 #include "bootstrap.h"
 
+void logging_system ( registry & r ) {
+    auto const & positions = r . get_components<position>() ;
+    auto const & velocities = r . get_components<velocity>() ;
+    for ( size_t i = 0; i < positions . size () && i < velocities . size () ; ++ i ) {
+        auto const & pos = positions [ i ];
+        auto const & vel = velocities [ i ];
+        if ( pos && vel ) {
+            std :: cerr << i << ": Position = { " << pos.value ()._x << ", " << pos.value()._y <<
+            " } , Velocity = { " << vel.value()._vx << ", " << vel.value()._vy << " }" << std::endl;
+        }
+    }
+}
+
 int main(void)
 {
     
@@ -48,11 +61,11 @@ int main(void)
     // std::cout << reg.get_components<position_t>();
     // std::cout << std::any_cast<sparse_array<position_t>&>(reg.get_components<position_t>())[5]._x << "\n";
     reg.emplace_component<position_t>(j, 1, 2);
-    reg.emplace_component<velocity_t>(j, 7);
+    reg.emplace_component<velocity_t>(j, 7, 16);
 
     std::cout << reg.get_components<position_t>()[j].value()._x << " ";
     std::cout << reg.get_components<position_t>()[j].value()._y << "\n";
-    std::cout << reg.get_components<velocity_t>()[j].value()._speed << "\n";
+    // std::cout << reg.get_components<velocity_t>()[j].value()._speed << "\n";
 
     entity test = reg.spawn_entity();
     std::cout << "entity test =" << test << std::endl;
@@ -73,7 +86,7 @@ int main(void)
         entity test4 = reg.spawn_entity(); // maybe we want to spawn an entity to avoid crashing the whole program when we can't find a specific one
     }
     std::cout << "entity at index 3 = " << reg.entity_from_index(3) << std::endl;
-    
+    logging_system(reg);
 
     // printf("chars: \n"); 
     // std::cout << reg.get_components<A>();
