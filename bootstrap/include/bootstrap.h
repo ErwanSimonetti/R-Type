@@ -148,6 +148,15 @@ public:
 
     // template <class ... Params>
     // reference_type emplace_at (size_type pos , Params &&...p); // optional
+    template <class ... Params >
+    reference_type emplace_at ( size_type pos , Params &&... par)
+    {
+        // for (int x = 0; x< sizeof...(par) ;x++)
+        //     std::cout << par << std::endl;
+        //     // _data.emplace(params, pos);
+        for (std::size_t x = 0; x < sizeof...(par); ++x)
+            std::cout << std::array<typename std::common_type<Params...>::type,sizeof...(par)>{par...}[x] << std::endl;
+    }
 
     void erase(size_type pos)
     {
@@ -268,11 +277,14 @@ typedef struct position {
 } position_t;
 
 typedef struct velocity {
+    velocity() = default;
     // velocity(int speed) : _speed(speed) {}
-    void build_component(const int &speed) {
-        _speed = speed;
+    void build_component(const int &vx, const int& vy) {
+        _vx = vx;
+        _vy = vy;
     }
-    int _speed;
+    int _vx;
+    int _vy;
 } velocity_t;
 
 typedef struct drawable {
@@ -295,6 +307,7 @@ typedef struct controllable {
         _position = pos;
     }
     position_t _position;
+    int _current_action = -1;
 } controllable_t;
 
 #endif /* !BOOTSTRAP_H_ */
