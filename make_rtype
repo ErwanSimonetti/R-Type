@@ -2,8 +2,10 @@
 
 BINARY_SERVER="./r-type_server"
 BINARY_CLIENT="./r-type_client"
+BINARY_BOOTSTRAP="./r-type_bootstrap"
 CMAKE_DIRECTORY_SERVER="./server/build"
 CMAKE_DIRECTORY_CLIENT="./client/build"
+CMAKE_DIRECTORY_BOOTSTRAP="./bootstrap/build"
 USAGE="error: expected exactly 1 parameter ('client', 'server', 'clean')."
 
 if [ $# -eq 1 ]; then
@@ -11,8 +13,10 @@ if [ $# -eq 1 ]; then
         mkdir $CMAKE_DIRECTORY_SERVER && cd $CMAKE_DIRECTORY_SERVER && cmake .. && cmake --build . && cd .. && mv $BINARY_SERVER .. && cd ..
     elif [ $1 == "client" ]; then
         mkdir $CMAKE_DIRECTORY_CLIENT && cd $CMAKE_DIRECTORY_CLIENT && cmake .. && cmake --build . && cd .. && mv $BINARY_CLIENT .. && cd ..
+    elif [ $1 == "bootstrap" ]; then
+        mkdir $CMAKE_DIRECTORY_BOOTSTRAP && cd $CMAKE_DIRECTORY_BOOTSTRAP && cmake .. && cmake --build . && cd .. && mv $BINARY_BOOTSTRAP .. && cd ..
     elif [ $1 = "clean" ]; then
-        rm -rf $CMAKE_DIRECTORY_SERVER $CMAKE_DIRECTORY_CLIENT && rm -rf $BINARY_SERVER $BINARY_CLIENT && rm -rf client/*_test && rm -rf server/*_test
+        rm -rf $CMAKE_DIRECTORY_SERVER $CMAKE_DIRECTORY_CLIENT $CMAKE_DIRECTORY_BOOTSTRAP && rm -rf $BINARY_SERVER $BINARY_CLIENT $BINARY_BOOTSTRAP && rm -rf client/*_test server/*_test bootstrap/*_tests
     fi
 else
     echo $USAGE
