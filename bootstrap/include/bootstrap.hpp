@@ -57,10 +57,6 @@ struct A {
 //         int x;
 // };
 
-
-
-
-
 struct NamedType
 {
     explicit NamedType(size_t id) : id_(id) {}
