@@ -122,12 +122,22 @@ public:
         return index;
     };
 
-    // friend std::ostream &operator<<(std::ostream &output, const sparse_array &D) {
-    //     for (size_t i = 0; i != D.size(); i++) {
-    //         output << D[i].value() << std::endl ;
-    //     }
-    //     return output;            
-    // }
+    bool  empty() const
+    {
+        return _data.empty();
+    };
+
+    friend std::ostream &operator<<(std::ostream &output, const sparse_array &D) {
+        if (!D.empty()) {
+            for (size_t i = 0; i != D.size(); i++) {
+                if (D[i].has_value()) {
+                    output << i << ": " << D[i].value();
+                }
+            }
+            return output;            
+        }
+        return output;
+    }
 
 
 private:
