@@ -13,53 +13,30 @@ int main(void)
     
     entity j(5);
     entity a(7);
-    // Entity n(NamedType(8));
-    // Entity e(NamedType(5));
-    // Entity g(NamedType(5));
-
-    // sparse_array<char> a;
-    // a.insert_at(0, 'a');
 
     registry reg;
     // reg.register_component<char>();
     reg.register_component<position>();
     reg.register_component<velocity>();
     reg.register_component<drawable>();
-    // reg.register_component<position_t>();
-    // reg.register_component<int>();
-    // reg.get_components<char>().insert_at(0, 'J');
-    // reg.get_components<char>().insert_at(1, 'a');
-    // reg.get_components<int>().insert_at(1, 1);
-    // reg.get_components<int>().insert_at(0, 2);
+    reg.register_component<controllable>();
 
-    // std::cout << "function stored size = " << reg._function_stored.size() << '\n';
-    // printf("chars: \n");
-    // std::cout << reg.get_components<char>();
-    // printf("___________________\nint: \n");
-    // std::cout << reg.get_components<int>();
-
-    // reg.remove_component<char>(reg.get_components<char>()[0]);
-    // reg.unregister_component<char>(reg, entity(1));
-    // reg.(entity(1));
-    // printf("__________________\nchars: \n");
-    // reg.kill_entity(entity(0));
     position pos;
     velocity vel;
+    controllable control;
+
     reg.add_component<position>(j, std::move(pos));
     reg.add_component<velocity>(j, std::move(vel));
-    // reg.add_component<position_t>(a, std::move(pos));
+    reg.add_component<controllable>(j, std::move(control));
     reg.add_component<velocity>(a, std::move(vel));
-    // std::cout << reg.get_components<position_t>();
-    // std::cout << std::any_cast<sparse_array<position_t>&>(reg.get_components<position_t>())[5]._x << "\n";
+
     reg.emplace_component<position>(j, 1, 2);
-    // reg.emplace_component<position_t>(a, 34, 2);
-    reg.emplace_component<velocity>(j, 1, 0);
+    reg.emplace_component<velocity>(j, 0, 0);
     reg.emplace_component<velocity>(a, 44, 44);
 
     std::cout << reg.get_components<position>()[j].value()._x << " ";
     std::cout << reg.get_components<position>()[j].value()._y << "\n";
     std::cout << reg.get_components<velocity>()[a].value()._vy << "\n";
-    // std::cout << reg.get_components<velocity_t>()[j].value()._speed << "\n";
 
     entity test = reg.spawn_entity();
     std::cout << "entity test =" << test << std::endl;
@@ -84,35 +61,8 @@ int main(void)
     position_system(reg);
     logging_system(reg);
 
-    // std::cout << reg.get_components<velocity_t>() << std::endl;
     logging_system(reg.get_components<position>(), reg.get_components<velocity>());
 
-    // printf("chars: \n"); 
-    // std::cout << reg.get_components<A>();
-    // printf("___________________\nint: \n");
-    // std::cout << reg.get_components<int>();
-
-    // reg.remove_component()
-    // req.register_component<>()
-
-    // printf("____________\n");
-    // reg.insert_at(0, 'b');
-    // printf("____________\n");
-    // a.insert_at(1, 'c');
-    // printf("____________lol\n");
-    // a.insert_at(10, 'z');
-    // printf("____________lol\n");
-    // a.erase(1);
-    // // std::cout << '|' << a._data[1] << "|\n";
-
-    // // a.insert_at(9, 'Y');
-    // std::cout << a.get_index('z') << '\n';
-    // // a.insert_at(10, 'Z');
-    // printf("trop marrant\n");
-    // sparse_array<char> ok;
-    // ok = a;
-    // std::cout << a[1] << std::endl;
-    // std::cout << ok[1] << std::endl;
     entity entWin(0);
     drawable draw;
     reg.add_component<drawable>(j, std::move(draw));
@@ -120,26 +70,6 @@ int main(void)
 
     RenderGame game(900, 900);
     game.gameLoop(reg);
-    // sf::RenderWindow window(sf::VideoMode(900, 900), "SFML works!");
-    // sf::CircleShape shape(100.f);
-    // // shape.setFillColor(sf::Color::Green);
-    // // shape.setPosition(10, 10);
-
-
-    // while (window.isOpen())
-    // {
-    //     sf::Event event;
-    //     while (window.pollEvent(event))
-    //     {
-    //         if (event.type == sf::Event::Closed)
-    //             window.close();
-    //     }
-    //     render_system(reg, window);
-    //     position_system(reg);
-    //     // window.clear();
-    //     // window.draw(shape);
-    //     // window.display();
-    // }
 
     return 0;
 }

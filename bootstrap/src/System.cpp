@@ -68,5 +68,31 @@ void position_system(registry &r) {
     }
 }
 
-void control_system(registry &r) {
+void control_system(registry &r, const int &direction) {
+    auto &velocities = r.get_components<velocity>();
+    auto &controllables = r.get_components<controllable>();
+    for (size_t i = 0; i < velocities.size() && i < controllables.size(); ++ i) {
+        auto &vel = velocities[i];
+        auto &contr = controllables[i];
+        if (vel && contr) {
+            contr.value()._current_action = direction;
+            switch (direction) {
+            case KEY::UP:
+                vel.value().build_component(0, -5);
+                break;
+            case KEY::LEFT:
+                vel.value().build_component(-5, 0);
+                break;
+            case KEY::RIGHT:
+                vel.value().build_component(5, 0);
+                break;
+            case KEY::DOWN:
+                vel.value().build_component(0, 5);
+                break;
+            case KEY::NONE:
+                vel.value().build_component(0, 0);
+                break;
+            }
+        }
+    }
 }
