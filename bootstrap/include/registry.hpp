@@ -73,7 +73,9 @@ class registry
 
         template <typename Component, typename... Params>
         typename sparse_array<Component>::reference_type emplace_component(entity const &to, Params &&... p) {
-            get_components<Component>()[to].value().build_component(p...);
+            Component c;
+            c.build_component(p...);
+            get_components<Component>().insert_at(to, c);
         };
 
         template <typename Component>
