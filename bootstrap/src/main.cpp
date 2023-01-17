@@ -5,7 +5,9 @@
 ** main
 */
 
-#include "bootstrap.hpp"
+#include "components.hpp"
+#include "entity.hpp"
+#include "registry.hpp"
 
 void logging_system(registry &r) {
     auto const &positions = r.get_components<position>() ;
@@ -26,6 +28,20 @@ void logging_system(registry &r) {
     }
 }
 
+void logging_system (sparse_array<position_t> const& positions,
+    sparse_array<velocity_t> const& velocities) {
+
+    for (size_t i = 0; i < positions.size() && i < velocities.size() ; ++i) {
+        auto const &pos = positions [i];
+        auto const &vel = velocities [i];
+
+        if ( pos && vel ) {
+            std :: cerr << i << ": Position = { " << pos.value()._x << ", " << pos.value()._y
+            << " } , Velocity = { " << vel.value()._vx << ", " << vel.value()._vy << " }" << std::endl;
+        }
+    }
+}
+
 void position_system(registry &r) {
     auto &positions = r.get_components<position>();
     auto const &velocities = r.get_components<velocity>();
@@ -40,8 +56,8 @@ void position_system(registry &r) {
 }
 
 void control_system(registry &r) {
-    
 }
+    
 
 int main(void)
 {
@@ -119,7 +135,8 @@ int main(void)
     position_system(reg);
     logging_system(reg);
 
-    std::cout << reg.get_components<velocity_t>() << std::endl;
+    // std::cout << reg.get_components<velocity_t>() << std::endl;
+    logging_system(reg.get_components<position_t>(), reg.get_components<velocity_t>());
 
     // printf("chars: \n"); 
     // std::cout << reg.get_components<A>();
