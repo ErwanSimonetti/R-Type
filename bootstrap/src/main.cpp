@@ -5,25 +5,49 @@
 ** main
 */
 
-#include "bootstrap.h"
+#include "bootstrap.hpp"
 
-void logging_system ( registry & r ) {
-    auto const & positions = r . get_components<position>() ;
-    auto const & velocities = r . get_components<velocity>() ;
-    for ( size_t i = 0; i < positions . size () && i < velocities . size () ; ++ i ) {
-        auto const & pos = positions [ i ];
-        auto const & vel = velocities [ i ];
-        if ( pos && vel ) {
-            std :: cerr << i << ": Position = { " << pos.value ()._x << ", " << pos.value()._y <<
-            " } , Velocity = { " << vel.value()._vx << ", " << vel.value()._vy << " }" << std::endl;
+void logging_system(registry &r) {
+    auto const &positions = r.get_components<position>() ;
+    auto const &velocities = r.get_components<velocity>() ;
+    for (size_t i = 0; i < positions.size() || i < velocities.size(); ++ i) {
+        auto const &pos = positions[i];
+        auto const &vel = velocities[i];
+        if (pos || vel)
+            std::cerr << i;
+        if (pos) {
+            std::cerr << ": Position = { " << pos.value()._x << ", " << pos.value()._y << " } ";
+        }
+        if (vel) {
+            std::cerr << ": Velocity = { " << vel.value()._vx << ", " << vel.value()._vy << " }";
+        }
+        if (pos || vel)
+            std::cerr << std::endl;
+    }
+}
+
+void position_system(registry &r) {
+    auto &positions = r.get_components<position>();
+    auto const &velocities = r.get_components<velocity>();
+    for (size_t i = 0; i < positions.size() && i < velocities.size(); ++ i) {
+        auto &pos = positions[i];
+        auto const &vel = velocities[i];
+        if (pos && vel) {
+            pos.value()._x += vel.value()._vx;
+            pos.value()._y += vel.value()._vy;
         }
     }
+}
+
+void control_system(registry &r) {
+    
 }
 
 int main(void)
 {
     
     entity j(5);
+    entity a(7);
     // Entity n(NamedType(8));
     // Entity e(NamedType(5));
     // Entity g(NamedType(5));
@@ -58,13 +82,18 @@ int main(void)
     velocity_t vel;
     reg.add_component<position_t>(j, std::move(pos));
     reg.add_component<velocity_t>(j, std::move(vel));
+    // reg.add_component<position_t>(a, std::move(pos));
+    reg.add_component<velocity_t>(a, std::move(vel));
     // std::cout << reg.get_components<position_t>();
     // std::cout << std::any_cast<sparse_array<position_t>&>(reg.get_components<position_t>())[5]._x << "\n";
     reg.emplace_component<position_t>(j, 1, 2);
+    // reg.emplace_component<position_t>(a, 34, 2);
     reg.emplace_component<velocity_t>(j, 7, 16);
+    reg.emplace_component<velocity_t>(a, 44, 44);
 
     std::cout << reg.get_components<position_t>()[j].value()._x << " ";
     std::cout << reg.get_components<position_t>()[j].value()._y << "\n";
+    std::cout << reg.get_components<velocity_t>()[a].value()._vy << "\n";
     // std::cout << reg.get_components<velocity_t>()[j].value()._speed << "\n";
 
     entity test = reg.spawn_entity();
@@ -87,6 +116,10 @@ int main(void)
     }
     std::cout << "entity at index 3 = " << reg.entity_from_index(3) << std::endl;
     logging_system(reg);
+    position_system(reg);
+    logging_system(reg);
+
+    std::cout << reg.get_components<velocity_t>() << std::endl;
 
     // printf("chars: \n"); 
     // std::cout << reg.get_components<A>();
