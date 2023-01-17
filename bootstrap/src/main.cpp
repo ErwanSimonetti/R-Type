@@ -6,6 +6,58 @@
 */
 
 #include "RenderGame.hpp"
+#include "components.hpp"
+#include "entity.hpp"
+#include "registry.hpp"
+
+void logging_system(registry &r) {
+    auto const &positions = r.get_components<position>() ;
+    auto const &velocities = r.get_components<velocity>() ;
+    for (size_t i = 0; i < positions.size() || i < velocities.size(); ++ i) {
+        auto const &pos = positions[i];
+        auto const &vel = velocities[i];
+        if (pos || vel)
+            std::cerr << i;
+        if (pos) {
+            std::cerr << ": Position = { " << pos.value()._x << ", " << pos.value()._y << " } ";
+        }
+        if (vel) {
+            std::cerr << ": Velocity = { " << vel.value()._vx << ", " << vel.value()._vy << " }";
+        }
+        if (pos || vel)
+            std::cerr << std::endl;
+    }
+}
+
+void logging_system (sparse_array<position_t> const& positions,
+    sparse_array<velocity_t> const& velocities) {
+
+    for (size_t i = 0; i < positions.size() && i < velocities.size() ; ++i) {
+        auto const &pos = positions[i];
+        auto const &vel = velocities[i];
+
+        if (pos && vel) {
+            std :: cerr << i << ": Position = { " << pos.value()._x << ", " << pos.value()._y
+            << " } , Velocity = { " << vel.value()._vx << ", " << vel.value()._vy << " }" << std::endl;
+        }
+    }
+}
+
+void position_system(registry &r) {
+    auto &positions = r.get_components<position>();
+    auto const &velocities = r.get_components<velocity>();
+    for (size_t i = 0; i < positions.size() && i < velocities.size(); ++ i) {
+        auto &pos = positions[i];
+        auto const &vel = velocities[i];
+        if (pos && vel) {
+            pos.value()._x += vel.value()._vx;
+            pos.value()._y += vel.value()._vy;
+        }
+    }
+}
+
+void control_system(registry &r) {
+}
     
 
 int main(void)
@@ -39,6 +91,7 @@ int main(void)
     std::cout << reg.get_components<velocity>()[a].value()._vy << "\n";
 
     entity test = reg.spawn_entity();
+    reg.emplace_component<position_t>(entity(9), 3, 1);
     std::cout << "entity test =" << test << std::endl;
     entity test2 = reg.spawn_entity();
     std::cout << "entity test2 =" << test2 << std::endl;

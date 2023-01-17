@@ -8,6 +8,8 @@
 #pragma once
 
 #include <string>
+#include <iostream>
+#include <ostream>
 #include <SFML/Graphics.hpp>
 
 enum KEY {
@@ -37,7 +39,14 @@ struct velocity {
     }
     int _vx;
     int _vy;
-};
+
+    friend std::ostream &operator<<(std::ostream &output, const velocity &D)
+    {
+        output << "{" << D._vx << ", " << D._vy << "}" << std::endl;
+        return output;           
+    }
+
+} velocity_t;
 
 struct drawable {
     drawable() = default;
