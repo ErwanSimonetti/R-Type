@@ -28,7 +28,7 @@ class RenderGame {
                 if (event.type == sf::Event::Closed)
                     _window->close();
             }
-            render_system(reg, *_window);
+            draw_system(reg, *_window);
             position_system(reg);
         }
     }

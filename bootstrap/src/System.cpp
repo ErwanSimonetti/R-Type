@@ -27,7 +27,7 @@ void logging_system(registry &r) {
     }
 }
 
-void render_system(registry &r, sf::RenderWindow &window) {
+void draw_system(registry &r, sf::RenderWindow &window) {
     auto &drawables = r.get_components<drawable>();
     auto const &positions = r.get_components<position>();
     for (size_t i = 0; i < drawables.size(); ++ i) {
