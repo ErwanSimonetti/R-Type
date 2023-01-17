@@ -5,58 +5,7 @@
 ** main
 */
 
-#include "components.hpp"
-#include "entity.hpp"
-#include "registry.hpp"
-
-void logging_system(registry &r) {
-    auto const &positions = r.get_components<position>() ;
-    auto const &velocities = r.get_components<velocity>() ;
-    for (size_t i = 0; i < positions.size() || i < velocities.size(); ++ i) {
-        auto const &pos = positions[i];
-        auto const &vel = velocities[i];
-        if (pos || vel)
-            std::cerr << i;
-        if (pos) {
-            std::cerr << ": Position = { " << pos.value()._x << ", " << pos.value()._y << " } ";
-        }
-        if (vel) {
-            std::cerr << ": Velocity = { " << vel.value()._vx << ", " << vel.value()._vy << " }";
-        }
-        if (pos || vel)
-            std::cerr << std::endl;
-    }
-}
-
-void logging_system (sparse_array<position_t> const& positions,
-    sparse_array<velocity_t> const& velocities) {
-
-    for (size_t i = 0; i < positions.size() && i < velocities.size() ; ++i) {
-        auto const &pos = positions [i];
-        auto const &vel = velocities [i];
-
-        if ( pos && vel ) {
-            std :: cerr << i << ": Position = { " << pos.value()._x << ", " << pos.value()._y
-            << " } , Velocity = { " << vel.value()._vx << ", " << vel.value()._vy << " }" << std::endl;
-        }
-    }
-}
-
-void position_system(registry &r) {
-    auto &positions = r.get_components<position>();
-    auto const &velocities = r.get_components<velocity>();
-    for (size_t i = 0; i < positions.size() && i < velocities.size(); ++ i) {
-        auto &pos = positions[i];
-        auto const &vel = velocities[i];
-        if (pos && vel) {
-            pos.value()._x += vel.value()._vx;
-            pos.value()._y += vel.value()._vy;
-        }
-    }
-}
-
-void control_system(registry &r) {
-}
+#include "RenderGame.hpp"
     
 
 int main(void)
@@ -73,9 +22,9 @@ int main(void)
 
     registry reg;
     // reg.register_component<char>();
-    reg.register_component<position_t>();
-    reg.register_component<velocity_t>();
-    reg.register_component<drawable_t>();
+    reg.register_component<position>();
+    reg.register_component<velocity>();
+    reg.register_component<drawable>();
     // reg.register_component<position_t>();
     // reg.register_component<int>();
     // reg.get_components<char>().insert_at(0, 'J');
@@ -95,21 +44,21 @@ int main(void)
     // printf("__________________\nchars: \n");
     // reg.kill_entity(entity(0));
     position pos;
-    velocity_t vel;
-    reg.add_component<position_t>(j, std::move(pos));
-    reg.add_component<velocity_t>(j, std::move(vel));
+    velocity vel;
+    reg.add_component<position>(j, std::move(pos));
+    reg.add_component<velocity>(j, std::move(vel));
     // reg.add_component<position_t>(a, std::move(pos));
-    reg.add_component<velocity_t>(a, std::move(vel));
+    reg.add_component<velocity>(a, std::move(vel));
     // std::cout << reg.get_components<position_t>();
     // std::cout << std::any_cast<sparse_array<position_t>&>(reg.get_components<position_t>())[5]._x << "\n";
-    reg.emplace_component<position_t>(j, 1, 2);
+    reg.emplace_component<position>(j, 1, 2);
     // reg.emplace_component<position_t>(a, 34, 2);
-    reg.emplace_component<velocity_t>(j, 7, 16);
-    reg.emplace_component<velocity_t>(a, 44, 44);
+    reg.emplace_component<velocity>(j, 1, 0);
+    reg.emplace_component<velocity>(a, 44, 44);
 
-    std::cout << reg.get_components<position_t>()[j].value()._x << " ";
-    std::cout << reg.get_components<position_t>()[j].value()._y << "\n";
-    std::cout << reg.get_components<velocity_t>()[a].value()._vy << "\n";
+    std::cout << reg.get_components<position>()[j].value()._x << " ";
+    std::cout << reg.get_components<position>()[j].value()._y << "\n";
+    std::cout << reg.get_components<velocity>()[a].value()._vy << "\n";
     // std::cout << reg.get_components<velocity_t>()[j].value()._speed << "\n";
 
     entity test = reg.spawn_entity();
@@ -136,7 +85,7 @@ int main(void)
     logging_system(reg);
 
     // std::cout << reg.get_components<velocity_t>() << std::endl;
-    logging_system(reg.get_components<position_t>(), reg.get_components<velocity_t>());
+    logging_system(reg.get_components<position>(), reg.get_components<velocity>());
 
     // printf("chars: \n"); 
     // std::cout << reg.get_components<A>();
@@ -164,4 +113,33 @@ int main(void)
     // ok = a;
     // std::cout << a[1] << std::endl;
     // std::cout << ok[1] << std::endl;
+    entity entWin(0);
+    drawable draw;
+    reg.add_component<drawable>(j, std::move(draw));
+    reg.emplace_component<drawable>(j, 50, sf::Color::Blue);
+
+    RenderGame game(900, 900);
+    game.gameLoop(reg);
+    // sf::RenderWindow window(sf::VideoMode(900, 900), "SFML works!");
+    // sf::CircleShape shape(100.f);
+    // // shape.setFillColor(sf::Color::Green);
+    // // shape.setPosition(10, 10);
+
+
+    // while (window.isOpen())
+    // {
+    //     sf::Event event;
+    //     while (window.pollEvent(event))
+    //     {
+    //         if (event.type == sf::Event::Closed)
+    //             window.close();
+    //     }
+    //     render_system(reg, window);
+    //     position_system(reg);
+    //     // window.clear();
+    //     // window.draw(shape);
+    //     // window.display();
+    // }
+
+    return 0;
 }

@@ -8,8 +8,9 @@
 #pragma once
 
 #include <string>
+#include <SFML/Graphics.hpp>
 
-typedef struct position {
+struct position {
     position() = default;
     void build_component(const int &x, const int &y) {
         _x = x;
@@ -17,9 +18,9 @@ typedef struct position {
     }
     int _x;
     int _y;
-} position_t;
+};
 
-typedef struct velocity {
+struct velocity {
     velocity() = default;
     // velocity(int speed) : _speed(speed) {}
     void build_component(const int &vx, const int& vy) {
@@ -28,27 +29,23 @@ typedef struct velocity {
     }
     int _vx;
     int _vy;
-} velocity_t;
+};
 
-typedef struct drawable {
+struct drawable {
     drawable() = default;
-    void build_component(int height, int width, std::string sprite) {
-        _height = height;
-        _width = width;
-        _sprite = sprite;
+    void build_component(const std::uint16_t &radius, const sf::Color &color) {
+        _sprite = *new sf::CircleShape(radius);
+        _sprite.setFillColor(color);
     }
-    void draw(){}
 
-    std::string _sprite;
-    int _height;
-    int _width;
-} drawable_t;
+    sf::CircleShape _sprite;
+};
 
-typedef struct controllable {
+struct controllable {
     controllable() = default;
-    void build_component(position_t pos) {
+    void build_component(position pos) {
         _position = pos;
     }
-    position_t _position;
+    position _position;
     int _current_action = -1;
-} controllable_t;
+};
