@@ -83,6 +83,13 @@ class registry
             std::any_cast<sparse_array<Component>&>(_components_arrays.find(std::type_index(typeid(Component)))->second).erase(from);
         }
 
+        template <class... Components, typename Function>
+        void add_system(Function &&f); // perfect forwarding in lambda capture , anyone ?
+        // or
+        template <class... Components , typename Function>
+        void add_system(Function const & f); // taking it by reference .
+        void run_systems();
+
     private:
         std::unordered_map<std::type_index, std::any> _components_arrays;
         std::vector<std::function<void(registry &, entity const &)>> _function_stored;
