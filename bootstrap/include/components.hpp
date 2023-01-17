@@ -10,6 +10,14 @@
 #include <string>
 #include <SFML/Graphics.hpp>
 
+enum KEY {
+    NONE = 0,
+    UP = 1,
+    LEFT = 2,
+    RIGHT = 3,
+    DOWN = 4
+};
+
 struct position {
     position() = default;
     void build_component(const int &x, const int &y) {
@@ -37,15 +45,13 @@ struct drawable {
         _sprite = *new sf::CircleShape(radius);
         _sprite.setFillColor(color);
     }
-
     sf::CircleShape _sprite;
 };
 
 struct controllable {
     controllable() = default;
-    void build_component(position pos) {
-        _position = pos;
+    void build_component() {
+        _current_action = KEY::NONE;
     }
-    position _position;
-    int _current_action = -1;
+    int _current_action;
 };
