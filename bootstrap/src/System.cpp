@@ -78,16 +78,16 @@ void control_system(registry &r, const int &direction) {
             contr.value()._current_action = direction;
             switch (direction) {
             case KEY::UP:
-                vel.value().build_component(0, -5);
+                vel.value().build_component(0, -1);
                 break;
             case KEY::LEFT:
-                vel.value().build_component(-5, 0);
+                vel.value().build_component(-1, 0);
                 break;
             case KEY::RIGHT:
-                vel.value().build_component(5, 0);
+                vel.value().build_component(1, 0);
                 break;
             case KEY::DOWN:
-                vel.value().build_component(0, 5);
+                vel.value().build_component(0, 1);
                 break;
             case KEY::NONE:
                 vel.value().build_component(0, 0);

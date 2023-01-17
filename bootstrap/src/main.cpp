@@ -68,7 +68,7 @@ int main(void)
     reg.add_component<drawable>(j, std::move(draw));
     reg.emplace_component<drawable>(j, 50, sf::Color::Blue);
 
-    RenderGame game(900, 900);
+    RenderGame game(1920, 1080);
     game.gameLoop(reg);
 
     return 0;

@@ -21,7 +21,6 @@ class RenderGame {
         }
 
         void getEvent(registry &reg) {
-            control_system(reg, KEY::NONE);
             sf::Event event;
             while (_window->pollEvent(event)) {
 
@@ -45,6 +44,8 @@ class RenderGame {
                         control_system(reg, KEY::DOWN);
                         break;
                     }
+                } else {
+                    control_system(reg, KEY::NONE);
                 }
             }
         }
