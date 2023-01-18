@@ -41,7 +41,7 @@ void logging_system (sparse_array<position> const& positions,
     }
 }
 
-void position_system(sparse_array<position> & positions, sparse_array<velocity> const& velocities) {
+void position_system(sparse_array<position> &positions, const sparse_array<velocity> &velocities) {
     for (size_t i = 0; i < positions.size() && i < velocities.size(); ++ i) {
         auto &pos = positions[i];
         auto const &vel = velocities[i];

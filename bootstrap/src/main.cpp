@@ -95,14 +95,17 @@ int main(void)
     reg.emplace_component<velocity>(j, 0, 0);
     reg.emplace_component<velocity>(a, 44, 44);
 
-    reg.add_system<sparse_array<position>, sparse_array<velocity>>(position_system);
+    // reg.add_system<position, velocity>(position_system);
 
     // logging_system(reg.get_components<position>(), reg.get_components<velocity>());
 
-    // entity entWin(0);
-    // drawable draw;
-    // reg.add_component<drawable>(j, std::move(draw));
-    // reg.emplace_component<drawable>(j, 50, sf::Color::Blue);
+    entity entWin(0);
+    drawable draw;
+    reg.add_component<drawable>(j, std::move(draw));
+    reg.emplace_component<drawable>(j, 50, sf::Color::Blue);
+    reg.add_system<position, velocity>(position_system);
+
+    reg.run_systems();
 
     // RenderGame game(1920, 1080);
     // game.gameLoop(reg);
