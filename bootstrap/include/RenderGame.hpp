@@ -54,7 +54,7 @@ class RenderGame {
             while (_window->isOpen()) {
             getEvent(reg);
             draw_system(reg, *_window);
-            position_system(reg);
+            // position_system(reg);
         }
     }
         
