@@ -26,15 +26,15 @@ public:
   {
       // do asyn receiving  to buffer data_
       // [ captures ] ( params ) { body }
-      std::cout <<"oki";
-      socket_.async_receive_from(boost::asio::buffer(data_, max_length), sender_endpoint_,
+      std::memset(data_, '\0', 1024);
+
+      socket_.async_receive_from(boost::asio::buffer(data_), sender_endpoint_,
       [this] (boost::system::error_code ec, std::size_t recvd_bytes) {
           if ( !ec && recvd_bytes > 0 ) {
             std::cout << "[" << recvd_bytes << "] " << data_ << std::endl;
             my_udp_send_back();
           }
           else {
-            std::cout << "ok";
             my_udp_receive();
           }
       });
@@ -43,7 +43,8 @@ public:
   void my_udp_send_back()
   {
       // do add sender information and send back
-      std::string myStr = "Sender endpoint : ";
+      std::cerr << "send back" << std::endl;
+      std::string myStr = " Sender endpoint : ";
       myStr += sender_endpoint_.address().to_string().c_str();
       myStr += " port ";
       myStr += std::to_string((int)sender_endpoint_.port());
@@ -58,8 +59,9 @@ public:
 private:
   udp::socket socket_;
   udp::endpoint sender_endpoint_;
-  enum { max_length = 1024 };
+  enum { max_length = 1024};
   char data_[max_length];
+  // boost::array <char, 128> data_;
 };
 
 int main(int argc, char **argv) {
