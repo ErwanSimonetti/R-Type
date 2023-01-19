@@ -6,9 +6,11 @@
 */
 
 #include "RenderGame.hpp"
-#include "components.hpp"
+#include "./components/Components.hpp"
 #include "entity.hpp"
 #include "registry.hpp"
+#include <functional>
+// #include "ZipperIterator.hpp"
 
 // void logging_system(registry &r) {
 //     auto const &positions = r.get_components<position>() ;
@@ -77,38 +79,38 @@ int main(void)
 
     registry reg;
     // reg.register_component<char>();
-    reg.register_component<position>();
-    reg.register_component<velocity>();
-    reg.register_component<drawable>();
-    reg.register_component<controllable>();
+    reg.register_component<Position>();
+    reg.register_component<Velocity>();
+    reg.register_component<Drawable>();
+    reg.register_component<Controllable>();
 
-    position pos;
-    velocity vel;
-    controllable control;
+    Position pos;
+    Velocity vel;
+    Controllable control;
 
-    reg.add_component<position>(j, std::move(pos));
-    reg.add_component<velocity>(j, std::move(vel));
-    reg.add_component<controllable>(j, std::move(control));
-    reg.add_component<velocity>(a, std::move(vel));
+    reg.add_component<Position>(j, std::move(pos));
+    reg.add_component<Velocity>(j, std::move(vel));
+    reg.add_component<Controllable>(j, std::move(control));
+    reg.add_component<Velocity>(a, std::move(vel));
 
-    reg.emplace_component<position>(j, 1, 2);
-    reg.emplace_component<velocity>(j, 0, 0);
-    reg.emplace_component<velocity>(a, 44, 44);
+    reg.emplace_component<Position>(j, 1, 2);
+    reg.emplace_component<Velocity>(j, 0, 0);
+    reg.emplace_component<Velocity>(a, 44, 44);
 
     // reg.add_system<position, velocity>(position_system);
 
     // logging_system(reg.get_components<position>(), reg.get_components<velocity>());
 
+    RenderGame game(1920, 1080);
+
     entity entWin(0);
-    drawable draw;
-    reg.add_component<drawable>(j, std::move(draw));
-    reg.emplace_component<drawable>(j, 50, sf::Color::Blue);
-    reg.add_system<position, velocity>(position_system);
-
-    reg.run_systems();
-
-    // RenderGame game(1920, 1080);
-    // game.gameLoop(reg);
+    Drawable draw;
+    reg.add_component<Drawable>(j, std::move(draw));
+    reg.emplace_component<Drawable>(j, 50, sf::Color::Blue);
+    reg.add_system<Position, Velocity>(position_system);
+    reg.add_system<Position, Velocity>(position_system);
+    reg.add_system<Position, Drawable>(std::bind(&RenderGame::draw_system, &game, std::placeholders::_1, std::placeholders::_2));
+    game.gameLoop(reg);
 
     return 0;
 }

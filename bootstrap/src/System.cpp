@@ -6,29 +6,9 @@
 */
 
 #include "registry.hpp"
-#include "components.hpp"
+#include "./components/Components.hpp"
 
-void logging_system(registry &r) {
-    auto const &positions = r.get_components<position>() ;
-    auto const &velocities = r.get_components<velocity>() ;
-    for (size_t i = 0; i < positions.size() || i < velocities.size(); ++ i) {
-        auto const &pos = positions[i];
-        auto const &vel = velocities[i];
-        if (pos || vel)
-            std::cerr << i;
-        if (pos) {
-            std::cerr << ": Position = { " << pos.value()._x << ", " << pos.value()._y << " } ";
-        }
-        if (vel) {
-            std::cerr << ": Velocity = { " << vel.value()._vx << ", " << vel.value()._vy << " }";
-        }
-        if (pos || vel)
-            std::cerr << std::endl;
-    }
-}
-
-void logging_system (sparse_array<position> const& positions,
-    sparse_array<velocity> const& velocities) {
+void logging_system (sparse_array<Position> const& positions, sparse_array<Velocity> const& velocities) {
 
     for (size_t i = 0; i < positions.size() && i < velocities.size() ; ++i) {
         auto const &pos = positions[i];
@@ -41,7 +21,7 @@ void logging_system (sparse_array<position> const& positions,
     }
 }
 
-void position_system(sparse_array<position> &positions, const sparse_array<velocity> &velocities) {
+void position_system(sparse_array<Position> &positions, const sparse_array<Velocity> &velocities) {
     for (size_t i = 0; i < positions.size() && i < velocities.size(); ++ i) {
         auto &pos = positions[i];
         auto const &vel = velocities[i];
@@ -52,23 +32,9 @@ void position_system(sparse_array<position> &positions, const sparse_array<veloc
     }
 }
 
-void draw_system(registry &r, sf::RenderWindow &window) {
-    auto &drawables = r.get_components<drawable>();
-    auto const &positions = r.get_components<position>();
-    for (size_t i = 0; i < drawables.size(); ++ i) {
-        // std::cout << "hello";
-        window.clear();
-        if (drawables[i]) {
-        drawables[i].value()._sprite.setPosition(positions[i].value()._x, positions[i].value()._y);
-        window.draw(drawables[i].value()._sprite);
-        window.display();
-        }
-    }
-}
-
 void control_system(registry &r, const int &direction) {
-    auto &velocities = r.get_components<velocity>();
-    auto &controllables = r.get_components<controllable>();
+    auto &velocities = r.get_components<Velocity>();
+    auto &controllables = r.get_components<Controllable>();
     for (size_t i = 0; i < velocities.size() && i < controllables.size(); ++ i) {
         auto &vel = velocities[i];
         auto &contr = controllables[i];
