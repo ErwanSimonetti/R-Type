@@ -20,6 +20,17 @@ class RenderGame {
             return *_window;
         }
 
+        void draw_system(sparse_array<Position> const& positions, sparse_array<Drawable> &drawables) {
+            for (size_t i = 0; i < drawables.size() && i < positions.size(); ++ i) {
+            _window->clear();
+            if (drawables[i] && positions[i]) {
+                drawables[i].value()._sprite.setPosition(positions[i].value()._x, positions[i].value()._y);
+                _window->draw(drawables[i].value()._sprite);
+                _window->display();
+                }
+            }
+        }
+
         void getEvent(registry &reg) {
             sf::Event event;
             while (_window->pollEvent(event)) {
@@ -53,10 +64,11 @@ class RenderGame {
         void gameLoop(registry &reg) {
             while (_window->isOpen()) {
             getEvent(reg);
-            draw_system(reg, *_window);
-            position_system(reg.get_components<position>(), reg.get_components<velocity>());
+            reg.run_systems();
+            // draw_system(reg , *_window);
+            // position_system(reg.get_components<Position>(), reg.get_components<Velocity>());
+            }
         }
-    }
         
     private:
         sf::RenderWindow *_window;
