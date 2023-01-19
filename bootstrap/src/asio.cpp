@@ -26,14 +26,16 @@ public:
   {
       // do asyn receiving  to buffer data_
       // [ captures ] ( params ) { body }
+      std::cout <<"oki";
       socket_.async_receive_from(boost::asio::buffer(data_, max_length), sender_endpoint_,
       [this] (boost::system::error_code ec, std::size_t recvd_bytes) {
           if ( !ec && recvd_bytes > 0 ) {
-              std::cout << "[" << recvd_bytes << "] " << data_ << std::endl;
-              my_udp_send_back();
+            std::cout << "[" << recvd_bytes << "] " << data_ << std::endl;
+            my_udp_send_back();
           }
           else {
-              my_udp_receive();
+            std::cout << "ok";
+            my_udp_receive();
           }
       });
   }
