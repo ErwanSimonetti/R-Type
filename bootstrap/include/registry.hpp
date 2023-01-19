@@ -86,22 +86,10 @@ class registry
         template <class ... Components, typename Function>
         void add_system (Function && f) {
             auto system = [f](registry& reg) {
-                // f(std::forward<sparse_array<args>&>(get_components<args>())...);
                  f(reg.get_components<Components>()...);
             };
             _systems.push_back(system);
         }
-
-        // template <class... Components, typename Function>
-        // void add_system(Function &&f); // perfect forwarding in lambda capture , anyone ?
-        // // or
-        // template <class... Components , typename Function>
-        // void add_system(Function const & f) {
-        //     auto system = [f](registry& reg) {
-        //     };
-
-        //     _systems.push_back(system);
-        // }; // taking it by reference 
 
         template <class... Components , typename Function>
         void add_system(Function const & f) {
