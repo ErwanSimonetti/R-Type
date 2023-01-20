@@ -6,7 +6,7 @@
 */
 
 #include <gtest/gtest.h>
-#include "bootstrap.h"
+#include "registry.hpp"
 
 TEST(Step0, DefiningEntityAsSizeT) {
     entity a(0);
@@ -38,7 +38,7 @@ TEST(Step1, RegistryInsertAt) {
     catch(const std::exception& error) // this is expected because we're trying to see what's in an empty std::optional -> throws an error
     {
         EXPECT_EQ(error.what(), "bad optional access");
-    }   
+    }
 }
 
 TEST(Step1, RegistryErase) {

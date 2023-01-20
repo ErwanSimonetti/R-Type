@@ -19,6 +19,22 @@ set(CMAKE_CXX_STANDARD 17)
 
 include(FetchContent)
 FetchContent_Declare(
+  SFML
+  GIT_REPOSITORY https://github.com/SFML/SFML.git
+  GIT_TAG 2.6.x  
+)
+FetchContent_MakeAvailable(SFML)
+
+target_link_libraries(r-type_bootstrap PRIVATE sfml-graphics)
+target_compile_features(r-type_bootstrap PRIVATE cxx_std_17)
+
+if (WIN32 AND BUILD_SHARED_LIBS)
+    add_custom_command(TARGET r-type_bootstrap POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_RUNTIME_DLLS:r-type_bootstrap> $<TARGET_FILE_DIR:r-type_bootstrap> COMMAND_EXPAND_LISTS)
+endif()
+
+include(FetchContent)
+FetchContent_Declare(
   googletest
   URL https://github.com/google/googletest/archive/03597a01ee50ed33e9dfd640b249b4be3799d395.zip
 )
