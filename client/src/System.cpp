@@ -5,8 +5,8 @@
 ** system
 */
 
-#include "registry.hpp"
-#include "./components/Components.hpp"
+#include "../include/registry.hpp"
+#include "../include/components/Components.hpp"
 
 void logging_system (sparse_array<Position> const& positions, sparse_array<Velocity> const& velocities) {
 
@@ -60,3 +60,13 @@ void control_system(registry &r, const int &direction) {
         }
     }
 }
+
+// template <typename Component>
+// void print_system(registry &r) {
+//     auto const &component = r.get_components<Component>();
+//     for (size_t i = 0; i < component.size(); ++i) {
+//         if (component[i])
+//             std::cout << i << ": " << component[i].value();
+//     }
+//     std::cout << "\n";
+// }

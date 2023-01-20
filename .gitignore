@@ -1,2 +1,7 @@
 a.out
 .vscode
+*/build/*
+launch
+r-type_client
+r-type_bootstrap
+ecs_tests

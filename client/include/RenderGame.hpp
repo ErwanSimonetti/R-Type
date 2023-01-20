@@ -22,11 +22,11 @@ class RenderGame {
 
         void draw_system(sparse_array<Position> const& positions, sparse_array<Drawable> &drawables) {
             for (size_t i = 0; i < drawables.size() && i < positions.size(); ++ i) {
-            _window->clear();
+            // _window->clear(); 
             if (drawables[i] && positions[i]) {
                 drawables[i].value()._sprite.setPosition(positions[i].value()._x, positions[i].value()._y);
                 _window->draw(drawables[i].value()._sprite);
-                _window->display();
+                // _window->display();
                 }
             }
         }
@@ -65,6 +65,8 @@ class RenderGame {
             while (_window->isOpen()) {
             getEvent(reg);
             reg.run_systems();
+            _window->display();
+            _window->clear();
             // draw_system(reg , *_window);
             // position_system(reg.get_components<Position>(), reg.get_components<Velocity>());
             }
