@@ -9,6 +9,12 @@
 #include <boost/array.hpp>
 #include <iostream>
 
+struct jaj {
+  int a;
+  float b;
+  char c[20];
+};
+
 class UDPClient
 {
 public:
@@ -18,10 +24,10 @@ public:
     {
     }
 
-    void send(const std::string& message)
+    void send(char *buffer)
     {
-        std::cout << message;
-        socket_.async_send_to(boost::asio::buffer(message), endpoint_,
+        std::cout << buffer;
+        socket_.async_send_to(boost::asio::buffer(buffer, sizeof(jaj)), endpoint_,
             [this](boost::system::error_code /*ec*/, std::size_t /*bytes_sent*/) {
             });
     }
@@ -48,9 +54,20 @@ int main()
 {
     boost::asio::io_service io_service;
     UDPClient client(io_service, "127.0.0.1", "1234");
+    printf("CLient on\n");
     // client.receive();
+    jaj joj;
+    joj.a = 1;
+    joj.b = 6;
+    strcpy(joj.c, "you massive fuck");
+    char buffer[sizeof(jaj)];
+    memcpy(buffer, &joj, sizeof(jaj));
+
+    jaj jij;
+
+    // memcpy(&jij, buffer, sizeof(jaj));
     client.receive();
-    client.send("Hello");
+    client.send(buffer);
     io_service.run();
     // std::cout << "received: " << client.receive() << std::endl;
     return 0;
