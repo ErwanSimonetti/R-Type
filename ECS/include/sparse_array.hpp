@@ -11,6 +11,7 @@
 #include <iostream>
 #include <vector>
 #include <array>
+#include <exception>
 
 template <typename Component>
 class sparse_array
@@ -108,7 +109,15 @@ class sparse_array
 
         void erase(size_type pos)
         {
-            _data.erase(_data.begin() + pos);
+            try
+            {
+                if (_data[pos].has_value())
+                    _data[pos] = std::nullopt;
+                else
+                    throw std::out_of_range(std::string("You can't erase an empty position."));
+            } catch (std::out_of_range &e) {
+                std::cerr << "Invalid position: " << pos << std::endl;
+            }
         };
 
         size_type get_index(value_type const &it) const
