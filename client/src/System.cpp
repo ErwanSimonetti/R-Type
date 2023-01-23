@@ -5,7 +5,11 @@
 ** system
 */
 
-#include "../include/System.hpp"
+#include "System.hpp"
+#include "registry.hpp"
+#include "SFML_utils.hpp"
+#include "Position.hpp"
+#include "Velocity.hpp"
 
 void logging_system (sparse_array<Position> const& positions, sparse_array<Velocity> const& velocities) {
 
@@ -41,19 +45,19 @@ void control_system(registry &r, const int &direction) {
         if (vel && contr) {
             contr.value()._current_action = direction;
             switch (direction) {
-            case KEY::UP:
+            case KEYBOARD::ARROW_UP:
                 vel.value().build_component(0, -1);
                 break;
-            case KEY::LEFT:
+            case KEYBOARD::ARROW_LEFT:
                 vel.value().build_component(-1, 0);
                 break;
-            case KEY::RIGHT:
+            case KEYBOARD::ARROW_RIGHT:
                 vel.value().build_component(1, 0);
                 break;
-            case KEY::DOWN:
+            case KEYBOARD::ARROW_DOWN:
                 vel.value().build_component(0, 1);
                 break;
-            case KEY::NONE:
+            case KEYBOARD::NONE:
                 vel.value().build_component(0, 0);
                 break;
             }

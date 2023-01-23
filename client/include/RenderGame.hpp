@@ -8,8 +8,11 @@
 #pragma once
 
 #include <SFML/Graphics.hpp>
-#include "../include/registry.hpp"
-#include "../include/System.hpp"
+#include "registry.hpp"
+#include "System.hpp"
+#include "Drawable.hpp"
+#include "Position.hpp"
+#include "SFML_utils.hpp"
 
 class RenderGame {
 
@@ -44,20 +47,20 @@ class RenderGame {
                     switch (event.key.code)
                     {
                     case sf::Keyboard::Up:
-                        control_system(reg, KEY::UP);
+                        control_system(reg, KeyboardMap.at(event.key.code));
                         break;
                     case sf::Keyboard::Left:
-                        control_system(reg, KEY::LEFT);
+                        control_system(reg, KeyboardMap.at(event.key.code));
                         break;
                     case sf::Keyboard::Right:
-                        control_system(reg, KEY::RIGHT);
+                        control_system(reg, KeyboardMap.at(event.key.code));
                         break;
                     case sf::Keyboard::Down:
-                        control_system(reg, KEY::DOWN);
+                        control_system(reg, KeyboardMap.at(event.key.code));
                         break;
                     }
                 } else {
-                    control_system(reg, KEY::NONE);
+                    control_system(reg, KEYBOARD::NONE);
                 }
             }
         }
