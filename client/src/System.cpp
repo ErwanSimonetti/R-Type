@@ -5,8 +5,8 @@
 ** system
 */
 
-#include "../include/registry.hpp"
-#include "../include/components/Components.hpp"
+#include "registry.hpp"
+#include "components/Components.hpp"
 
 void logging_system (sparse_array<Position> const& positions, sparse_array<Velocity> const& velocities) {
 

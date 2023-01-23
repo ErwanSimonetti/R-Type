@@ -5,17 +5,17 @@
 ** main
 */
 
-#include "../include/RenderGame.hpp"
-#include "../include/components/Components.hpp"
-#include "../include/entity.hpp"
-#include "../include/registry.hpp"
+#include "RenderGame.hpp"
+#include "Components.hpp"
+#include "system.hpp"
+#include "entity.hpp"
+#include "registry.hpp"
 #include <functional>
-// #include "ZipperIterator.hpp"
 
 int main(void)
 {    
-    entity j(5); //t'as une entity J, et une entity A. J'essaie tout simplement de faire une 2e boule (rouge) mais ca fait des trucs bizarres au display
-    entity a(7); //trop tard raciste
+    entity j(5);
+    entity a(7);
 
 
     registry reg;

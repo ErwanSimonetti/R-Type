@@ -7,7 +7,7 @@
 
 #include <SFML/Graphics.hpp>
 #include "registry.hpp"
-#include "../src/System.cpp"
+#include "system.hpp"
 
 class RenderGame {
 
