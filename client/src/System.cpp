@@ -6,10 +6,11 @@
 */
 
 #include "System.hpp"
-#include "registry.hpp"
 #include "SFML_utils.hpp"
 #include "Position.hpp"
 #include "Velocity.hpp"
+#include "registry.hpp"
+#include "components/Components.hpp"
 
 void logging_system (sparse_array<Position> const& positions, sparse_array<Velocity> const& velocities) {
 
