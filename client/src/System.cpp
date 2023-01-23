@@ -35,10 +35,13 @@ void position_system(sparse_array<Position> &positions, const sparse_array<Veloc
 void control_system(registry &r, const int &direction) {
     auto &velocities = r.get_components<Velocity>();
     auto &controllables = r.get_components<Controllable>();
+    auto &positions = r.get_components<Position>();
     for (size_t i = 0; i < velocities.size() && i < controllables.size(); ++ i) {
         auto &vel = velocities[i];
         auto &contr = controllables[i];
+        auto &pos = positions[i];
         if (vel && contr) {
+            std::cout << "on parle du gentil là non ?" << std::endl;
             contr.value()._current_action = direction;
             switch (direction) {
             case KEY::UP:
@@ -58,9 +61,13 @@ void control_system(registry &r, const int &direction) {
                 break;
             }
         }
+        if (vel && !contr) {
+            std::cout << "on parle de l'ennemi là non ?" << std::endl;
+            contr.value()._current_action = direction;
+            pos.value().build_component(pos.value()._x + 1, 0);
+        }
     }
 }
-
 // template <typename Component>
 // void print_system(registry &r) {
 //     auto const &component = r.get_components<Component>();
