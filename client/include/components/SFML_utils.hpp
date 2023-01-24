@@ -12,7 +12,7 @@
 #include <map>
 #include <Controllable.hpp>
 
-std::map<sf::Keyboard::Key, KEYBOARD> KeyboardMap = {
+static std::map<sf::Keyboard::Key, KEYBOARD> KeyboardMap = {
     {sf::Keyboard::Up, KEYBOARD::ARROW_UP},
     {sf::Keyboard::Down, KEYBOARD::ARROW_DOWN},
     {sf::Keyboard::Left, KEYBOARD::ARROW_LEFT},

@@ -10,8 +10,10 @@
 #ifndef SYSTEM_HPP_
 #define SYSTEM_HPP_
 
-#include "components/Components.hpp"
-#include "../include/registry.hpp"
+#include "sparse_array.hpp"
+#include "registry.hpp"
+#include "Velocity.hpp"
+#include "Position.hpp"
 
 void logging_system (sparse_array<Position> const& positions, sparse_array<Velocity> const& velocities);
 void control_system(registry &r, const int &direction);
