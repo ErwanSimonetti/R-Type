@@ -94,7 +94,8 @@ int main(void)
     reg.add_component<Drawable>(enemyShip, std::move(draw));
     reg.emplace_component<Drawable>(enemyShip, 45, sf::Color::Red);
 
-    reg.add_system<Position, Velocity, Controllable>(position_system);
+    reg.add_system<Position, Velocity>(position_system);
+    reg.add_system<Velocity, Controllable>(control_system);
 
     RenderGame game(1920, 1080);
 
