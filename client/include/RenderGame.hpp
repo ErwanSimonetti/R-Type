@@ -11,7 +11,6 @@
 #include "registry.hpp"
 #include "System.hpp"
 #include "Drawable.hpp"
-#include "Position.hpp"
 #include "SFML_utils.hpp"
 
 class RenderGame {
