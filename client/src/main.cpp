@@ -48,7 +48,7 @@ int main(void)
     RenderGame game(1920, 1080);
 
     entity entWin(0);
-    Drawable draw; // Justement là j'ai pas compris
+    Drawable draw;
     reg.add_component<Drawable>(j, std::move(draw));
     reg.add_component<Drawable>(a, std::move(draw));
 
