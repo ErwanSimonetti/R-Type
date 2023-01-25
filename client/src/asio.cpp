@@ -7,7 +7,6 @@
 
 #include <iostream>
 #include <boost/asio.hpp>
-// #include <asio.hpp>
 #include <iostream>
 #include <boost/array.hpp>
 
@@ -24,7 +23,7 @@ public:
 
   void my_udp_receive()
   {
-      // do asyn receiving  to buffer data_
+      // do async receiving  to buffer data_
       // [ captures ] ( params ) { body }
       socket_.async_receive_from(boost::asio::buffer(data_, max_length), sender_endpoint_,
       [this] (boost::system::error_code ec, std::size_t recvd_bytes) {
@@ -59,24 +58,3 @@ private:
   enum { max_length = 1024 };
   char data_[max_length];
 };
-
-int main(int argc, char **argv) {
-      try
-  {
-    if (argc != 2)
-    {
-      std::cerr << "Usage: client <host>" << std::endl;
-      return 1;
-    }
-
-    boost::asio::io_service io_service;
-    myUdpServer mySer(io_service, std::atoi(argv[1]));
-    io_service.run();
-  }
-  catch (std::exception& e)
-  {
-    std::cerr << e.what() << std::endl;
-  }
-
-  return 0;
-}
