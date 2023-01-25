@@ -64,7 +64,6 @@ void control_system(registry &r, const int &direction) {
         auto &contr = controllables[i];
         auto &pos = positions[i];
         if (vel && !contr && pos.value()._x <= 1900) {
-            std::cout << "Position de l'ennemi: " << pos.value()._x << std::endl;
             vel.value().build_component(1, 0);
         }
     }
