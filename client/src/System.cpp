@@ -5,8 +5,7 @@
 ** system
 */
 
-#include "registry.hpp"
-#include "components/Components.hpp"
+#include "../include/System.hpp"
 
 void logging_system (sparse_array<Position> const& positions, sparse_array<Velocity> const& velocities) {
 
@@ -35,7 +34,8 @@ void position_system(sparse_array<Position> &positions, const sparse_array<Veloc
 void control_system(registry &r, const int &direction) {
     auto &velocities = r.get_components<Velocity>();
     auto &controllables = r.get_components<Controllable>();
-    for (size_t i = 0; i < velocities.size() && i < controllables.size(); ++ i) {
+    auto &positions = r.get_components<Position>();
+    for (size_t i = 0; i < velocities.size() && i < controllables.size() && i < positions.size(); ++ i) {
         auto &vel = velocities[i];
         auto &contr = controllables[i];
         if (vel && contr) {
@@ -59,14 +59,12 @@ void control_system(registry &r, const int &direction) {
             }
         }
     }
+    for (size_t i = 0; i < velocities.size() && i < positions.size(); ++ i) {
+        auto &vel = velocities[i];
+        auto &contr = controllables[i];
+        auto &pos = positions[i];
+        if (vel && !contr && pos.value()._x <= 1900) {
+            vel.value().build_component(1, 0);
+        }
+    }
 }
-
-// template <typename Component>
-// void print_system(registry &r) {
-//     auto const &component = r.get_components<Component>();
-//     for (size_t i = 0; i < component.size(); ++i) {
-//         if (component[i])
-//             std::cout << i << ": " << component[i].value();
-//     }
-//     std::cout << "\n";
-// }

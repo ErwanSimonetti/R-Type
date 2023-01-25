@@ -9,6 +9,7 @@ set(SOURCE_FILES
   src/main.cpp
   src/asio.cpp
   src/System.cpp
+  src/Engine.cpp
 )
 
 set(INCLUDE_DIRECTORY include/ include/components)

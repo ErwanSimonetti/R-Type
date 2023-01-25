@@ -9,12 +9,12 @@
 
 struct Velocity {
     Velocity() = default;
-    void build_component(const int &vx, const int& vy) {
+    void build_component(const uint16_t &vx, const uint16_t &vy) {
         _vx = vx;
         _vy = vy;
     }
-    int _vx;
-    int _vy;
+    uint16_t _vx;
+    uint16_t _vy;
 
     friend std::ostream &operator<<(std::ostream &output, const Velocity &D) {
         output << "x = " << D._vx << " y = " <<  D._vy << std::endl;
