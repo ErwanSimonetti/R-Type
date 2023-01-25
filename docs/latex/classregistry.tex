@@ -1,0 +1,46 @@
+\hypertarget{classregistry}{}\doxysection{registry Class Reference}
+\label{classregistry}\index{registry@{registry}}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classregistry_a19c4f7403bb0f2aa5f3f92f8b982fdb1}\label{classregistry_a19c4f7403bb0f2aa5f3f92f8b982fdb1}} 
+{\footnotesize template$<$class Component $>$ }\\\mbox{\hyperlink{classsparse__array}{sparse\+\_\+array}}$<$ Component $>$ \& {\bfseries register\+\_\+component} ()
+\item 
+\mbox{\Hypertarget{classregistry_a99ec6244fa73ca7a6042048230a91e9a}\label{classregistry_a99ec6244fa73ca7a6042048230a91e9a}} 
+{\footnotesize template$<$class Component $>$ }\\\mbox{\hyperlink{classsparse__array}{sparse\+\_\+array}}$<$ Component $>$ \& {\bfseries get\+\_\+components} ()
+\item 
+\mbox{\Hypertarget{classregistry_ae35d18b5d8c07828cc5c55bc94f9f4f8}\label{classregistry_ae35d18b5d8c07828cc5c55bc94f9f4f8}} 
+{\footnotesize template$<$class Component $>$ }\\\mbox{\hyperlink{classsparse__array}{sparse\+\_\+array}}$<$ Component $>$ const  \& {\bfseries get\+\_\+components} () const
+\item 
+\mbox{\Hypertarget{classregistry_a582fb369da9636c38840ce731bb8a200}\label{classregistry_a582fb369da9636c38840ce731bb8a200}} 
+\mbox{\hyperlink{classentity}{entity}} {\bfseries spawn\+\_\+entity} ()
+\item 
+\mbox{\Hypertarget{classregistry_ac8d80330f0d3c6b2f8bbb32511c0e1d3}\label{classregistry_ac8d80330f0d3c6b2f8bbb32511c0e1d3}} 
+\mbox{\hyperlink{classentity}{entity}} {\bfseries entity\+\_\+from\+\_\+index} (std\+::size\+\_\+t idx)
+\item 
+\mbox{\Hypertarget{classregistry_a26d62db749f747449167f5334b875d98}\label{classregistry_a26d62db749f747449167f5334b875d98}} 
+void {\bfseries kill\+\_\+entity} (\mbox{\hyperlink{classentity}{entity}} const \&e)
+\item 
+\mbox{\Hypertarget{classregistry_a30cd50e3fcebbda8b69cb716af70ae33}\label{classregistry_a30cd50e3fcebbda8b69cb716af70ae33}} 
+{\footnotesize template$<$typename Component $>$ }\\\mbox{\hyperlink{classsparse__array}{sparse\+\_\+array}}$<$ Component $>$\+::reference\+\_\+type {\bfseries add\+\_\+component} (\mbox{\hyperlink{classentity}{entity}} const \&to, Component \&\&c)
+\item 
+\mbox{\Hypertarget{classregistry_a12f611552858c23164984020ba7ecf09}\label{classregistry_a12f611552858c23164984020ba7ecf09}} 
+{\footnotesize template$<$typename Component , typename... Params$>$ }\\\mbox{\hyperlink{classsparse__array}{sparse\+\_\+array}}$<$ Component $>$\+::reference\+\_\+type {\bfseries emplace\+\_\+component} (\mbox{\hyperlink{classentity}{entity}} const \&to, Params \&\&... p)
+\item 
+\mbox{\Hypertarget{classregistry_a967f47ebfc3b74c85f483aae74bfd927}\label{classregistry_a967f47ebfc3b74c85f483aae74bfd927}} 
+{\footnotesize template$<$typename Component $>$ }\\void {\bfseries remove\+\_\+component} (\mbox{\hyperlink{classentity}{entity}} const \&from)
+\item 
+\mbox{\Hypertarget{classregistry_af9596641371a7191d44293d13c1f69bf}\label{classregistry_af9596641371a7191d44293d13c1f69bf}} 
+{\footnotesize template$<$class ... Components, typename Function $>$ }\\void {\bfseries add\+\_\+system} (Function \&\&f)
+\item 
+\mbox{\Hypertarget{classregistry_a7453ec1f4862192b6d4091488c15a3ab}\label{classregistry_a7453ec1f4862192b6d4091488c15a3ab}} 
+{\footnotesize template$<$class... Components, typename Function $>$ }\\void {\bfseries add\+\_\+system} (Function const \&f)
+\item 
+\mbox{\Hypertarget{classregistry_a1fda5cc52e611441228f8b1c26302060}\label{classregistry_a1fda5cc52e611441228f8b1c26302060}} 
+void {\bfseries run\+\_\+systems} ()
+\end{DoxyCompactItemize}
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+client/include/registry.\+hpp\end{DoxyCompactItemize}
