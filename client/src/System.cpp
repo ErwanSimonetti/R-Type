@@ -35,7 +35,10 @@ void position_system(sparse_array<Position> &positions, const sparse_array<Veloc
     }
 }
 
-void control_system(registry &r, const int &direction) {
+void control_system(registry &r, std::vector<int> &directions) {
+    int current_direction = 0;
+    int x_velocity = 0;
+    int y_velocity = 0;
     auto &velocities = r.get_components<Velocity>();
     auto &controllables = r.get_components<Controllable>();
     auto &positions = r.get_components<Position>();
@@ -43,24 +46,33 @@ void control_system(registry &r, const int &direction) {
         auto &vel = velocities[i];
         auto &contr = controllables[i];
         if (vel && contr) {
-            contr.value()._current_action = direction;
-            switch (direction) {
-            case KEYBOARD::ARROW_UP:
-                vel.value().build_component(0, -1);
-                break;
-            case KEYBOARD::ARROW_LEFT:
-                vel.value().build_component(-1, 0);
-                break;
-            case KEYBOARD::ARROW_RIGHT:
-                vel.value().build_component(1, 0);
-                break;
-            case KEYBOARD::ARROW_DOWN:
-                vel.value().build_component(0, 1);
-                break;
-            case KEYBOARD::NONE:
-                vel.value().build_component(0, 0);
-                break;
+            for(std::size_t i = 0; i < directions.size(); ++i) {
+                current_direction = directions[i];
+                contr.value()._current_action = current_direction;
+                switch (current_direction) {
+                    case KEYBOARD::ARROW_UP:
+                        y_velocity = -1; // FIXME: should be 1 and not minus
+                        break;
+                    case KEYBOARD::ARROW_LEFT:
+                        x_velocity = -1;
+                        break;
+                    case KEYBOARD::ARROW_RIGHT:
+                        x_velocity = 1;
+                        break;
+                    case KEYBOARD::ARROW_DOWN:
+                        y_velocity = 1;
+                        break;
+                    default:
+                        x_velocity = 0;
+                        y_velocity = 0;
+                        break;
+                }
             }
+            if (directions.empty()) {
+                x_velocity = 0;
+                y_velocity = 0;
+            }
+            vel.value().build_component(x_velocity, y_velocity);
         }
     }
     for (size_t i = 0; i < velocities.size() && i < positions.size(); ++ i) {

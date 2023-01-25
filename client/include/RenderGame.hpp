@@ -34,39 +34,23 @@ class RenderGame {
             }
         }
 
-        void getEvent(registry &reg) {
+        void handleEvents(registry &reg) {
+            std::vector<int> inputs;
             sf::Event event;
             control_system(reg, KEY::NONE);
             while (_window->pollEvent(event)) {
-                if (event.type == sf::Event::Closed) {
+                if (event.type == sf::Event::Closed)
                     _window->close();
-                }
-
-                if (event.type == sf::Event::EventType::KeyPressed){
-                    switch (event.key.code)
-                    {
-                    case sf::Keyboard::Up:
-                        control_system(reg, KeyboardMap.at(event.key.code));
-                        break;
-                    case sf::Keyboard::Left:
-                        control_system(reg, KeyboardMap.at(event.key.code));
-                        break;
-                    case sf::Keyboard::Right:
-                        control_system(reg, KeyboardMap.at(event.key.code));
-                        break;
-                    case sf::Keyboard::Down:
-                        control_system(reg, KeyboardMap.at(event.key.code));
-                        break;
-                    }
-                } else {
-                    control_system(reg, KEYBOARD::NONE);
-                }
+                for (std::map<sf::Keyboard::Key, KEYBOARD>::iterator it = KeyboardMap.begin(); it != KeyboardMap.end(); it++)
+                    if (sf::Keyboard::isKeyPressed(it->first))
+                        inputs.emplace_back(it->second);
+                control_system(reg, inputs);
             }
         }
 
         void gameLoop(registry &reg) {
             while (_window->isOpen()) {
-            getEvent(reg);
+            handleEvents(reg);
             reg.run_systems();
             _window->display();
             _window->clear();
