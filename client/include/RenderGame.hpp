@@ -5,15 +5,18 @@
 ** RenderGame
 */
 
+#pragma once
+
 #include <SFML/Graphics.hpp>
-#include "registry.hpp"
-#include "../src/System.cpp"
+#include "../include/registry.hpp"
+#include "../include/System.hpp"
 
 class RenderGame {
 
     public:
         RenderGame(const uint16_t &width, const uint16_t &height) {
             _window = new sf::RenderWindow(sf::VideoMode(width, height), "R-TYPE");
+            _window->setFramerateLimit(30);
         }
 
         sf::RenderWindow &getWindow() {
@@ -22,19 +25,17 @@ class RenderGame {
 
         void draw_system(sparse_array<Position> const& positions, sparse_array<Drawable> &drawables) {
             for (size_t i = 0; i < drawables.size() && i < positions.size(); ++ i) {
-            // _window->clear(); 
-            if (drawables[i] && positions[i]) {
-                drawables[i].value()._sprite.setPosition(positions[i].value()._x, positions[i].value()._y);
-                _window->draw(drawables[i].value()._sprite);
-                // _window->display();
+                if (drawables[i] && positions[i]) {
+                    drawables[i].value()._sprite.setPosition(positions[i].value()._x, positions[i].value()._y);
+                    _window->draw(drawables[i].value()._sprite);
                 }
             }
         }
 
         void getEvent(registry &reg) {
             sf::Event event;
+            control_system(reg, KEY::NONE);
             while (_window->pollEvent(event)) {
-
                 if (event.type == sf::Event::Closed) {
                     _window->close();
                 }
@@ -67,8 +68,6 @@ class RenderGame {
             reg.run_systems();
             _window->display();
             _window->clear();
-            // draw_system(reg , *_window);
-            // position_system(reg.get_components<Position>(), reg.get_components<Velocity>());
             }
         }
         
