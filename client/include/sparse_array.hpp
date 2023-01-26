@@ -9,6 +9,8 @@
 
 #include <optional>
 #include <iostream>
+#include <vector>
+#include <array>
 
 template <typename Component>
 class sparse_array
