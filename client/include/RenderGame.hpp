@@ -37,7 +37,6 @@ class RenderGame {
         void handleEvents(registry &reg) {
             std::vector<int> inputs;
             sf::Event event;
-            control_system(reg, KEY::NONE);
             while (_window->pollEvent(event)) {
                 if (event.type == sf::Event::Closed)
                     _window->close();

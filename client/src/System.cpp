@@ -6,8 +6,6 @@
 */
 
 #include "System.hpp"
-#include "Position.hpp"
-#include "Velocity.hpp"
 #include "registry.hpp"
 #include "SFML_utils.hpp"
 
