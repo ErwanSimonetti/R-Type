@@ -11,3 +11,4 @@
 #include "Drawable.hpp"
 #include "Position.hpp"
 #include "Velocity.hpp"
+#include "Pet.hpp"

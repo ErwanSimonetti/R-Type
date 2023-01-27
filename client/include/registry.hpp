@@ -42,7 +42,6 @@ class registry
             return std::any_cast<sparse_array<Component>&>(_components_arrays.find(std::type_index(typeid(Component)))->second);
         };
 
-
         entity spawn_entity() {
             size_t id_entity = 0;
             if (!_entities.empty())
