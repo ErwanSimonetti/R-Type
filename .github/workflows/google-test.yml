@@ -1,0 +1,21 @@
+name: Continuous Integration
+
+on:
+  pull_request:
+    branches: [ master, dev ]
+
+jobs:
+  gtest:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Install gtest manually
+      run: sudo apt-get install libgtest-dev && cd /usr/src/gtest && sudo cmake CMakeLists.txt && sudo make && sudo cp lib/*.a /usr/lib && sudo ln -s /usr/lib/libgtest.a /usr/local/lib/libgtest.a && sudo ln -s /usr/lib/libgtest_main.a /usr/local/lib/libgtest_main.a
+    - uses: actions/checkout@v3.1.0
+      with:
+        ref: ${{ github.event.pull_request.head.sha }}
+    - name: Install dependancies
+      run: sudo apt-get install freeglut3-dev libudev-dev libopenal-dev libalut-dev libvorbis-dev libflac++-dev xorg-dev libglu1-mesa-dev libasio-dev
+    - name: Compile client with tests
+      run: mkdir ./client/build && cd client/build && cmake .. && cmake --build . && cd ../..
+    - name: Run client tests
+      run: cd ./client/ && ./ecs_tests
