@@ -5,11 +5,19 @@
 ** Network
 */
 
-#include "../include/Network.hpp"
+#include "Network.hpp"
 
-Network::Network(boost::asio::io_service& io_service)
-    : _socket(io_service, boost::asio::ip::udp::v4())
+Network::Network(boost::asio::io_service &io_service, const std::string& host, const std::string& port) : 
+    _socket(io_service, boost::asio::ip::udp::v4())
 {
+    boost::asio::ip::udp::endpoint serverEndpoint(boost::asio::ip::address::from_string(host), std::stoi(port));
+    addEndpoint(serverEndpoint);
+}
+
+Network::Network(boost::asio::io_service& io_service, const std::string &port)
+    : _socket(io_service, boost::asio::ip::udp::endpoint(boost::asio::ip::udp::v4(), 1234))
+{
+
 }
 
 Network::~Network()
@@ -25,34 +33,17 @@ void Network::addEndpoint(boost::asio::ip::udp::endpoint endpoint)
         _endpoints.emplace_back(endpoint);
     }
 }
-
-template <typename Data>
-void Network::udpSend(char *buffer, boost::asio::ip::udp::endpoint endpoint)
-{
-    _socket.async_send_to(boost::asio::buffer(buffer, sizeof(Data)), endpoint,
-        [this, buffer, endpoint](boost::system::error_code /*ec*/, std::size_t /*bytes_sent*/) 
-    {
-        std::cerr << "Succefully sent: " << buffer << " to:" << endpoint << "\n";
-    });
-}
     
-void Network::udpReceive()
+void Network::udpReceive(std::function<void()> func)
 {
     std::memset(_recvBuffer, '\0', 1024);
     boost::asio::ip::udp::endpoint endpoint;
 
     _socket.async_receive_from(boost::asio::buffer(_recvBuffer), endpoint,
-    [this] (boost::system::error_code ec, std::size_t recvd_bytes) {
-        if ( !ec && recvd_bytes > 0 ) {
-
-        }
-        else {
-            udpReceive();
-        }
+    [this, func] (boost::system::error_code ec, std::size_t recvd_bytes) {
+        if (ec || recvd_bytes >= 0)
+            udpReceive(func);
+        // _protocol.handleData(_recvBuffer);
+        func();
     });
-}
-
-int main ()
-{
-    printf("jaj\n");
 }

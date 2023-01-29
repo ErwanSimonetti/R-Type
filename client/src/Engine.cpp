@@ -7,18 +7,6 @@
 
 #include "Engine.hpp"
 
-// Engine::Engine(uint16_t width, uint16_t height, boost::asio::io_service &io_service, const std::string &port) : _reg(), _game(width, height), _network(io_service, port)
-// {
-//     _reg.register_component<Position>();
-//     _reg.register_component<Velocity>();
-//     _reg.register_component<Drawable>();
-//     _reg.register_component<Controllable>();
-
-//     _reg.add_system<Position, Velocity>(position_system);
-//     _reg.add_system<Position, Drawable>(std::bind(&RenderGame::draw_system, &_game, std::placeholders::_1, std::placeholders::_2));
-//     _player = entity(0);
-// }
-
 Engine::Engine(uint16_t width, uint16_t height, boost::asio::io_service &io_service, const std::string &host, const std::string &port) : _reg(), _game(width, height), _network(io_service, host, port), _player(0)
 {
     _reg.register_component<Position>();
