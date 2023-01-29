@@ -1,8 +1,15 @@
-name: google-test
+name: "Google Test"
+permissions: read-all
 
 on:
-  pull_request:
-    branches: [ master, dev ]
+  pull_request_target:
+    branches:
+      - main
+      - dev
+    types:
+      - opened
+      - edited
+      - synchronize
 
 jobs:
   build:
