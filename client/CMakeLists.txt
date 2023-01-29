@@ -81,13 +81,13 @@ FetchContent_Declare(
 enable_testing()
 
 add_executable(
-  ecs_tests
-  tests/ecs_tests.cpp
+  clients_tests
+  tests/sparse_array_tests.cpp
 )
 target_link_libraries(
-  ecs_tests
+  clients_tests
   GTest::gtest_main
 )
 
 include(GoogleTest)
-gtest_discover_tests(ecs_tests)
+gtest_discover_tests(clients_tests)
