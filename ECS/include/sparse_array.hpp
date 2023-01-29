@@ -51,15 +51,22 @@ class sparse_array
             return *this;
         } // move assignment operator
 
-        reference_type operator[](size_t idx)
+        value_type operator[](size_t idx)
         {
-            return _data[idx];
+            if (idx <= _data.size())
+                return _data[idx];
+            else
+                throw std::out_of_range("Index " + std::to_string(idx) + " is out of range for vector of size " + std::to_string(_data.size()));
         };
 
         const_reference_type operator[](size_t idx) const
         {
-            return _data[idx];
+            if (idx <= _data.size())
+                return _data[idx];
+            else
+                throw std::out_of_range("Index " + std::to_string(idx) + " is out of range for vector of size " + std::to_string(_data.size()));
         }
+
         iterator begin() { return _data.begin(); };
         const_iterator begin() const { return *_data.begin(); };
         const_iterator cbegin() const { return *_data.begin(); };
@@ -141,7 +148,7 @@ class sparse_array
             if (!D.empty()) {
                 for (size_t i = 0; i != D.size(); i++) {
                     if (D[i].has_value()) {
-                        output << i << ": " << D[i].value();
+                        output << i << ": " << D[i].value() << std::endl;
                     }
                 }
                 return output;            
