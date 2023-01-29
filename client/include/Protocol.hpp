@@ -16,9 +16,15 @@ struct Header {
     uint16_t dataSize;
 };
 
-struct A {
+struct Astructlol {
     int a;
     char b;
+};
+
+template <class Data>
+struct Result {
+    DataTypes type;
+    Data data;
 };
 
 enum DataTypes {
@@ -33,10 +39,36 @@ class Protocol {
         Protocol();
         ~Protocol();
 
-        template <typename Data>
-        char *serialiseData(Data data, DataTypes type);
+        template <class Data>
+        char *serialiseData(Data data, DataTypes type) {
+            char *buffer = new char[sizeof(Data)];
+            Header header;
 
-        void handleData(char *buffer);
+            header.dataType = type;
+            header.dataSize = sizeof(Data);
+
+            std::memcpy(buffer, &header, sizeof(Header));
+            std::memcpy(buffer, &data, sizeof(Data));
+
+            return buffer;
+        };
+
+        template <typename Data>
+        Result<Data> handleData(char *buffer) {
+            Header header;
+            std::memcpy(&header, buffer, sizeof(Header));
+
+            switch (header.dataType) {
+            case typeA:
+                A a;
+                std::memcpy(&a, buffer, sizeof(A));
+                Result res{typeA, a};
+                return res;
+            default:
+                break;
+            }
+        };
+
     protected:
     private:
 };
