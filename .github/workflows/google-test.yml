@@ -2,11 +2,7 @@ name: Continuous Integration
 
 on:
   pull_request:
-<<<<<<< HEAD
     branches: [ main, dev ]
-=======
-    branches: [ master, dev ]
->>>>>>> 6c22cca (feat(github action): added github action to trigger workflow on dev too)
 
 jobs:
   gtest:
@@ -18,16 +14,8 @@ jobs:
       with:
         ref: ${{ github.event.pull_request.head.sha }}
     - name: Install dependancies
-<<<<<<< HEAD
       run: sudo apt-get update && sudo apt-get install freeglut3-dev libudev-dev libopenal-dev libalut-dev libvorbis-dev libflac++-dev xorg-dev libglu1-mesa-dev libasio-dev
     - name: Compile client with tests
       run: mkdir ./client/build && cd client/build && cmake .. && cmake --build . && cd ../..
     - name: Run client tests
       run: mv ./client/clients_tests . && ./clients_tests
-=======
-      run: sudo apt-get install freeglut3-dev libudev-dev libopenal-dev libalut-dev libvorbis-dev libflac++-dev xorg-dev libglu1-mesa-dev libasio-dev
-    - name: Compile client with tests
-      run: mkdir ./client/build && cd client/build && cmake .. && cmake --build . && cd ../..
-    - name: Run client tests
-      run: cd ./client/ && ./ecs_tests
->>>>>>> 6c22cca (feat(github action): added github action to trigger workflow on dev too)
