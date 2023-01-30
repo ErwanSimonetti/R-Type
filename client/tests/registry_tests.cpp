@@ -29,6 +29,6 @@ TEST(Registry, RegisterComponent) {
     res.add_component(a, std::move(vel));
     EXPECT_EQ(res.get_components<Position>().size(), 1);
     EXPECT_EQ(res.get_components<Velocity>().size(), 1);
-    EXPECT_EQ(res.get_components<Position>().get_index(0).value()._x, 1);
-    EXPECT_EQ(res.get_components<Position>().get_index(0).value()._y, 1);
+    EXPECT_EQ(res.get_components<Position>()[0].value()._x, 1);
+    EXPECT_EQ(res.get_components<Position>()[0].value()._y, 1);
 }
