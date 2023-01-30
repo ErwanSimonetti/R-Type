@@ -93,7 +93,8 @@ TEST(SparseArray, EraseThrowExpectionOutOfRange) {
     }
     catch(const std::out_of_range& e)
     {
-        EXIT_SUCCESS;
+        SUCCEED();
+        return;
     }
-    EXIT_FAILURE;
+    FAIL();
 }
