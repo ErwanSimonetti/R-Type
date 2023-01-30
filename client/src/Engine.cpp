@@ -64,6 +64,16 @@ entity Engine::create_enemy_entity(int id, sf::Color col, const uint16_t speedX,
 }
 
 void Engine::run_game() {
-    // _game.gameLoop(_reg);
+    while (1) {
+        _game.gameLoop(_reg);
+    }
     // _network.udpReceive(std::bind(&Engine::printMonCul, this));
+}
+
+void Engine::sendData(uint16_t event) {
+    ClientData data;
+    data.event = event;
+    std::strcpy(data.string, "yolo");
+    char *buffer = _network._protocol.serialiseData<ClientData>(data);
+    _network.udpSend<ClientData>(buffer, _network.getServerEndpoint());
 }

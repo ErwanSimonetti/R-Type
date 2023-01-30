@@ -8,7 +8,7 @@
 #include <cstdlib>
 #include "System.hpp"
 #include "registry.hpp"
-#include "SFML_utils.hpp"
+#include "Controllable.hpp"
 
 void followPathSystem(const sparse_array<Position> &positions, sparse_array<Velocity> &velocities, sparse_array<FollowPath> &paths) {
     int16_t xToReach = 0;
@@ -63,7 +63,8 @@ void position_system(sparse_array<Position> &positions, const sparse_array<Veloc
     }
 }
 
-void control_system(registry &r, std::vector<int> &directions) {
+std::pair<uint16_t, uint16_t> control_system(registry &r, std::vector<int> &directions) {
+    // std::pair<uint16_t, uint16_t> playerPos;
     int current_direction = 0;
     int16_t xDirection = 0;
     int16_t yDirection = 0;
