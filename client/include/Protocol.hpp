@@ -17,8 +17,11 @@ struct Header {
 };
 
 struct ClientData {
-    uint16_t event;
-    char string[20];
+    int16_t entity;
+    uint16_t directions[4];
+    bool shoot;
+    uint16_t posX;
+    uint16_t posY;
 };
 
 struct ServerData {
