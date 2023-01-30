@@ -11,7 +11,8 @@
 
 #include "registry.hpp"
 #include "entity.hpp"
-#include "System.hpp"
+#include "Position.hpp"
+#include "Velocity.hpp"
 
 TEST(Registry, RegisterComponent) {
     registry res;
