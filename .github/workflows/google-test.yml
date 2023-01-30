@@ -18,4 +18,4 @@ jobs:
     - name: Compile client with tests
       run: mkdir ./client/build && cd client/build && cmake .. && cmake --build . && cd ../..
     - name: Run client tests
-      run: cd ./client/ && ./ecs_tests
+      run: cd ./client/ && ./clients_tests
