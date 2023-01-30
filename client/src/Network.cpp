@@ -11,7 +11,8 @@ Network::Network(boost::asio::io_service &io_service, const std::string& host, c
     _socket(io_service, boost::asio::ip::udp::v4())
 {
     boost::asio::ip::udp::endpoint serverEndpoint(boost::asio::ip::address::from_string(host), std::stoi(port));
-    addEndpoint(serverEndpoint);
+    // addEndpoint(serverEndpoint);
+    _serverEndpoint = serverEndpoint;
 }
 
 Network::Network(boost::asio::io_service& io_service, const std::string &port)
@@ -32,6 +33,11 @@ void Network::addEndpoint(boost::asio::ip::udp::endpoint endpoint)
         std::cerr << "New user:" << endpoint << "connected\n";
         _endpoints.emplace_back(endpoint);
     }
+}
+
+boost::asio::ip::udp::endpoint Network::getServerEndpoint()
+{
+    return _serverEndpoint;
 }
     
 // void Network::UDPReceive(std::function<void()> func, bool isServer)

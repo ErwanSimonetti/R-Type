@@ -33,9 +33,13 @@ class Network {
         
         template <typename Data>
         void udpSend(char *buffer, boost::asio::ip::udp::endpoint endpoint) {
-            _socket.async_send_to(boost::asio::buffer(buffer, sizeof(Data)), endpoint,
+    //         ClientData test;
+    // std::memcpy(&test, buffer, sizeof(ClientData));
+    // std::cerr << test.event << " " << test.string << "\n\n";
+            _socket.async_send_to(boost::asio::buffer(buffer, sizeof(ClientData)), endpoint,
                 [this, buffer, endpoint](boost::system::error_code /*ec*/, std::size_t bytes_sent) 
             {
+                std::cerr << "nb byte : " << bytes_sent;
                 std::cerr << "Succefully sent: " << buffer << " to:" << endpoint << "\n";
             });
         }
@@ -46,10 +50,11 @@ class Network {
 
             _socket.async_receive_from(boost::asio::buffer(_recvBuffer), endpoint,
             [this, func] (boost::system::error_code ec, std::size_t recvd_bytes) {
-                if (ec || recvd_bytes >= 0)
+                if (ec || recvd_bytes <= 0)
                     UDPReceiveClient(func);
                 std::cout << "Data received from Server\n";
                 func(_protocol.readServer(_recvBuffer));
+                UDPReceiveClient(func);
             });
         };
 
@@ -59,22 +64,26 @@ class Network {
 
             _socket.async_receive_from(boost::asio::buffer(_recvBuffer), endpoint,
             [this, func] (boost::system::error_code ec, std::size_t recvd_bytes) {
-                if (ec || recvd_bytes >= 0)
+                if (ec || recvd_bytes <= 0)
                     UDPReceiveServer(func);
                 std::cout << "Data received from Client\n";
                 std::cout << "[" << recvd_bytes << "] " << _recvBuffer << std::endl;
                 func(_protocol.readClient(_recvBuffer));
+                UDPReceiveServer(func);
             });
         };
+
+        boost::asio::ip::udp::endpoint getServerEndpoint();
         
 
         std::vector<boost::asio::ip::udp::endpoint> _endpoints;
+        Protocol _protocol;
     protected:
     private:
+        boost::asio::ip::udp::endpoint _serverEndpoint;
         boost::asio::ip::udp::socket _socket;
         char _recvBuffer[1024];
 
-        Protocol _protocol;
 };
 
 #endif /* !NETWORK_HPP_ */
