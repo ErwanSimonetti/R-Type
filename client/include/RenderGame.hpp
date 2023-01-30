@@ -18,8 +18,8 @@ class RenderGame {
 
     public:
         RenderGame(const uint16_t &width, const uint16_t &height) {
-            _window = new sf::RenderWindow(sf::VideoMode(width, height), "R-TYPE");
-            _window->setFramerateLimit(30);
+            // _window = new sf::RenderWindow(sf::VideoMode(width, height), "R-TYPE");
+            // _window->setFramerateLimit(30);
         }
 
         sf::RenderWindow &getWindow() {

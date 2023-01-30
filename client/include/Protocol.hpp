@@ -16,23 +16,23 @@ struct Header {
     uint16_t dataSize;
 };
 
-struct Astructlol {
-    int a;
-    char b;
+struct ClientData {
+    int event;
+    char string[20];
 };
 
-template <class Data>
-struct Result {
-    DataTypes type;
-    Data data;
+struct ServerData {
+    char newSprite;
+    int posX;
+    int posY;
 };
 
-enum DataTypes {
-    typeA = 1,
-    typeB = 2,
-    typeC = 3,
-    typeD = 4
-};
+// enum DataTypes {
+//     typeA = 1,
+//     typeB = 2,
+//     typeC = 3,
+//     typeD = 4
+// };
 
 class Protocol {
     public:
@@ -40,33 +40,33 @@ class Protocol {
         ~Protocol();
 
         template <class Data>
-        char *serialiseData(Data data, DataTypes type) {
+        char *serialiseData(Data data) {
             char *buffer = new char[sizeof(Data)];
-            Header header;
+            // Header header;
 
-            header.dataType = type;
-            header.dataSize = sizeof(Data);
+            // header.dataType = type;
+            // header.dataSize = sizeof(Data);
 
-            std::memcpy(buffer, &header, sizeof(Header));
+            // std::memcpy(buffer, &header, sizeof(Header));
             std::memcpy(buffer, &data, sizeof(Data));
 
             return buffer;
         };
 
-        template <typename Data>
-        Result<Data> handleData(char *buffer) {
-            Header header;
-            std::memcpy(&header, buffer, sizeof(Header));
+        ClientData readClient(char *buffer) {
+            // Header header;
+            // std::memcpy(&header, buffer, sizeof(Header));
+            ClientData clientData;
+            std::memcpy(&clientData, buffer, sizeof(ClientData));
+            return clientData;
+        };
 
-            switch (header.dataType) {
-            case typeA:
-                A a;
-                std::memcpy(&a, buffer, sizeof(A));
-                Result res{typeA, a};
-                return res;
-            default:
-                break;
-            }
+        ServerData readServer(char *buffer) {
+            // Header header;
+            // std::memcpy(&header, buffer, sizeof(Header));
+            ServerData serverData;
+            std::memcpy(&serverData, buffer, sizeof(ServerData));
+            return serverData;
         };
 
     protected:
