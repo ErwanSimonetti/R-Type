@@ -34,16 +34,19 @@ void Network::addEndpoint(boost::asio::ip::udp::endpoint endpoint)
     }
 }
     
-void Network::udpReceive(std::function<void()> func)
-{
-    std::memset(_recvBuffer, '\0', 1024);
-    boost::asio::ip::udp::endpoint endpoint;
+// void Network::UDPReceive(std::function<void()> func, bool isServer)
+// {
+//     std::memset(_recvBuffer, '\0', 1024);
+//     boost::asio::ip::udp::endpoint endpoint;
 
-    _socket.async_receive_from(boost::asio::buffer(_recvBuffer), endpoint,
-    [this, func] (boost::system::error_code ec, std::size_t recvd_bytes) {
-        if (ec || recvd_bytes >= 0)
-            udpReceive(func);
-        // _protocol.handleData(_recvBuffer);
-        func();
-    });
-}
+//     _socket.async_receive_from(boost::asio::buffer(_recvBuffer), endpoint,
+//     [this, func, isServer] (boost::system::error_code ec, std::size_t recvd_bytes) {
+//         if (ec || recvd_bytes >= 0)
+//             UDPReceive(func, isServer);
+//         if (isServer)
+//             ClientData data = _protocol.readClient(_recvBuffer);
+//         else
+//             ServerData data =  _protocol.readServer(_recvBuffer);
+//         func();
+//     });
+// }
