@@ -10,9 +10,15 @@ set(SOURCE_FILES
   src/asio.cpp
   src/System.cpp
   src/Engine.cpp
+  src/Network.cpp
+  src/Protocol.cpp
 )
 
-set(INCLUDE_DIRECTORY include/ include/components)
+set(INCLUDE_DIRECTORY
+  include/
+  include/components
+  include/utils
+)
 
 include_directories(${INCLUDE_DIRECTORY})
 add_executable(r-type_client ${SOURCE_FILES})
