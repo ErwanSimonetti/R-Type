@@ -8,9 +8,6 @@
 #include <gtest/gtest.h>
 #include <optional>
 
-#include "registry.hpp"
-#include "Components.hpp"
-#include "Position.hpp"
 #include "sparse_array.hpp"
 
 TEST(SparseArray, SizeAndInsertAt) {
@@ -34,6 +31,8 @@ TEST(SparseArray, OperatorPosForFullPos) {
     test.insert_at(1, 6);
     test.insert_at(4, 5);
     EXPECT_EQ(test[0], 12);
+    EXPECT_EQ(test[1], 6);
+    EXPECT_EQ(test[4], 5);
 }
 
 TEST(SparseArray, OperatorPosForNullPos) {
@@ -51,6 +50,47 @@ TEST(SparseArray, OperatorPosThrowExpectionOutOfRange) {
     try
     {
         std::cout << test[16].value() << std::endl;
+    }
+    catch(const std::out_of_range& e)
+    {
+        std::cerr << e.what() << '\n';
+        EXIT_SUCCESS;
+    }
+}
+
+TEST(SparseArray, Begin) {
+    sparse_array<int> test;
+    EXPECT_EQ(test.empty(), true);
+    test.insert_at(0, 12);
+    test.insert_at(1, 6);
+    test.insert_at(3, 5);
+    EXPECT_EQ((*test.begin()).value(), 12);
+}
+
+TEST(SparseArray, End) {
+    sparse_array<int> test;
+    EXPECT_EQ(test.empty(), true);
+    test.insert_at(0, 12);
+    test.insert_at(1, 6);
+    test.insert_at(3, 5);
+    EXPECT_EQ((*test.end()).value(), 5);
+}
+
+TEST(SparseArray, Erase) {
+    sparse_array<int> test;
+    EXPECT_EQ(test.empty(), true);
+    test.insert_at(0, 12);
+    test.insert_at(1, 6);
+    test.insert_at(3, 5);
+    test.erase(1);
+    EXPECT_EQ(test[1], std::nullopt);
+}
+
+TEST(SparseArray, EraseThrowExpectionOutOfRange) {
+    sparse_array<int> test;
+    try
+    {
+        test.erase(16);
     }
     catch(const std::out_of_range& e)
     {
