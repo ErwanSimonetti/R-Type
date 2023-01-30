@@ -83,7 +83,10 @@ enable_testing()
 
 add_executable(
   clients_tests
+  src/System.cpp
   tests/sparse_array_tests.cpp
+  tests/entity_tests.cpp
+  tests/registry_tests.cpp
 )
 target_link_libraries(
   clients_tests

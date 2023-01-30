@@ -51,20 +51,15 @@ class sparse_array
             return *this;
         } // move assignment operator
 
-        value_type operator[](size_t idx)
+        reference_type operator[](size_t idx)
         {
-            if (idx <= _data.size())
-                return _data[idx];
-            else
-                throw std::out_of_range("Index " + std::to_string(idx) + " is out of range for vector of size " + std::to_string(_data.size()));
+            return _data.at(idx);
         };
+            if (idx < 0 or idx > _data.size())
 
         const_reference_type operator[](size_t idx) const
         {
-            if (idx <= _data.size())
-                return _data[idx];
-            else
-                throw std::out_of_range("Index " + std::to_string(idx) + " is out of range for vector of size " + std::to_string(_data.size()));
+            return _data.at(idx);
         }
 
         iterator begin() { return _data.begin(); };
@@ -107,24 +102,14 @@ class sparse_array
         template <class ... Params >
         reference_type emplace_at ( size_type pos , Params &&... par)
         {
-            // for (int x = 0; x< sizeof...(par) ;x++)
-            //     std::cout << par << std::endl;
-            //     // _data.emplace(params, pos);
             for (std::size_t x = 0; x < sizeof...(par); ++x)
                 std::cout << std::array<typename std::common_type<Params...>::type,sizeof...(par)>{par...}[x] << std::endl;
         }
 
         void erase(size_type pos)
         {
-            try
-            {
-                if (_data[pos].has_value())
-                    _data[pos] = std::nullopt;
-                else
-                    throw std::out_of_range(std::string("You can't erase an empty position."));
-            } catch (std::out_of_range &e) {
-                std::cerr << "Invalid position: " << pos << std::endl;
-            }
+            if (_data.at(pos).has_value())
+                _data.at(pos) = std::nullopt;
         };
 
         size_type get_index(value_type const &it) const
@@ -139,7 +124,7 @@ class sparse_array
             return index;
         };
 
-        bool  empty() const
+        bool empty() const
         {
             return _data.empty();
         };
