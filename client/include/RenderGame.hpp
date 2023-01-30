@@ -8,14 +8,13 @@
 #pragma once
 
 #include <SFML/Graphics.hpp>
+
 #include "registry.hpp"
 #include "System.hpp"
 #include "Drawable.hpp"
 #include "Controllable.hpp"
 #include "SFML_utils.hpp"
-// #include "Engine.hpp"
-
-// class Engine;
+#include "Engine_utils.hpp"
 
 class RenderGame {
 
@@ -38,9 +37,11 @@ class RenderGame {
             }
         }
 
-        std::pair<uint16_t, uint16_t> handleEvents(registry &reg) {
+        EntityEvent handleEvents(registry &reg) {
             std::vector<int> inputs;
             sf::Event event;
+            EntityEvent entityEvent;
+            entityEvent.entity = -1;
             while (_window->pollEvent(event)) {
                 if (event.type == sf::Event::Closed)
                     _window->close();
@@ -49,16 +50,17 @@ class RenderGame {
                         inputs.emplace_back(it->second);
                 return control_system(reg, inputs);
             }
+            return entityEvent;
         }
 
-        std::pair<uint16_t, uint16_t> gameLoop(registry &reg) {
+        EntityEvent gameLoop(registry &reg) {
             _window->isOpen();
             reg.run_systems();
             _window->display();
             _window->clear();
             return handleEvents(reg);
         }
-        
+
     private:
         // Engine _eng;
         sf::RenderWindow *_window;

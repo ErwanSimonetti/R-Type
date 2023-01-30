@@ -63,8 +63,10 @@ void position_system(sparse_array<Position> &positions, const sparse_array<Veloc
     }
 }
 
-std::pair<uint16_t, uint16_t> control_system(registry &r, std::vector<int> &directions) {
-    // std::pair<uint16_t, uint16_t> playerPos;
+EntityEvent control_system(registry &r, std::vector<int> &directions) {
+    printf("control\n");
+    EntityEvent entityEvent;
+    entityEvent.entity = -1;
     int current_direction = 0;
     int16_t xDirection = 0;
     int16_t yDirection = 0;
@@ -73,23 +75,30 @@ std::pair<uint16_t, uint16_t> control_system(registry &r, std::vector<int> &dire
     auto &positions = r.get_components<Position>();
     for (size_t i = 0; i < velocities.size() && i < controllables.size() && i < positions.size(); ++ i) {
         auto &vel = velocities[i];
+        auto &pos = positions[i];
         auto &contr = controllables[i];
-        if (vel && contr) {
-            for(std::size_t i = 0; i < directions.size(); ++i) {
-                current_direction = directions[i];
+        if (vel && contr && pos) {
+            for(std::size_t j = 0; j < directions.size(); ++j) {
+                printf("ya eu input\n");
+                entityEvent.entity = i;
+                current_direction = directions[j];
                 contr.value()._current_action = current_direction;
                 switch (current_direction) {
                     case KEYBOARD::ARROW_UP:
                         yDirection = -1; // FIXME: should be 1 and not minus
-                        break;
-                    case KEYBOARD::ARROW_LEFT:
-                        xDirection = -1;
-                        break;
-                    case KEYBOARD::ARROW_RIGHT:
-                        xDirection = 1;
+                        entityEvent.events.emplace_back(GAME_EVENT::UP);
                         break;
                     case KEYBOARD::ARROW_DOWN:
                         yDirection = 1;
+                        entityEvent.events.emplace_back(GAME_EVENT::DOWN);
+                        break;
+                    case KEYBOARD::ARROW_LEFT:
+                        xDirection = -1;
+                        entityEvent.events.emplace_back(GAME_EVENT::LEFT);
+                        break;
+                    case KEYBOARD::ARROW_RIGHT:
+                        xDirection = 1;
+                        entityEvent.events.emplace_back(GAME_EVENT::RIGHT);
                         break;
                     default:
                         xDirection = 0;
@@ -104,4 +113,5 @@ std::pair<uint16_t, uint16_t> control_system(registry &r, std::vector<int> &dire
             vel.value().build_component(xDirection * vel.value()._speedX, yDirection * vel.value()._speedY, vel.value()._speedX, vel.value()._speedY);
         }
     }
+    return entityEvent;
 }

@@ -9,13 +9,13 @@
 
 Engine::Engine(uint16_t width, uint16_t height, boost::asio::io_service &io_service, const std::string &port) : _reg(), _game(width, height), _network(io_service, port)
 {
-    // _reg.register_component<Position>();
-    // _reg.register_component<Velocity>();
-    // _reg.register_component<Drawable>();
-    // _reg.register_component<Controllable>();
+    _reg.register_component<Position>();
+    _reg.register_component<Velocity>();
+    _reg.register_component<Drawable>();
+    _reg.register_component<Controllable>();
 
-    // _reg.add_system<Position, Velocity>(position_system);
-    // _reg.add_system<Position, Drawable>(std::bind(&RenderGame::draw_system, &_game, std::placeholders::_1, std::placeholders::_2));
+    _reg.add_system<Position, Velocity>(position_system);
+    _reg.add_system<Position, Drawable>(std::bind(&RenderGame::draw_system, &_game, std::placeholders::_1, std::placeholders::_2));
 }
 
 Engine::Engine(uint16_t width, uint16_t height, boost::asio::io_service &io_service, const std::string &host, const std::string &port) : _reg(), _game(width, height), _network(io_service, host, port)
@@ -63,17 +63,62 @@ entity Engine::create_enemy_entity(int id, sf::Color col, const uint16_t speedX,
     return ret;
 }
 
-void Engine::run_game() {
-    while (1) {
-        _game.gameLoop(_reg);
+ClientData Engine::buildClientData(EntityEvent entityEvent) {
+    ClientData clientData;
+    printf("%d\n", entityEvent.entity);
+    if (entityEvent.entity == -1) {
+        printf("hello\n");
+        clientData.entity = -1;
+        return clientData;
     }
-    // _network.udpReceive(std::bind(&Engine::printMonCul, this));
+    printf("jaj\n");
+    Position &pos = _reg.get_components<Position>()[1].value();
+    printf("joj\n");
+    int size = 0;
+    clientData.entity = entityEvent.entity;
+    clientData.posX = pos._x;
+    clientData.posY = pos._y;
+    for (auto &it : entityEvent.events) {
+        switch (it) {
+        case GAME_EVENT::LEFT:
+            clientData.directions[size] = GAME_EVENT::LEFT;
+            size++;
+            break;
+        case GAME_EVENT::RIGHT:
+            clientData.directions[size] = GAME_EVENT::RIGHT;
+            size++;
+            break;
+        case GAME_EVENT::UP:
+            clientData.directions[size] = GAME_EVENT::UP;
+            size++;
+            break;
+        case GAME_EVENT::DOWN:
+            clientData.directions[size] = GAME_EVENT::DOWN;
+            size++;
+            break;
+        case GAME_EVENT::SHOOT:
+            clientData.shoot = true;
+            break;
+        default:
+            break;
+        }
+    }
+    return clientData;
 }
 
-void Engine::sendData(uint16_t event) {
-    ClientData data;
-    data.event = event;
-    std::strcpy(data.string, "yolo");
+void Engine::run_game() {
+    // _network.UDPReceiveServer(std::bind(&Engine::printMonCul, this, std::placeholders::_1));
+    while (1) {
+        ClientData clientData = buildClientData(_game.gameLoop(_reg));
+        printf("%d\n", clientData.entity);
+        if(clientData.entity == -1)
+            continue;
+        printf("send\n");
+        sendData(clientData);
+    }
+}
+
+void Engine::sendData(ClientData data) {
     char *buffer = _network._protocol.serialiseData<ClientData>(data);
     _network.udpSend<ClientData>(buffer, _network.getServerEndpoint());
 }
