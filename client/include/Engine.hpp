@@ -60,7 +60,6 @@ class Engine {
         /// @brief function used to launch the whole game, systems and all
         void run();
 
-
     protected:
     private:
         /// @brief registry object 
