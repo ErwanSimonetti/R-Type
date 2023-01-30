@@ -7,7 +7,7 @@
 
 #include "System.hpp"
 #include "registry.hpp"
-#include "SFML_utils.hpp"
+#include "Controllable.hpp"
 
 void logging_system (sparse_array<Position> const& positions, sparse_array<Velocity> const& velocities) {
 
@@ -33,7 +33,8 @@ void position_system(sparse_array<Position> &positions, const sparse_array<Veloc
     }
 }
 
-void control_system(registry &r, std::vector<int> &directions) {
+std::pair<uint16_t, uint16_t> control_system(registry &r, std::vector<int> &directions) {
+    // std::pair<uint16_t, uint16_t> playerPos;
     int current_direction = 0;
     int x_velocity = 0;
     int y_velocity = 0;
@@ -73,12 +74,13 @@ void control_system(registry &r, std::vector<int> &directions) {
             vel.value().build_component(x_velocity, y_velocity);
         }
     }
-    for (size_t i = 0; i < velocities.size() && i < positions.size(); ++ i) {
-        auto &vel = velocities[i];
-        auto &contr = controllables[i];
-        auto &pos = positions[i];
-        if (vel && !contr && pos.value()._x <= 1900) {
-            vel.value().build_component(1, 0);
-        }
-    }
+    return playerPos;
+    // for (size_t i = 0; i < velocities.size() && i < positions.size(); ++ i) {
+    //     auto &vel = velocities[i];
+    //     auto &contr = controllables[i];
+    //     auto &pos = positions[i];
+    //     if (vel && !contr && pos.value()._x <= 1900) {
+    //         vel.value().build_component(1, 0);
+    //     }
+    // }
 }

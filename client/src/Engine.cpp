@@ -75,7 +75,6 @@ entity Engine::create_enemy_entity(int id, sf::Color col, const uint16_t velX, c
     _reg.add_component<Velocity>(ret, std::move(vel));
     _reg.emplace_component<Velocity>(ret, velX, velY);
 
-
     _reg.add_component<Drawable>(ret, std::move(draw));
     _reg.emplace_component<Drawable>(ret, 45, col);
     
@@ -83,6 +82,16 @@ entity Engine::create_enemy_entity(int id, sf::Color col, const uint16_t velX, c
 }
 
 void Engine::run_game() {
-    // _game.gameLoop(_reg);
+    while (1) {
+        _game.gameLoop(_reg);
+    }
     // _network.udpReceive(std::bind(&Engine::printMonCul, this));
+}
+
+void Engine::sendData(uint16_t event) {
+    ClientData data;
+    data.event = event;
+    std::strcpy(data.string, "yolo");
+    char *buffer = _network._protocol.serialiseData<ClientData>(data);
+    _network.udpSend<ClientData>(buffer, _network.getServerEndpoint());
 }

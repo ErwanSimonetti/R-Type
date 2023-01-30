@@ -11,14 +11,18 @@
 #include "registry.hpp"
 #include "System.hpp"
 #include "Drawable.hpp"
+#include "Controllable.hpp"
 #include "SFML_utils.hpp"
+// #include "Engine.hpp"
+
+// class Engine;
 
 class RenderGame {
 
     public:
         RenderGame(const uint16_t &width, const uint16_t &height) {
-            // _window = new sf::RenderWindow(sf::VideoMode(width, height), "R-TYPE");
-            // _window->setFramerateLimit(30);
+            _window = new sf::RenderWindow(sf::VideoMode(width, height), "R-TYPE");
+            _window->setFramerateLimit(30);
         }
 
         sf::RenderWindow &getWindow() {
@@ -34,7 +38,7 @@ class RenderGame {
             }
         }
 
-        void handleEvents(registry &reg) {
+        std::pair<uint16_t, uint16_t> handleEvents(registry &reg) {
             std::vector<int> inputs;
             sf::Event event;
             while (_window->pollEvent(event)) {
@@ -43,19 +47,19 @@ class RenderGame {
                 for (std::map<sf::Keyboard::Key, KEYBOARD>::iterator it = KeyboardMap.begin(); it != KeyboardMap.end(); it++)
                     if (sf::Keyboard::isKeyPressed(it->first))
                         inputs.emplace_back(it->second);
-                control_system(reg, inputs);
+                return control_system(reg, inputs);
             }
         }
 
-        void gameLoop(registry &reg) {
-            while (_window->isOpen()) {
-            handleEvents(reg);
+        std::pair<uint16_t, uint16_t> gameLoop(registry &reg) {
+            _window->isOpen();
             reg.run_systems();
             _window->display();
             _window->clear();
-            }
+            return handleEvents(reg);
         }
         
     private:
+        // Engine _eng;
         sf::RenderWindow *_window;
 };

@@ -17,7 +17,7 @@ struct Header {
 };
 
 struct ClientData {
-    int event;
+    uint16_t event;
     char string[20];
 };
 
