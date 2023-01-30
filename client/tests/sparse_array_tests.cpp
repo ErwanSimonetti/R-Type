@@ -53,7 +53,6 @@ TEST(SparseArray, OperatorPosThrowExpectionOutOfRange) {
     }
     catch(const std::out_of_range& e)
     {
-        std::cerr << e.what() << '\n';
         EXIT_SUCCESS;
     }
 }
@@ -94,7 +93,7 @@ TEST(SparseArray, EraseThrowExpectionOutOfRange) {
     }
     catch(const std::out_of_range& e)
     {
-        std::cerr << e.what() << '\n';
         EXIT_SUCCESS;
     }
+    EXIT_FAILURE;
 }
