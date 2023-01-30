@@ -55,7 +55,6 @@ class sparse_array
         {
             return _data.at(idx);
         };
-            if (idx < 0 or idx > _data.size())
 
         const_reference_type operator[](size_t idx) const
         {
