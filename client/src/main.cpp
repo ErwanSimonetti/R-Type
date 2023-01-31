@@ -30,7 +30,6 @@ int main(void)
     // clientData.event = 12;
     // strcpy(clientData.string, "you massive fuck");
 
-<<<<<<< HEAD
     // Protocol prot;
     // // DataTypes lel = typeA;
     // char *ok = prot.serialiseData<ClientData>(clientData);
@@ -38,13 +37,6 @@ int main(void)
     // // std::memcpy(&test, ok, sizeof(ClientData));
     // // std::cerr << test.event << " " << test.string << "\n\n";
     // eng._network.udpSend<ClientData>(ok, eng._network._endpoints.at(0));
-=======
-    // eng.create_friendly_entity(1, sf::Color::Blue, 50, 50, 0, 0);
-    // eng.create_enemy_entity(2, sf::Color::Red, 50, 50, 150, 150);
-    // eng.run_game();
-    Network network(io_service, "1234");
-    network.UDPReceiveServer(std::bind(&printMonCul, std::placeholders::_1));
->>>>>>> 85d2240 (feat(client) client send input to server)
     // eng.printMonCul();
 
     return 0;

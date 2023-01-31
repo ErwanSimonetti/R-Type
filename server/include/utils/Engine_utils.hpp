@@ -9,11 +9,19 @@
 #define ENIGNE_UTILS_HPP_
 
 enum GAME_EVENT {
+<<<<<<< HEAD
     LEFT = 1,
     RIGHT = 2,
     UP = 3,
     DOWN = 4,
     SHOOT = 5,
+=======
+    LEFT,
+    RIGHT,
+    UP,
+    DOWN,
+    SHOOT,
+>>>>>>> 6be9af8 (feat(hierarchy) split the project in two section: client & server)
     WINDOW_CLOSE = -1
 };
 
