@@ -25,9 +25,9 @@ struct ClientData {
 };
 
 struct ServerData {
-    char newSprite;
-    int posX;
-    int posY;
+    uint16_t entity[4];
+    uint16_t posX[4];
+    uint16_t posY[4];
 };
 
 // enum DataTypes {
