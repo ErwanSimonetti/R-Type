@@ -49,10 +49,10 @@ class RenderGame {
 
         void gameLoop(registry &reg) {
             while (_window->isOpen()) {
-            handleEvents(reg);
-            reg.run_systems();
-            _window->display();
-            _window->clear();
+                handleEvents(reg);
+                reg.run_systems();
+                _window->display();
+                _window->clear();
             }
         }
         
