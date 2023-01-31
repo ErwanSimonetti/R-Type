@@ -15,6 +15,7 @@ Protocol::~Protocol()
 {
 }
 
+<<<<<<< HEAD
 void printServerData(const ServerData &data) {
     std::cout << "entities: [";
     for (int i = 0; i < 4; i++) {
@@ -61,6 +62,8 @@ void printClientData(const ClientData &data) {
     std::cout << "posY: " << data.posY << std::endl;
 }
 
+=======
+>>>>>>> 6be9af8 (feat(hierarchy) split the project in two section: client & server)
 // template <class Data>
 // char *Protocol::serialiseData(Data data, DataTypes type)
 // {

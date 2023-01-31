@@ -11,7 +11,11 @@
 #define ENGINE_HPP_
 
 #include "RenderGame.hpp"
+<<<<<<< HEAD
 #include "MyNetwork.hpp"
+=======
+#include "Network.hpp"
+>>>>>>> 6be9af8 (feat(hierarchy) split the project in two section: client & server)
 #include <boost/asio.hpp>
 #include <boost/array.hpp>
 #include "Engine_utils.hpp"
@@ -38,9 +42,14 @@ class Engine {
         /// @param velY uint_16_t corresponding to the horizontal velocity
         /// @param posX uint_16_t corresponding to the vertical position
         /// @param posY uint_16_t corresponding to the horizontal position
+<<<<<<< HEAD
         void create_player(entity newEntity, sf::Color col, const uint16_t velX, const uint16_t velY, const uint16_t posX, const uint16_t posY);
 
         void create_entity(entity newEntity, sf::Color col, const uint16_t velX, const uint16_t velY, const uint16_t posX, const uint16_t posY);
+=======
+        /// @return a friendly entity, that is controllable
+        entity create_friendly_entity(int id, sf::Color col, const uint16_t velX, const uint16_t velY, const uint16_t posX, const uint16_t posY);
+>>>>>>> 6be9af8 (feat(hierarchy) split the project in two section: client & server)
         
         /// @brief Function used to create an enemy "character" entity, giving it an id, and various parameters 
         /// @param id Entity ID, has to be unused
@@ -49,6 +58,7 @@ class Engine {
         /// @param velY uint_16_t corresponding to the horizontal velocity
         /// @param posX uint_16_t corresponding to the vertical position
         /// @param posY uint_16_t corresponding to the horizontal position
+<<<<<<< HEAD
         void create_enemy_entity(entity newEntity, sf::Color col, const uint16_t velX, const uint16_t velY, const uint16_t posX, uint16_t posY);
         
         /// @brief function used to launch the whole game, systems and all
@@ -65,11 +75,35 @@ class Engine {
         void runGame();
 
         MyNetwork _network;
+=======
+        /// @return an enemy enity, that cannot be controlled by the user
+        entity create_enemy_entity(int id, sf::Color col, const uint16_t velX, const uint16_t velY, const uint16_t posX, uint16_t posY);
+        
+        /// @brief function used to launch the whole game, systems and all
+        void run_game();
+
+        void sendData(ServerData data);
+
+        void UpdateRegistery(ClientData newData);
+
+        ClientData buildClientData(EntityEvent entityEvent);
+
+        void printMonCul(ClientData clientData) {
+            std::cerr << "⠄⠄⠸⣿⣿⢣⢶⣟⣿⣖⣿⣷⣻⣮⡿⣽⣿⣻⣖⣶⣤⣭⡉⠄⠄⠄⠄⠄\n⠄⠄⠄⢹⠣⣛⣣⣭⣭⣭⣁⡛⠻⢽⣿⣿⣿⣿⢻⣿⣿⣿⣽⡧⡄⠄⠄⠄\n⠄⠄⠄⠄⣼⣿⣿⣿⣿⣿⣿⣿⣿⣶⣌⡛⢿⣽⢘⣿⣷⣿⡻⠏⣛⣀⠄⠄\n⠄⠄⠄⣼⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣦⠙⡅⣿⠚⣡⣴⣿⣿⣿⡆⠄\n⠄⠄⣰⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⠄⣱⣾⣿⣿⣿⣿⣿⣿⠄\n⠄⢀⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⢸⣿⣿⣿⣿⣿⣿⣿⣿⠄\n⠄⣸⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⠣⣿⣿⣿⣿⣿⣿⣿⣿⣿⠄\n⠄⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠿⠛⠑⣿⣮⣝⣛⠿⠿⣿⣿⣿⣿⠄\n⢠⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣶⠄⠄⠄⠄⣿⣿⣿⣿⣿⣿⣿⣿⣿⡟⠄\n⢸⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠇⠄⠄⠄⠄⢹⣿⣿⣿⣿⣿⣿⣿⣿⠁⠄\n⣸⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠏⠄⠄⠄⠄⠄⠸⣿⣿⣿⣿⣿⡿⢟⣣⣀\n";
+            std::cerr << "|" << clientData.entity << "|" << "\n";
+            std::cerr << "|" << clientData.posX << " " << clientData.posY << "|" << "\n";
+        }
+
+        Network _network;
+>>>>>>> 6be9af8 (feat(hierarchy) split the project in two section: client & server)
     protected:
     private:
         /// @brief registry object 
         registry _reg;
+<<<<<<< HEAD
         std::vector<entity> _players;
+=======
+>>>>>>> 6be9af8 (feat(hierarchy) split the project in two section: client & server)
 };
 
 #endif /* !ENGINE_HPP_ */
