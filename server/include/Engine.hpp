@@ -54,9 +54,9 @@ class Engine {
         /// @brief function used to launch the whole game, systems and all
         void run_game();
 
-        void sendData(ClientData data);
+        void sendData(ServerData data);
 
-        void updateRegistry(ServerData data);
+        void UpdateRegistery(ClientData newData);
 
         ClientData buildClientData(EntityEvent entityEvent);
 
@@ -71,9 +71,6 @@ class Engine {
     private:
         /// @brief registry object 
         registry _reg;
-
-        /// @brief SFML encapsulation
-        RenderGame _game;
 };
 
 #endif /* !ENGINE_HPP_ */

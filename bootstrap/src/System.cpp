@@ -32,31 +32,31 @@ void position_system(sparse_array<Position> &positions, const sparse_array<Veloc
     }
 }
 
-void control_system(registry &r, const int &direction) {
-    auto &velocities = r.get_components<Velocity>();
-    auto &controllables = r.get_components<Controllable>();
-    for (size_t i = 0; i < velocities.size() && i < controllables.size(); ++ i) {
-        auto &vel = velocities[i];
-        auto &contr = controllables[i];
-        if (vel && contr) {
-            contr.value()._current_action = direction;
-            switch (direction) {
-            case KEY::UP:
-                vel.value().build_component(0, -1);
-                break;
-            case KEY::LEFT:
-                vel.value().build_component(-1, 0);
-                break;
-            case KEY::RIGHT:
-                vel.value().build_component(1, 0);
-                break;
-            case KEY::DOWN:
-                vel.value().build_component(0, 1);
-                break;
-            case KEY::NONE:
-                vel.value().build_component(0, 0);
-                break;
-            }
-        }
-    }
-}
+// void control_system(registry &r, const int &direction) {
+//     auto &velocities = r.get_components<Velocity>();
+//     auto &controllables = r.get_components<Controllable>();
+//     for (size_t i = 0; i < velocities.size() && i < controllables.size(); ++ i) {
+//         auto &vel = velocities[i];
+//         auto &contr = controllables[i];
+//         if (vel && contr) {
+//             contr.value()._current_action = direction;
+//             switch (direction) {
+//             case KEY::UP:
+//                 vel.value().build_component(0, -1);
+//                 break;
+//             case KEY::LEFT:
+//                 vel.value().build_component(-1, 0);
+//                 break;
+//             case KEY::RIGHT:
+//                 vel.value().build_component(1, 0);
+//                 break;
+//             case KEY::DOWN:
+//                 vel.value().build_component(0, 1);
+//                 break;
+//             case KEY::NONE:
+//                 vel.value().build_component(0, 0);
+//                 break;
+//             }
+//         }
+//     }
+// }
