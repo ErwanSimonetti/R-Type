@@ -5,7 +5,6 @@
 ** Engine
 */
 
-#include "FollowPath.hpp"
 #include "Engine.hpp"
 
 Engine::Engine(uint16_t width, uint16_t height) : _reg(), _game(width, height)
@@ -28,7 +27,7 @@ registry Engine::get_registry() {
     return _reg;
 }
 
-entity Engine::create_friendly_entity(int id, sf::Color col, const uint16_t velX, const uint16_t velY, const uint16_t posX, const uint16_t posY)
+entity Engine::create_friendly_entity(int id, sf::Color col, const uint16_t speedX, const uint16_t speedY, const uint16_t posX, const uint16_t posY)
 {
     entity ret(id);
 
@@ -40,7 +39,7 @@ entity Engine::create_friendly_entity(int id, sf::Color col, const uint16_t velX
     return ret;
 }
 
-entity Engine::create_enemy_entity(int id, sf::Color col, const uint16_t velX, const uint16_t velY, const uint16_t posX, const uint16_t posY)
+entity Engine::create_enemy_entity(int id, sf::Color col, const uint16_t speedX, const uint16_t speedY, const uint16_t posX, const uint16_t posY)
 {    
     entity ret(id);
 

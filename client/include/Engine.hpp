@@ -24,22 +24,22 @@ class Engine {
         /// @brief Function used to create a friendly "character" entity, giving it an id, and various parameters 
         /// @param id Entity ID
         /// @param col sf::Color object, until we use actual sprites
-        /// @param const velX uint_16_t corresponding to the vertical velocity
-        /// @param const velY uint_16_t corresponding to the horizontal velocity
+        /// @param const speedX uint_16_t corresponding to the vertical speed
+        /// @param const speedY uint_16_t corresponding to the horizontal speed
         /// @param const posX uint_16_t corresponding to the vertical position
         /// @param const posY uint_16_t corresponding to the horizontal position
         /// @return a friendly entity, that is controllable
-        entity create_friendly_entity(int id, sf::Color col, const uint16_t velX, const uint16_t velY, const uint16_t posX, const uint16_t posY);
+        entity create_friendly_entity(int id, sf::Color col, const uint16_t speedX, const uint16_t speedY, const uint16_t posX, const uint16_t posY);
         
         /// @brief Function used to create an enemy "character" entity, giving it an id, and various parameters 
         /// @param id Entity ID, has to be unused
         /// @param col sf::Color object, until we use actual sprites
-        /// @param const velX uint_16_t corresponding to the vertical velocity
-        /// @param const velY uint_16_t corresponding to the horizontal velocity
+        /// @param const speedX uint_16_t corresponding to the vertical speed
+        /// @param const speedY uint_16_t corresponding to the horizontal speed
         /// @param const posX uint_16_t corresponding to the vertical position
         /// @param const posY uint_16_t corresponding to the horizontal position
         /// @return an enemy enity, that cannot be controlled by the user
-        entity create_enemy_entity(int id, sf::Color col, const uint16_t velX, const uint16_t velY, const uint16_t posX, uint16_t posY);
+        entity create_enemy_entity(int id, sf::Color col, const uint16_t speedX, const uint16_t speedY, const uint16_t posX, uint16_t posY);
         
         /// @brief function used to launch the whole game, systems and all
         void run_game();

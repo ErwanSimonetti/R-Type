@@ -84,6 +84,7 @@ enable_testing()
 add_executable(
   clients_tests
   src/components/FollowPath.cpp
+  tests/ecs_tests.cpp
   tests/sparse_array_tests.cpp
   tests/entity_tests.cpp
   tests/registry_tests.cpp
