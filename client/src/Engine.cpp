@@ -5,7 +5,8 @@
 ** Engine
 */
 
-#include "../include/Engine.hpp"
+#include "FollowPath.hpp"
+#include "Engine.hpp"
 
 Engine::Engine(uint16_t width, uint16_t height) : _reg(), _game(width, height)
 {
@@ -57,6 +58,7 @@ entity Engine::create_enemy_entity(int id, sf::Color col, const uint16_t velX, c
     Position pos;
     Velocity vel;
     Controllable contr;
+    FollowPath path;
 
     _reg.add_component<Position>(ret, std::move(pos));
     _reg.emplace_component<Position>(ret, posX, posY);
@@ -64,9 +66,11 @@ entity Engine::create_enemy_entity(int id, sf::Color col, const uint16_t velX, c
     _reg.add_component<Velocity>(ret, std::move(vel));
     _reg.emplace_component<Velocity>(ret, velX, velY);
 
-
     _reg.add_component<Drawable>(ret, std::move(draw));
     _reg.emplace_component<Drawable>(ret, 45, col);
+
+    _reg.add_component<FollowPath>(ret, std::move(path));
+    _reg.emplace_component<FollowPath>(ret, "upward_curve");
     
     return ret;
 }

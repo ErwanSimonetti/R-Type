@@ -4,6 +4,7 @@
 ** File description:
 ** Engine
 */
+
 #include "RenderGame.hpp"
 
 /// @brief Engine class used to handle everything related to the game engine

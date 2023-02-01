@@ -10,6 +10,7 @@ set(SOURCE_FILES
   src/asio.cpp
   src/System.cpp
   src/Engine.cpp
+  src/components/FollowPath.cpp
 )
 
 set(INCLUDE_DIRECTORY include/ include/components)
