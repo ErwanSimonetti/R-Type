@@ -37,7 +37,7 @@ registry Engine::get_registry() {
     return _reg;
 }
 
-entity Engine::create_friendly_entity(int id, sf::Color col, const uint16_t velX, const uint16_t velY, const uint16_t posX, const uint16_t posY)
+entity Engine::create_player(int id, sf::Color col, const uint16_t velX, const uint16_t velY, const uint16_t posX, const uint16_t posY)
 {
     entity ret(id);
 
@@ -81,7 +81,8 @@ entity Engine::create_enemy_entity(int id, sf::Color col, const uint16_t velX, c
     return ret;
 }
 
-ClientData Engine::buildClientData(EntityEvent entityEvent) {
+ClientData Engine::buildClientData(EntityEvent entityEvent) 
+{
     ClientData clientData;
     printf("%d\n", entityEvent.entity);
     if (entityEvent.entity == -1) {
@@ -96,6 +97,9 @@ ClientData Engine::buildClientData(EntityEvent entityEvent) {
     clientData.entity = entityEvent.entity;
     clientData.posX = pos._x;
     clientData.posY = pos._y;
+    for (int i = 0; i < 4; i++) {
+        clientData.directions[i] = 0;
+    }
     for (auto &it : entityEvent.events) {
         switch (it) {
         case GAME_EVENT::LEFT:
@@ -124,7 +128,8 @@ ClientData Engine::buildClientData(EntityEvent entityEvent) {
     return clientData;
 }
 
-void Engine::run_game() {
+void Engine::run_game() 
+{
     // _network.UDPReceiveServer(std::bind(&Engine::printMonCul, this, std::placeholders::_1));
     while (1) {
         ClientData clientData = buildClientData(_game.gameLoop(_reg));
@@ -136,7 +141,13 @@ void Engine::run_game() {
     }
 }
 
-void Engine::sendData(ClientData data) {
+void Engine::sendData(ClientData data) 
+{
     char *buffer = _network._protocol.serialiseData<ClientData>(data);
     _network.udpSend<ClientData>(buffer, _network.getServerEndpoint());
+}
+
+void Engine::updateRegistry(ServerData data)
+{
+
 }

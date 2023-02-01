@@ -14,7 +14,7 @@ int main(void)
     Engine eng(1920, 1080, io_service, "127.0.0.1", "1234");
     printf("client\n");
 
-    eng.create_friendly_entity(1, sf::Color::Blue, 50, 50, 0, 0);
+    eng.create_player(1, sf::Color::Blue, 50, 50, 0, 0);
     eng.create_enemy_entity(2, sf::Color::Red, 50, 50, 150, 150);
     eng.run_game();
     // ClientData clientData;

@@ -9,11 +9,11 @@
 #define ENIGNE_UTILS_HPP_
 
 enum GAME_EVENT {
-    LEFT,
-    RIGHT,
-    UP,
-    DOWN,
-    SHOOT,
+    LEFT = 1,
+    RIGHT = 2,
+    UP = 3,
+    DOWN = 4,
+    SHOOT = 5,
     WINDOW_CLOSE = -1
 };
 
