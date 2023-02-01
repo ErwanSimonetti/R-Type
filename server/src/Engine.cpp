@@ -151,14 +151,13 @@ registry Engine::get_registry() {
     return _reg;
 }
 
-entity Engine::create_friendly_entity(int id, sf::Color col, const uint16_t velX, const uint16_t velY, const uint16_t posX, const uint16_t posY)
+entity Engine::create_entity(int id, sf::Color col, const uint16_t velX, const uint16_t velY, const uint16_t posX, const uint16_t posY)
 {
     entity ret(id);
 
     Drawable draw;
     Position pos;
     Velocity vel;
-    Controllable contr;
 
     _reg.add_component<Position>(ret, std::move(pos));
     _reg.emplace_component<Position>(ret, posX, posY);
@@ -168,29 +167,39 @@ entity Engine::create_friendly_entity(int id, sf::Color col, const uint16_t velX
     
     _reg.add_component<Drawable>(ret, std::move(draw));
     _reg.emplace_component<Drawable>(ret, 45, col);
-    
-    _reg.add_component<Controllable>(ret, std::move(contr));
 
     return ret;
 }
 
-entity Engine::create_enemy_entity(int id, sf::Color col, const uint16_t velX, const uint16_t velY, const uint16_t posX, const uint16_t posY)
-{    
+entity Engine::create_player(int id, sf::Color col, const uint16_t velX, const uint16_t velY, const uint16_t posX, const uint16_t posY)
+{
     entity ret(id);
 
     Drawable draw;
     Position pos;
     Velocity vel;
-    Controllable contr;
 
     _reg.add_component<Position>(ret, std::move(pos));
     _reg.emplace_component<Position>(ret, posX, posY);
 
     _reg.add_component<Velocity>(ret, std::move(vel));
     _reg.emplace_component<Velocity>(ret, velX, velY);
+    return ret;
+}
 
-    _reg.add_component<Drawable>(ret, std::move(draw));
-    _reg.emplace_component<Drawable>(ret, 45, col);
+entity Engine::create_enemy_entity(int id, sf::Color col, const uint16_t velX, const uint16_t velY, const uint16_t posX, const uint16_t posY)
+{
+    entity ret(id);
+
+    Drawable draw;
+    Position pos;
+    Velocity vel;
+
+    _reg.add_component<Position>(ret, std::move(pos));
+    _reg.emplace_component<Position>(ret, posX, posY);
+
+    _reg.add_component<Velocity>(ret, std::move(vel));
+    _reg.emplace_component<Velocity>(ret, velX, velY);
     
     return ret;
 }
@@ -234,20 +243,49 @@ ClientData Engine::buildClientData(EntityEvent entityEvent) {
     return clientData;
 }
 
-void Engine::UpdateRegistery(ClientData newData)
+void Engine::updateRegistery(ClientData newData)
 {
-    for (int i = 0; i != 4; ++i) {
-        if (_reg.entity_from_index(newData.entity[i])) {
-
-        }
-        // if (newData.entity[i]
+    if (!_reg.entity_from_index(newData.entity)) {
+        create_player(newData.entity, sf::Color::Blue, 0, 0, newData.posX, newData.posY);
+        return;
     }
+    _reg.get_components<Position>()[newData.entity].value().build_component(newData.posX, newData.posY);
+
+    int16_t vx = 0;
+    int16_t vy = 0;
+
+    for (int i = 0; i < 4; i++) {
+        switch (newData.directions[i]) {
+        case GAME_EVENT::LEFT:
+            vx += -1;
+            break;
+        case GAME_EVENT::RIGHT:
+            vx += 1;
+            break;
+        case GAME_EVENT::UP:
+            vy += -1;
+            break;
+        case GAME_EVENT::DOWN:
+            vy += 1;
+            break;
+        default:
+            break;
+        }
+    }
+    _reg.get_components<Velocity>()[newData.entity].value().build_component(vx, vy);
+
+}
+
+void printMonCul(ClientData clientData) {
+    std::cerr << "⠄⠄⠸⣿⣿⢣⢶⣟⣿⣖⣿⣷⣻⣮⡿⣽⣿⣻⣖⣶⣤⣭⡉⠄⠄⠄⠄⠄\n⠄⠄⠄⢹⠣⣛⣣⣭⣭⣭⣁⡛⠻⢽⣿⣿⣿⣿⢻⣿⣿⣿⣽⡧⡄⠄⠄⠄\n⠄⠄⠄⠄⣼⣿⣿⣿⣿⣿⣿⣿⣿⣶⣌⡛⢿⣽⢘⣿⣷⣿⡻⠏⣛⣀⠄⠄\n⠄⠄⠄⣼⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣦⠙⡅⣿⠚⣡⣴⣿⣿⣿⡆⠄\n⠄⠄⣰⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⠄⣱⣾⣿⣿⣿⣿⣿⣿⠄\n⠄⢀⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⢸⣿⣿⣿⣿⣿⣿⣿⣿⠄\n⠄⣸⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⠣⣿⣿⣿⣿⣿⣿⣿⣿⣿⠄\n⠄⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠿⠛⠑⣿⣮⣝⣛⠿⠿⣿⣿⣿⣿⠄\n⢠⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣶⠄⠄⠄⠄⣿⣿⣿⣿⣿⣿⣿⣿⣿⡟⠄\n⢸⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠇⠄⠄⠄⠄⢹⣿⣿⣿⣿⣿⣿⣿⣿⠁⠄\n⣸⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠏⠄⠄⠄⠄⠄⠸⣿⣿⣿⣿⣿⡿⢟⣣⣀\n";
+    std::cerr << "|" << clientData.entity << "|" << "\n";
+    std::cerr << "|" << clientData.posX << " " << clientData.posY << "|" << "\n";
 }
 
 void Engine::run_game() {
     while (1) {
         _reg.run_systems();
-        _network.UDPReceiveClient(std::bind(&printMonCul, std::placeholders::_1));
+        _network.UDPReceiveServer(std::bind(&printMonCul, std::placeholders::_1));
     }
 }
 
