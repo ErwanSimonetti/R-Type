@@ -15,10 +15,18 @@ struct FollowPath {
     void build_component(const std::string &fileFollowPath);
 
     friend std::ostream &operator<<(std::ostream &output, const FollowPath &component) {
-        output << "FollowPath component" << std::endl;
+        output << "displaying checkpoint coords :" << std::endl;
+        for(std::size_t i = 0; i < component._checkpoints.size(); ++i) {
+            output << i << " :";
+            for (std::size_t j = 0; j < component._checkpoints[i].size(); j += 1) {
+                output << " " << component._checkpoints[i][j];
+            }
+            output << std::endl;
+        }
+        output << "Current checkpoint : " << component._current_checkpoint;
         return output;
     }
 
-    std::vector<std::vector<uint16_t>> _checkpoints;
+    std::vector<std::vector<int16_t>> _checkpoints;
     uint16_t _current_checkpoint;
 };
