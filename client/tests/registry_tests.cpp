@@ -23,7 +23,7 @@ TEST(Registry, RegisterComponent) {
     Position pos;
     Velocity vel;
     pos.build_component(1, 1);
-    vel.build_component(3, 4);
+    vel.build_component(3, 4, 5, 6);
 
 
     res.add_component(a, std::move(pos));

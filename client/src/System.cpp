@@ -17,7 +17,7 @@ void logging_system (sparse_array<Position> const& positions, sparse_array<Veloc
 
         if ( pos && vel ) {
             std :: cerr << i << ": Position = { " << pos.value()._x << ", " << pos.value()._y
-            << " } , Velocity = { " << vel.value()._vx << ", " << vel.value()._vy << " }" << std::endl;
+            << " } , Velocity = { " << vel.value()._v_x << ", " << vel.value()._v_y << " }" << std::endl;
         }
     }
 }
@@ -27,16 +27,16 @@ void position_system(sparse_array<Position> &positions, const sparse_array<Veloc
         auto &pos = positions[i];
         auto const &vel = velocities[i];
         if (pos && vel) {
-            pos.value()._x += vel.value()._vx;
-            pos.value()._y += vel.value()._vy;
+            pos.value()._x += vel.value()._v_x * vel.value()._speed_x;
+            pos.value()._y += vel.value()._v_y * vel.value()._speed_y;
         }
     }
 }
 
 void control_system(registry &r, std::vector<int> &directions) {
     int current_direction = 0;
-    int x_velocity = 0;
-    int y_velocity = 0;
+    uint16_t x_velocity = 0;
+    uint16_t y_velocity = 0;
     auto &velocities = r.get_components<Velocity>();
     auto &controllables = r.get_components<Controllable>();
     auto &positions = r.get_components<Position>();
@@ -70,7 +70,7 @@ void control_system(registry &r, std::vector<int> &directions) {
                 x_velocity = 0;
                 y_velocity = 0;
             }
-            vel.value().build_component(x_velocity, y_velocity);
+            vel.value().build_component(x_velocity, y_velocity, vel.value()._speed_x, vel.value()._speed_y);
         }
     }
 }
