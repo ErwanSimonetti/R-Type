@@ -1,0 +1,24 @@
+/*
+** EPITECH PROJECT, 2023
+** R-Type
+** File description:
+** FollowPath
+*/
+
+#include <vector>
+#include <ostream>
+
+struct FollowPath {
+    FollowPath() = default;
+
+    void parse_follow_path_file(const std::string &fileFollowPath);
+    void build_component(const std::string &fileFollowPath);
+
+    friend std::ostream &operator<<(std::ostream &output, const FollowPath &component) {
+        output << "FollowPath component" << std::endl;
+        return output;
+    }
+
+    std::vector<std::vector<uint16_t>> _checkpoints;
+    uint16_t _current_checkpoint;
+};
