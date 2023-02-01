@@ -14,6 +14,7 @@ Engine::Engine(uint16_t width, uint16_t height) : _reg(), _game(width, height)
     _reg.register_component<Velocity>();
     _reg.register_component<Drawable>();
     _reg.register_component<Controllable>();
+    _reg.register_component<FollowPath>();
 
     _reg.add_system<Position, Velocity>(position_system);
     _reg.add_system<Position, Drawable>(std::bind(&RenderGame::draw_system, &_game, std::placeholders::_1, std::placeholders::_2));
@@ -71,6 +72,8 @@ entity Engine::create_enemy_entity(int id, sf::Color col, const uint16_t velX, c
 
     _reg.add_component<FollowPath>(ret, std::move(path));
     _reg.emplace_component<FollowPath>(ret, "upward_curve");
+
+    std::cout << _reg.get_components<FollowPath>()[2].value() << std::endl;
     
     return ret;
 }
