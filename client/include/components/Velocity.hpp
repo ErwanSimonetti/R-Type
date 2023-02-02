@@ -10,19 +10,19 @@
 struct Velocity {
     Velocity() = default;
     void build_component(const uint16_t &velocityX, const uint16_t &velocityY, const uint16_t &speedX, const uint16_t &speedY) {
-        _v_x = velocityX;
-        _v_y = velocityY;
-        _speed_x = speedX;
-        _speed_y = speedY;
+        _vX = velocityX;
+        _vY = velocityY;
+        _speedX = speedX;
+        _speedY = speedY;
     }
-    uint16_t _v_x;
-    uint16_t _v_y;
-    uint16_t _speed_x;
-    uint16_t _speed_y;
+    uint16_t _vX;
+    uint16_t _vY;
+    uint16_t _speedX;
+    uint16_t _speedY;
 
     friend std::ostream &operator<<(std::ostream &output, const Velocity &D) {
-        output << "velocity x = " << D._v_x << "velocity y = " <<  D._v_y <<
-        "speed x = " << D._speed_x << "speed y = " << D._speed_y << std::endl;
+        output << "velocity x = " << D._vX << "velocity y = " <<  D._vY <<
+        "speed x = " << D._speedX << "speed y = " << D._speedY << std::endl;
         return output;
     }
 };

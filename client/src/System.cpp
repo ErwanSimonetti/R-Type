@@ -17,7 +17,7 @@ void logging_system (sparse_array<Position> const& positions, sparse_array<Veloc
 
         if ( pos && vel ) {
             std :: cerr << i << ": Position = { " << pos.value()._x << ", " << pos.value()._y
-            << " } , Velocity = { " << vel.value()._v_x << ", " << vel.value()._v_y << " }" << std::endl;
+            << " } , Velocity = { " << vel.value()._vX << ", " << vel.value()._vY << " }" << std::endl;
         }
     }
 }
@@ -27,16 +27,16 @@ void position_system(sparse_array<Position> &positions, const sparse_array<Veloc
         auto &pos = positions[i];
         auto const &vel = velocities[i];
         if (pos && vel) {
-            pos.value()._x += vel.value()._v_x * vel.value()._speed_x;
-            pos.value()._y += vel.value()._v_y * vel.value()._speed_y;
+            pos.value()._x += vel.value()._vX;
+            pos.value()._y += vel.value()._vY;
         }
     }
 }
 
 void control_system(registry &r, std::vector<int> &directions) {
     int current_direction = 0;
-    uint16_t x_velocity = 0;
-    uint16_t y_velocity = 0;
+    uint16_t xDirection = 0;
+    uint16_t yDirection = 0;
     auto &velocities = r.get_components<Velocity>();
     auto &controllables = r.get_components<Controllable>();
     auto &positions = r.get_components<Position>();
@@ -49,28 +49,28 @@ void control_system(registry &r, std::vector<int> &directions) {
                 contr.value()._current_action = current_direction;
                 switch (current_direction) {
                     case KEYBOARD::ARROW_UP:
-                        y_velocity = -1; // FIXME: should be 1 and not minus
+                        yDirection = -1; // FIXME: should be 1 and not minus
                         break;
                     case KEYBOARD::ARROW_LEFT:
-                        x_velocity = -1;
+                        xDirection = -1;
                         break;
                     case KEYBOARD::ARROW_RIGHT:
-                        x_velocity = 1;
+                        xDirection = 1;
                         break;
                     case KEYBOARD::ARROW_DOWN:
-                        y_velocity = 1;
+                        yDirection = 1;
                         break;
                     default:
-                        x_velocity = 0;
-                        y_velocity = 0;
+                        xDirection = 0;
+                        yDirection = 0;
                         break;
                 }
             }
             if (directions.empty()) {
-                x_velocity = 0;
-                y_velocity = 0;
+                xDirection = 0;
+                yDirection = 0;
             }
-            vel.value().build_component(x_velocity, y_velocity, vel.value()._speed_x, vel.value()._speed_y);
+            vel.value().build_component(xDirection * vel.value()._speedX, yDirection * vel.value()._speedY, vel.value()._speedX, vel.value()._speedY);
         }
     }
 }
