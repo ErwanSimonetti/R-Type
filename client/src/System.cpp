@@ -73,12 +73,4 @@ void control_system(registry &r, std::vector<int> &directions) {
             vel.value().build_component(x_velocity, y_velocity);
         }
     }
-    for (size_t i = 0; i < velocities.size() && i < controllables.size() && i < positions.size(); ++ i) {
-        auto &vel = velocities[i];
-        auto &contr = controllables[i];
-        auto &pos = positions[i];
-        if (vel && !contr && pos.value()._x <= 1900) {
-            vel.value().build_component(1, 0);
-        }
-    }
 }
