@@ -83,9 +83,11 @@ enable_testing()
 
 add_executable(
   clients_tests
+  src/components/FollowPath.cpp
   tests/sparse_array_tests.cpp
   tests/entity_tests.cpp
   tests/registry_tests.cpp
+  tests/component_tests.cpp
 )
 target_link_libraries(
   clients_tests
