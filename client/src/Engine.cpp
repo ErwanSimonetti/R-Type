@@ -32,21 +32,10 @@ entity Engine::create_friendly_entity(int id, sf::Color col, const uint16_t velX
 {
     entity ret(id);
 
-    Drawable draw;
-    Position pos;
-    Velocity vel;
-    Controllable contr;
-
-    _reg.add_component<Position>(ret, std::move(pos));
     _reg.emplace_component<Position>(ret, posX, posY);
-
-    _reg.add_component<Velocity>(ret, std::move(vel));
     _reg.emplace_component<Velocity>(ret, velX, velY);
-    
-    _reg.add_component<Drawable>(ret, std::move(draw));
     _reg.emplace_component<Drawable>(ret, 45, col);
-    
-    _reg.add_component<Controllable>(ret, std::move(contr));
+    _reg.emplace_component<Controllable>(ret);
 
     return ret;
 }
@@ -60,7 +49,7 @@ entity Engine::create_enemy_entity(int id, sf::Color col, const uint16_t velX, c
     _reg.emplace_component<Drawable>(ret, 45, col);
     _reg.emplace_component<FollowPath>(ret, "upward_curve");
 
-    std::cout << _reg.get_components<FollowPath>()[2].value() << std::endl;
+    std::cout << _reg.get_components<FollowPath>()[ret].value() << std::endl;
     return ret;
 }
 

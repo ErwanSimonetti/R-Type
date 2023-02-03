@@ -19,6 +19,8 @@ void FollowPath::parse_follow_path_file(const std::string &fileFollowPath)
     std::vector<int16_t> currentCheckpointCoords;
     std::string substring;
 
+    if (!is.good())
+        throw std::invalid_argument("File " + actualFile + " not found.");
     for (int i = 0; getline(is, line); i += 1) {
         if (i == 0)
             continue;
