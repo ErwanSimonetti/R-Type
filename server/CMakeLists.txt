@@ -7,13 +7,13 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR})
 
 set(SOURCE_FILES 
   src/main.cpp
-  src/System.cpp
   src/Engine.cpp
+  ../ECS/src/System.cpp
   ../network/src/Network.cpp
   ../network/src/Protocol.cpp
 )
 
-set(INCLUDE_DIRECTORY include/ include/utils include/components ../network/include)
+set(INCLUDE_DIRECTORY include/ include/utils ../network/include ../ECS/include/components ../ECS/include)
 
 include_directories(${INCLUDE_DIRECTORY})
 add_executable(r-type_server ${SOURCE_FILES})
