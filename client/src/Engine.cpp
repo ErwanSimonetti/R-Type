@@ -52,7 +52,7 @@ entity Engine::create_player(int id, sf::Color col, const uint16_t speedX, const
 }
 
 entity Engine::create_enemy_entity(int id, sf::Color col, const uint16_t speedX, const uint16_t speedY, const uint16_t posX, const uint16_t posY) // FIXME: replace positions by just the name of the file handling the path
-{    
+{
     entity ret(id);
 
     _reg.emplace_component<Position>(ret, posX, posY);
