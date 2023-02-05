@@ -7,18 +7,20 @@
 
 #include "MyNetwork.hpp"
 
+// client
 MyNetwork::MyNetwork(boost::asio::io_service &io_service, const std::string& host, const std::string& port) : 
-    _socket(io_service, boost::asio::ip::udp::v4())
+    _io_services(io_service), _socket(io_service, boost::asio::ip::udp::v4())
 {
     boost::asio::ip::udp::endpoint serverEndpoint(boost::asio::ip::address::from_string(host), std::stoi(port));
     // addEndpoint(serverEndpoint);
     _serverEndpoint = serverEndpoint;
 }
 
+// server
 MyNetwork::MyNetwork(boost::asio::io_service& io_service, const std::string &port)
-    : _socket(io_service, boost::asio::ip::udp::endpoint(boost::asio::ip::udp::v4(), 1234))
+    : _io_services(io_service), _socket(io_service, boost::asio::ip::udp::endpoint(boost::asio::ip::udp::v4(), 1234))
 {
-
+    std::cout << "jaj create server\n";
 }
 
 MyNetwork::~MyNetwork()
@@ -38,6 +40,10 @@ void MyNetwork::addEndpoint(boost::asio::ip::udp::endpoint endpoint)
 boost::asio::ip::udp::endpoint MyNetwork::getServerEndpoint()
 {
     return _serverEndpoint;
+}
+
+boost::asio::io_service &MyNetwork::getIOService() {
+    return _io_services;
 }
     
 // void Network::UDPReceive(std::function<void()> func, bool isServer)

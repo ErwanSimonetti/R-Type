@@ -50,13 +50,18 @@ class Engine {
         /// @param posY uint_16_t corresponding to the horizontal position
         /// @return an enemy enity, that cannot be controlled by the user
         entity create_enemy_entity(int id, sf::Color col, const uint16_t velX, const uint16_t velY, const uint16_t posX, uint16_t posY);
+
+        entity create_entity(int id, sf::Color col, const uint16_t velX, const uint16_t velY, const uint16_t posX, const uint16_t posY);
         
         /// @brief function used to launch the whole game, systems and all
-        void run_game();
+        void run();
 
         void sendData(ClientData data);
 
         void updateRegistry(ServerData data);
+
+        void runNetwork();
+        void runGame();
 
         ClientData buildClientData(EntityEvent entityEvent);
 

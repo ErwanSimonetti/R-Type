@@ -54,13 +54,17 @@ class Engine {
         entity create_enemy_entity(int id, sf::Color col, const uint16_t velX, const uint16_t velY, const uint16_t posX, uint16_t posY);
         
         /// @brief function used to launch the whole game, systems and all
-        void run_game();
+        void run();
 
         void sendData(ServerData data);
 
-        void updateRegistery(ClientData newData);
+        void updateRegistry(ClientData newData);
 
         ServerData createServerData();
+
+        void runNetwork();
+
+        void runGame();
 
         MyNetwork _network;
     protected:
