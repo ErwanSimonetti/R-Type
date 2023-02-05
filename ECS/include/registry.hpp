@@ -42,7 +42,6 @@ class registry
             return std::any_cast<sparse_array<Component>&>(_components_arrays.find(std::type_index(typeid(Component)))->second);
         };
 
-
         entity spawn_entity() {
             size_t id_entity = 0;
             if (!_entities.empty())
@@ -52,7 +51,20 @@ class registry
             return new_entity;
         }
 
-        //wtf does that mean ? ar we meant to store them ?
+        entity spawn_entity_by_id(size_t id) {
+            size_t id_entity = id;
+            entity new_entity(id_entity);
+            _entities.emplace_back(new_entity);
+            return new_entity;
+        }
+
+        bool is_entity_alive(size_t id) {
+            auto it = std::find(_entities.begin(), _entities.end(), id);
+            if (it == _entities.end())
+                return false;
+            return true;
+        }
+
         entity entity_from_index(std::size_t idx) {
             if (idx > _entities.size() - 1)
                 throw NoEntityFound();
@@ -62,7 +74,9 @@ class registry
         void kill_entity(entity const &e) {
             for(auto &element : _function_stored) {
                 element(*this, e);
-            };
+            }
+            auto it = std::find(_entities.begin(), _entities.end(), e._id);
+            _entities.erase(it); 
         };
 
         // not sure about this one
@@ -106,10 +120,10 @@ class registry
             };
         };
 
+        std::vector<entity> _entities;
     private:
         std::unordered_map<std::type_index, std::any> _components_arrays;
         std::vector<std::function<void(registry &, entity const &)>> _function_stored;
         // std::vector<std::function<void(registry &, entity const &)>> _function_stored;
         std::vector<std::function<void(registry&)>> _systems;
-        std::vector<entity> _entities;
 };

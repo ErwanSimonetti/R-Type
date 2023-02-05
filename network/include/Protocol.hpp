@@ -18,16 +18,19 @@ struct Header {
 
 struct ClientData {
     int16_t entity;
-    uint16_t directions[4];
+    int16_t directionsX;
+    int16_t directionsY;
     bool shoot;
     uint16_t posX;
     uint16_t posY;
 };
 
 struct ServerData {
-    uint16_t entity[4];
+    uint16_t entities[4];
     uint16_t posX[4];
     uint16_t posY[4];
+    int16_t directionsX[4];
+    int16_t directionsY[4];
 };
 
 // enum DataTypes {

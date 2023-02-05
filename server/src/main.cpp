@@ -20,6 +20,22 @@ void salut()
 
 int main(void)
 {   
+    // registry reg;
+    // reg.spawn_entity();
+    // reg.spawn_entity();
+    // reg.spawn_entity();
+    // reg.spawn_entity();
+    // entity ent(2);
+    // reg.spawn_entity_by_id(10);
+
+    // reg.kill_entity(ent);
+
+    // for (auto &it : reg._entities) {
+    //     std::cout << it << ", ";
+    // }
+    // std::cout << std::endl;
+
+    // reg.kill_entities()
     boost::asio::io_service io_service;
     Engine eng(1920, 1080, io_service, "1234");
 
@@ -30,6 +46,8 @@ int main(void)
     eng.run_game();
     // eng.printMonCul();
     io_service.run();
+
+    
 
     return 0;
 }

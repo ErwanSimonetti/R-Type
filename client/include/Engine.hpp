@@ -11,7 +11,7 @@
 #define ENGINE_HPP_
 
 #include "RenderGame.hpp"
-#include "Network.hpp"
+#include "MyNetwork.hpp"
 #include <boost/asio.hpp>
 #include <boost/array.hpp>
 #include "Engine_utils.hpp"
@@ -60,7 +60,7 @@ class Engine {
 
         ClientData buildClientData(EntityEvent entityEvent);
 
-        Network _network;
+        MyNetwork _network;
     protected:
     private:
         /// @brief registry object 
