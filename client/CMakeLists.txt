@@ -10,7 +10,7 @@ set(SOURCE_FILES
   src/Engine.cpp
   src/components/FollowPath.cpp
   ../ECS/src/System.cpp
-  ../network/src/Network.cpp
+  ../network/src/MyNetwork.cpp
   ../network/src/Protocol.cpp
 )
 
