@@ -16,7 +16,7 @@ int main(void)
 
     eng.create_player(1, sf::Color::Blue, 50, 50, 0, 0);
     eng.create_enemy_entity(2, sf::Color::Red, 50, 50, 150, 150);
-    eng.run_game();
+    eng.run();
     // ClientData clientData;
     // clientData.event = 12;
     // strcpy(clientData.string, "you massive fuck");
@@ -29,7 +29,6 @@ int main(void)
     // // std::cerr << test.event << " " << test.string << "\n\n";
     // eng._network.udpSend<ClientData>(ok, eng._network._endpoints.at(0));
     // eng.printMonCul();
-    io_service.run();
 
     return 0;
 }
