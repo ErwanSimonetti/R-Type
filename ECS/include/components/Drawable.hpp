@@ -9,7 +9,7 @@
 
 struct Drawable {
     Drawable() = default;
-    void build_component(const std::uint16_t &radius, const sf::Color &color) {
+    void set_component(const std::uint16_t &radius, const sf::Color &color) {
         _sprite = *new sf::CircleShape(radius);
         _sprite.setFillColor(color);
     }

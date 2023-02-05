@@ -39,12 +39,12 @@ class MyNetwork {
                 std::cerr << "nb byte : " << bytes_sent;
                 std::cerr << "Succefully sent: " << buffer << " to:" << endpoint << "\n";
             });
+            std::cout << "out of send" << std::endl;
         }
 
         void UDPReceiveClient(std::function<void(ServerData)> func) {
             std::memset(_recvBuffer, '\0', 1024);
             boost::asio::ip::udp::endpoint endpoint;
-
             _socket.async_receive_from(boost::asio::buffer(_recvBuffer), endpoint,
             [this, func] (boost::system::error_code ec, std::size_t recvd_bytes) {
                 if (ec || recvd_bytes <= 0)
@@ -57,15 +57,18 @@ class MyNetwork {
 
         void UDPReceiveServer(std::function<void(ClientData)> func) {
             std::memset(_recvBuffer, '\0', 1024);
-            boost::asio::ip::udp::endpoint endpoint;
-            std::cout << "Receive server\n";
-            _socket.async_receive_from(boost::asio::buffer(_recvBuffer), endpoint,
+            // boost::asio::ip::udp::endpoint endpoint;
+            std::cout << "change socket" << std::endl;
+            _socket.async_receive_from(boost::asio::buffer(_recvBuffer), _endpoint,
             [this, func] (boost::system::error_code ec, std::size_t recvd_bytes) {
-                std::cout << "Data received from Client\n";
+                std::cout << "receive stg" << std::endl;
                 if (ec || recvd_bytes <= 0)
                     UDPReceiveServer(func);
+                addEndpoint(_endpoint);
+                std::cout << "Data received from Client: ";
                 std::cout << "[" << recvd_bytes << "] " << _recvBuffer << std::endl;
                 func(_protocol.readClient(_recvBuffer));
+                std::cout << "finish receive stg" << std::endl;
                 UDPReceiveServer(func);
             });
         };
@@ -75,6 +78,7 @@ class MyNetwork {
         
 
         std::vector<boost::asio::ip::udp::endpoint> _endpoints;
+        boost::asio::ip::udp::endpoint _endpoint;
         Protocol _protocol;
     protected:
     private:
