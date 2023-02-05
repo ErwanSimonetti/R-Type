@@ -68,6 +68,8 @@ entity Engine::create_player(int id, sf::Color col, const uint16_t velX, const u
 
     _reg.add_component<Velocity>(ret, std::move(vel));
     _reg.emplace_component<Velocity>(ret, velX, velY);
+
+    _player.emplace_back(ret);
     return ret;
 }
 
@@ -88,76 +90,32 @@ entity Engine::create_enemy_entity(int id, sf::Color col, const uint16_t velX, c
     return ret;
 }
 
-ClientData Engine::buildClientData(EntityEvent entityEvent) {
-    ClientData clientData;
-    if (entityEvent.entity == -1) {
-        clientData.entity = -1;
-        return clientData;
-    }
-    Position &pos = _reg.get_components<Position>()[1].value();
-    int size = 0;
-    clientData.entity = entityEvent.entity;
-    clientData.posX = pos._x;
-    clientData.posY = pos._y;
-    for (auto &it : entityEvent.events) {
-        switch (it) {
-        case GAME_EVENT::LEFT:
-            clientData.directions[size] = GAME_EVENT::LEFT;
-            size++;
-            break;
-        case GAME_EVENT::RIGHT:
-            clientData.directions[size] = GAME_EVENT::RIGHT;
-            size++;
-            break;
-        case GAME_EVENT::UP:
-            clientData.directions[size] = GAME_EVENT::UP;
-            size++;
-            break;
-        case GAME_EVENT::DOWN:
-            clientData.directions[size] = GAME_EVENT::DOWN;
-            size++;
-            break;
-        case GAME_EVENT::SHOOT:
-            clientData.shoot = true;
-            break;
-        default:
-            break;
-        }
-    }
-    return clientData;
-}
-
 void Engine::updateRegistery(ClientData newData)
 {
-    if (!_reg.entity_from_index(newData.entity)) {
+    if (!_reg.is_entity_alive(newData.entity)) {
         create_player(newData.entity, sf::Color::Blue, 0, 0, newData.posX, newData.posY);
         return;
     }
     _reg.get_components<Position>()[newData.entity].value().build_component(newData.posX, newData.posY);
 
-    int16_t vx = 0;
-    int16_t vy = 0;
+    _reg.get_components<Velocity>()[newData.entity].value().build_component(newData.directionsX, newData.directionsY);
 
-    for (int i = 0; i < 4; i++) {
-        switch (newData.directions[i]) {
-        case GAME_EVENT::LEFT:
-            vx += -1;
-            break;
-        case GAME_EVENT::RIGHT:
-            vx += 1;
-            break;
-        case GAME_EVENT::UP:
-            vy += -1;
-            break;
-        case GAME_EVENT::DOWN:
-            vy += 1;
-            break;
-        default:
-            break;
+    sendData(createServerData());
+}
+
+
+ServerData Engine::createServerData() {
+    ServerData data;
+    auto &positions = _reg.get_components<Position>();
+    for (int i = 0; i < _player.size(); i++) {
+        data.entity[i] = _player.at(i);
+        auto const &pos = positions[_player.at(i)];
+        if (pos) {
+            data.posX[i] = pos.value()._x;
+            data.posY[i] = pos.value()._y;
         }
     }
-    _reg.get_components<Velocity>()[newData.entity].value().build_component(vx, vy);
-
+    return data;
 }
 
 void printMonCul(ClientData clientData) {
@@ -166,14 +124,14 @@ void printMonCul(ClientData clientData) {
     std::cerr << "|" << clientData.posX << " " << clientData.posY << "|" << "\n";
 }
 
-void Engine::run_game() {
-    while (1) {
-        _reg.run_systems();
-        _network.UDPReceiveServer(std::bind(&printMonCul, std::placeholders::_1));
-    }
-}
-
 void Engine::sendData(ServerData data) {
     char *buffer = _network._protocol.serialiseData<ServerData>(data);
     _network.udpSend<ClientData>(buffer, _network.getServerEndpoint());
+}
+
+void Engine::run_game() {
+    while (1) {
+        _reg.run_systems();
+        _network.UDPReceiveServer(std::bind(&Engine::updateRegistery, this, std::placeholders::_1));
+    }
 }

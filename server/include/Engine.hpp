@@ -11,7 +11,7 @@
 #define ENGINE_HPP_
 
 #include "RenderGame.hpp"
-#include "Network.hpp"
+#include "MyNetwork.hpp"
 #include <boost/asio.hpp>
 #include <boost/array.hpp>
 #include "Engine_utils.hpp"
@@ -60,13 +60,14 @@ class Engine {
 
         void updateRegistery(ClientData newData);
 
-        ClientData buildClientData(EntityEvent entityEvent);
+        ServerData createServerData();
 
-        Network _network;
+        MyNetwork _network;
     protected:
     private:
         /// @brief registry object 
         registry _reg;
+        std::vector<entity> _player;
 };
 
 #endif /* !ENGINE_HPP_ */
