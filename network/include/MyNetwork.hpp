@@ -2,13 +2,13 @@
 ** EPITECH PROJECT, 2023
 ** R-Type
 ** File description:
-** Network
+** MyNetwork
 */
 
 #pragma once
 
-#ifndef NETWORK_HPP_
-#define NETWORK_HPP_
+#ifndef MYNETWORK_HPP_
+#define MYNETWORK_HPP_
 
 
 #include <boost/asio.hpp>
@@ -23,11 +23,11 @@ struct jaj {
     int lil;
 };
 
-class Network {
+class MyNetwork {
     public:
-        Network(boost::asio::io_service &io_service, const std::string& host, const std::string& port);
-        Network(boost::asio::io_service& io_service, const std::string &port);
-        ~Network();
+        MyNetwork(boost::asio::io_service &io_service, const std::string& host, const std::string& port);
+        MyNetwork(boost::asio::io_service& io_service, const std::string &port);
+        ~MyNetwork();
         
         void addEndpoint(boost::asio::ip::udp::endpoint endpoint);
         
@@ -86,4 +86,4 @@ class Network {
 
 };
 
-#endif /* !NETWORK_HPP_ */
+#endif /* !MYNETWORK_HPP_ */

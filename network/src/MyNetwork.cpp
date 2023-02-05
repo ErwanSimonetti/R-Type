@@ -2,12 +2,12 @@
 ** EPITECH PROJECT, 2023
 ** R-Type
 ** File description:
-** Network
+** MyNetwork
 */
 
-#include "Network.hpp"
+#include "MyNetwork.hpp"
 
-Network::Network(boost::asio::io_service &io_service, const std::string& host, const std::string& port) : 
+MyNetwork::MyNetwork(boost::asio::io_service &io_service, const std::string& host, const std::string& port) : 
     _socket(io_service, boost::asio::ip::udp::v4())
 {
     boost::asio::ip::udp::endpoint serverEndpoint(boost::asio::ip::address::from_string(host), std::stoi(port));
@@ -15,17 +15,17 @@ Network::Network(boost::asio::io_service &io_service, const std::string& host, c
     _serverEndpoint = serverEndpoint;
 }
 
-Network::Network(boost::asio::io_service& io_service, const std::string &port)
+MyNetwork::MyNetwork(boost::asio::io_service& io_service, const std::string &port)
     : _socket(io_service, boost::asio::ip::udp::endpoint(boost::asio::ip::udp::v4(), 1234))
 {
 
 }
 
-Network::~Network()
+MyNetwork::~MyNetwork()
 {
 }
 
-void Network::addEndpoint(boost::asio::ip::udp::endpoint endpoint)
+void MyNetwork::addEndpoint(boost::asio::ip::udp::endpoint endpoint)
 {
     if ((std::find(_endpoints.begin(), _endpoints.end(), endpoint) != _endpoints.end())) {
         std::cerr << "User: " << endpoint << "\n";
@@ -35,7 +35,7 @@ void Network::addEndpoint(boost::asio::ip::udp::endpoint endpoint)
     }
 }
 
-boost::asio::ip::udp::endpoint Network::getServerEndpoint()
+boost::asio::ip::udp::endpoint MyNetwork::getServerEndpoint()
 {
     return _serverEndpoint;
 }

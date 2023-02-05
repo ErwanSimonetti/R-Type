@@ -9,7 +9,7 @@ set(SOURCE_FILES
   src/main.cpp
   src/Engine.cpp
   ../ECS/src/System.cpp
-  ../network/src/Network.cpp
+  ../network/src/MyNetwork.cpp
   ../network/src/Protocol.cpp
 )
 

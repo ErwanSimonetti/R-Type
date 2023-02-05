@@ -128,19 +128,6 @@ ClientData Engine::buildClientData(EntityEvent entityEvent)
     return clientData;
 }
 
-void Engine::run_game() 
-{
-    // _network.UDPReceiveServer(std::bind(&Engine::printMonCul, this, std::placeholders::_1));
-    while (1) {
-        ClientData clientData = buildClientData(_game.gameLoop(_reg));
-        printf("%d\n", clientData.entity);
-        if(clientData.entity == -1)
-            continue;
-        printf("send\n");
-        sendData(clientData);
-    }
-}
-
 void Engine::sendData(ClientData data) 
 {
     char *buffer = _network._protocol.serialiseData<ClientData>(data);
@@ -149,5 +136,25 @@ void Engine::sendData(ClientData data)
 
 void Engine::updateRegistry(ServerData data)
 {
+    for (int i = 0; i < 4; i++) {
+        if (!_reg.is_entity_alive(data.entities[i])) {
+            create_entities(data.entities[i], sf::Color::Blue, 0, 0, data.posX[i], data.posY[i]);
+            return;
+        }
+        _reg.get_components<Position>()[newData.entity].value().build_component(data.posX[i], data.posY[i]);
+        _reg.get_components<Velocity>()[data.entities[i]].value().build_component(data.directionsX[i], data.directionsY[i]);
+    }
+}
 
+void Engine::run_game() 
+{
+    _network.UDPReceiveServer(std::bind(&Engine::printMonCul, this, std::placeholders::_1));
+    while (1) {
+        ClientData clientData = buildClientData(_game.gameLoop(_reg));
+        printf("%d\n", clientData.entity);
+        if(clientData.entity == -1)
+            continue;
+        printf("send\n");
+        sendData(clientData);
+    }
 }
