@@ -35,8 +35,8 @@ void position_system(sparse_array<Position> &positions, const sparse_array<Veloc
 
 void control_system(registry &r, std::vector<int> &directions) {
     int current_direction = 0;
-    uint16_t xDirection = 0;
-    uint16_t yDirection = 0;
+    int16_t xDirection = 0;
+    int16_t yDirection = 0;
     auto &velocities = r.get_components<Velocity>();
     auto &controllables = r.get_components<Controllable>();
     auto &positions = r.get_components<Position>();
