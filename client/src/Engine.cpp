@@ -18,6 +18,7 @@ Engine::Engine(uint16_t width, uint16_t height) : _reg(), _game(width, height)
 
     _reg.add_system<Position, Velocity>(position_system);
     _reg.add_system<Position, Drawable>(std::bind(&RenderGame::draw_system, &_game, std::placeholders::_1, std::placeholders::_2));
+    _reg.add_system<Position, Velocity, FollowPath>(followPathSystem);
 }
 
 Engine::~Engine()

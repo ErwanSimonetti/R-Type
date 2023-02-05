@@ -9,6 +9,33 @@
 #include "registry.hpp"
 #include "SFML_utils.hpp"
 
+void followPathSystem(const sparse_array<Position> &positions, sparse_array<Velocity> &velocities, const sparse_array<FollowPath> &paths) {
+    int16_t xToReach = 0;
+    int16_t yToReach = 0;
+    int16_t newXVelocity = 0;
+    int16_t newYVelocity = 0;
+
+    for (size_t i = 0; i < positions.size() && i < velocities.size() && i < paths.size(); ++i) {
+        auto &pos = positions[i];
+        auto &vel = velocities[i];
+        auto &path = paths[i];
+
+        if (pos && vel && path) {
+            xToReach = path.value()._checkpoints[path.value()._current_checkpoint][0];
+            yToReach = path.value()._checkpoints[path.value()._current_checkpoint][1];
+            if (pos.value()._x < xToReach)
+                newXVelocity = 1 * vel.value()._speedX;
+            if (pos.value()._y < yToReach)
+                newYVelocity = 1 * vel.value()._speedY;
+            if (pos.value()._x > xToReach)
+                newXVelocity = -1 * vel.value()._speedX;
+            if (pos.value()._y > yToReach)
+                newYVelocity = -1 * vel.value()._speedY;
+            vel.value().build_component(newXVelocity, newYVelocity, vel.value()._speedX, vel.value()._speedY);
+        }
+    }
+}
+
 void logging_system (sparse_array<Position> const& positions, sparse_array<Velocity> const& velocities) {
 
     for (size_t i = 0; i < positions.size() && i < velocities.size() ; ++i) {
