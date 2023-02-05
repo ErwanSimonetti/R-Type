@@ -112,6 +112,7 @@ void Engine::updateRegistry(ClientData data)
 
 void Engine::runNetwork() 
 {
+    printf("before UDPReceiveServer\n");
     _network.UDPReceiveServer(std::bind(&Engine::updateRegistry, this, std::placeholders::_1));
     _network.getIOService().run();
 }

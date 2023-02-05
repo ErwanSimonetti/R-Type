@@ -10,11 +10,7 @@
 
 struct Controllable {
     Controllable() = default;
-<<<<<<< HEAD
     void set_component() {
-=======
-    void build_component() {
->>>>>>> b364e23 (feat: Refactored everything)
         _current_action = KEYBOARD::NONE;
     }
     friend std::ostream &operator<<(std::ostream &output, const Controllable &D) {
