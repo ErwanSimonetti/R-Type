@@ -18,29 +18,17 @@ struct Header {
 
 struct ClientData {
     int16_t entity;
-<<<<<<< HEAD
     int16_t directionsX;
     int16_t directionsY;
-=======
-    uint16_t directions[4];
->>>>>>> 6be9af8 (feat(hierarchy) split the project in two section: client & server)
     bool shoot;
     uint16_t posX;
     uint16_t posY;
 };
 
 struct ServerData {
-<<<<<<< HEAD
-    int16_t entities[4];
-    uint16_t posX[4];
-    uint16_t posY[4];
-    int16_t directionsX[4];
-    int16_t directionsY[4];
-=======
     uint16_t entity[4];
     uint16_t posX[4];
     uint16_t posY[4];
->>>>>>> 6be9af8 (feat(hierarchy) split the project in two section: client & server)
 };
 
 // enum DataTypes {

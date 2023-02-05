@@ -25,7 +25,6 @@ void printMonCul(ClientData clientData) {
 }
 int main(void)
 {   
-
     boost::asio::io_service io_service;
     Engine eng(1920, 1080, io_service, "1234");
     printf("server\n");
@@ -46,16 +45,8 @@ int main(void)
     // // eng.printMonCul();
     // io_service.run();
 
-<<<<<<< HEAD
-=======
-    eng.create_player(1, sf::Color::Blue, 50, 50, 0, 0);
-    eng.create_enemy_entity(2, sf::Color::Red, 50, 50, 150, 150);
-    // eng.run_game();
-    // Network network(io_service, "1234");
-    eng.run_game();
-    // eng.printMonCul();
-    io_service.run();
->>>>>>> bdb7dcc (feat(Server/client): WIP)
+
+    
 
     return 0;
 }
