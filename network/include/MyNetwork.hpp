@@ -52,6 +52,7 @@ class MyNetwork {
             std::memset(_recvBuffer, '\0', 1024);
             _socket.async_receive_from(boost::asio::buffer(_recvBuffer), _endpoint,
             [this, func] (boost::system::error_code ec, std::size_t recvd_bytes) {
+                std::cout << "Data received from Client\n";
                 if (ec || recvd_bytes <= 0)
                     UDPReceiveServer(func);
                 addEndpoint(_endpoint);

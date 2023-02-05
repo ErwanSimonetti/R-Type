@@ -46,7 +46,23 @@ int main(void)
     // io_service.run();
 
 
+
     
+
+
+    // boost::asio::io_service io_service;
+    // // Engine eng(1920, 1080, io_service, "1234");
+    // printf("server\n");
+
+
+    // // eng.create_friendly_entity(1, sf::Color::Blue, 50, 50, 0, 0);
+    // // eng.create_enemy_entity(2, sf::Color::Red, 50, 50, 150, 150);
+    // // eng.run_game();
+    // MyNetwork network(io_service, "1234");
+    // network.UDPReceiveServer(std::bind(&printMonCul, std::placeholders::_1));
+    // // eng.printMonCul();
+    // io_service.run();
+
 
     return 0;
 }

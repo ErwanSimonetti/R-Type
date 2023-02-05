@@ -136,6 +136,7 @@ void Engine::updateRegistry(ServerData data)
             _reg.get_components<Velocity>()[data.entities[i]].value().set_component(data.directionsX[i], data.directionsY[i], 0, 0);
         }   
     }
+    std::cout << "update client registry" << std::endl;
 }
 
 void Engine::runNetwork() 
