@@ -9,7 +9,7 @@
 
 struct Position {
     Position() = default;
-    void build_component(const uint16_t &x, const uint16_t &y) {
+    void set_component(const uint16_t &x, const uint16_t &y) {
         _x = x;
         _y = y;
     }

@@ -58,7 +58,7 @@ class Engine {
 
         void sendData(ServerData data);
 
-        void updateRegistry(ClientData newData);
+        void updateRegistry(ClientData data);
 
         ServerData createServerData();
 
