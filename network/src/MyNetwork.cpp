@@ -45,6 +45,10 @@ boost::asio::ip::udp::endpoint MyNetwork::getServerEndpoint()
 boost::asio::io_service &MyNetwork::getIOService() {
     return _io_services;
 }
+
+boost::asio::io_service &MyNetwork::getIOService() {
+    return _io_services;
+}
     
 // void Network::UDPReceive(std::function<void()> func, bool isServer)
 // {

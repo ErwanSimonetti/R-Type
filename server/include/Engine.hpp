@@ -64,6 +64,10 @@ class Engine {
 
         void runGame();
 
+        void runNetwork();
+
+        void runGame();
+
         MyNetwork _network;
 
     protected:
