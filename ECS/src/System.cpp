@@ -75,7 +75,7 @@ EntityEvent control_system(registry &r, std::vector<int> &directions, sparse_arr
                 x_velocity = 0;
                 y_velocity = 0;
             }
-            vel.value().build_component(x_velocity, y_velocity);
+            vel.value().set_component(x_velocity, y_velocity);
         }
     }
     // for (size_t i = 0; i < velocities.size() && i < positions.size(); ++ i) {
@@ -83,7 +83,7 @@ EntityEvent control_system(registry &r, std::vector<int> &directions, sparse_arr
     //     auto &contr = controllables[i];
     //     auto &pos = positions[i];
     //     if (vel && !contr && pos.value()._x <= 1900) {
-    //         vel.value().build_component(1, 0);
+    //         vel.value().set_component(1, 0);
     //     }
     // }
     return entityEvent;

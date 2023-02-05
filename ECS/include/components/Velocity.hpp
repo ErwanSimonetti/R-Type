@@ -9,7 +9,7 @@
 
 struct Velocity {
     Velocity() = default;
-    void build_component(const int16_t &vx, const int16_t &vy) {
+    void set_component(const int16_t &vx, const int16_t &vy) {
         _vx = vx;
         _vy = vy;
     }

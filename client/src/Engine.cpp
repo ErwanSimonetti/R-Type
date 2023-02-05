@@ -40,7 +40,7 @@ registry Engine::get_registry() {
 
 entity Engine::create_entity(int id, sf::Color col, const uint16_t velX, const uint16_t velY, const uint16_t posX, const uint16_t posY)
 {
-    entity ret(id);
+    entity ret = _reg.spawn_entity_by_id(id);
 
     Drawable draw;
     Position pos;
@@ -60,7 +60,7 @@ entity Engine::create_entity(int id, sf::Color col, const uint16_t velX, const u
 
 entity Engine::create_player(int id, sf::Color col, const uint16_t velX, const uint16_t velY, const uint16_t posX, const uint16_t posY)
 {
-    entity ret(id);
+    entity ret = _reg.spawn_entity_by_id(id);
 
     Drawable draw;
     Position pos;
@@ -83,7 +83,7 @@ entity Engine::create_player(int id, sf::Color col, const uint16_t velX, const u
 
 entity Engine::create_enemy_entity(int id, sf::Color col, const uint16_t velX, const uint16_t velY, const uint16_t posX, const uint16_t posY)
 {    
-    entity ret(id);
+    entity ret = _reg.spawn_entity_by_id(id);
 
     Drawable draw;
     Position pos;
@@ -158,8 +158,8 @@ void Engine::updateRegistry(ServerData data)
             create_entity(data.entities[i], sf::Color::Blue, 0, 0, data.posX[i], data.posY[i]);
             return;
         }
-        _reg.get_components<Position>()[data.entities[i]].value().build_component(data.posX[i], data.posY[i]);
-        _reg.get_components<Velocity>()[data.entities[i]].value().build_component(data.directionsX[i], data.directionsY[i]);
+        _reg.get_components<Position>()[data.entities[i]].value().set_component(data.posX[i], data.posY[i]);
+        _reg.get_components<Velocity>()[data.entities[i]].value().set_component(data.directionsX[i], data.directionsY[i]);
     }
     std::cout << "update client registry" << std::endl;
 }

@@ -29,7 +29,7 @@ registry Engine::get_registry()
 
 entity Engine::create_entity(int id, sf::Color col, const uint16_t velX, const uint16_t velY, const uint16_t posX, const uint16_t posY)
 {
-    entity ret(id);
+    entity ret = _reg.spawn_entity_by_id(id);
 
     Drawable draw;
     Position pos;
@@ -49,7 +49,7 @@ entity Engine::create_entity(int id, sf::Color col, const uint16_t velX, const u
 
 entity Engine::create_player(int id, sf::Color col, const uint16_t velX, const uint16_t velY, const uint16_t posX, const uint16_t posY)
 {
-    entity ret(id);
+    entity ret = _reg.spawn_entity_by_id(id);
 
     Drawable draw;
     Position pos;
@@ -67,7 +67,7 @@ entity Engine::create_player(int id, sf::Color col, const uint16_t velX, const u
 
 entity Engine::create_enemy_entity(int id, sf::Color col, const uint16_t velX, const uint16_t velY, const uint16_t posX, const uint16_t posY)
 {
-    entity ret(id);
+    entity ret = _reg.spawn_entity_by_id(id);
 
     Drawable draw;
     Position pos;
@@ -82,16 +82,16 @@ entity Engine::create_enemy_entity(int id, sf::Color col, const uint16_t velX, c
     return ret;
 }
 
-void Engine::updateRegistry(ClientData newData)
+void Engine::updateRegistry(ClientData data)
 {
     std::cout << "update server registry" << std::endl;
-    if (!_reg.is_entity_alive(newData.entity)) {
-        create_player(newData.entity, sf::Color::Blue, 0, 0, newData.posX, newData.posY);
-        return;
+    if (!_reg.is_entity_alive(data.entity)) {
+        printf("new PLayer\n");
+        create_player(data.entity, sf::Color::Blue, data.directionsX, data.directionsY, data.posX, data.posY);
+    } else {
+        _reg.get_components<Position>()[data.entity].value().set_component(data.posX, data.posY);
+        _reg.get_components<Velocity>()[data.entity].value().set_component(data.directionsX, data.directionsY);
     }
-    _reg.get_components<Position>()[newData.entity].value().build_component(newData.posX, newData.posY);
-
-    _reg.get_components<Velocity>()[newData.entity].value().build_component(newData.directionsX, newData.directionsY);
     sendData(createServerData());
 }
 
@@ -119,14 +119,20 @@ ServerData Engine::createServerData()
 
 void Engine::sendData(ServerData data) 
 {
+    std::cout << "bonjour oui" << std::endl;
     char *buffer = _network._protocol.serialiseData<ServerData>(data);
-    _network.udpSend<ClientData>(buffer, _network.getServerEndpoint());
+    // for (int it = 0; it < _network._endpoints.size(); it++) {
+    //     std::cout << _network._endpoints[it].address().to_string() << std::endl;
+    //     _network.udpSend<ClientData>(buffer, _network._endpoints.at(it));
+    // }
+    std::cout << "bonjour non" << std::endl;
 }
 
 void Engine::runNetwork() 
 {
+    printf("before UDPReceiveServer\n");
     _network.UDPReceiveServer(std::bind(&Engine::updateRegistry, this, std::placeholders::_1));
-    // printf("network\n");
+    printf("after UDPReceiveServer\n");
     _network.getIOService().run();
 }
 
@@ -144,11 +150,10 @@ void Engine::run()
 
     std::thread gameThread(&Engine::runNetwork, this);
 
-  // Start the network handler in a separate thread
-    std::thread networkThread(&Engine::runGame, this);
+    // std::thread networkThread(&Engine::runGame, this);
 
     gameThread.join();
-    networkThread.join();
+    // networkThread.join();
     // _network.getIOService().run();
     printf("jaj\n");
 }

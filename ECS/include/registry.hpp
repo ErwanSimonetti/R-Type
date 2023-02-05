@@ -59,9 +59,13 @@ class registry
         }
 
         bool is_entity_alive(size_t id) {
+            std::cout << id << "\n";
             auto it = std::find(_entities.begin(), _entities.end(), id);
-            if (it == _entities.end())
+            // std::cout << static_cast<size_t>(*it) << "\n";
+            if (it == _entities.end()) {
+                printf("jaj\n");
                 return false;
+            }
             return true;
         }
 
@@ -88,7 +92,7 @@ class registry
         template <typename Component, typename... Params>
         typename sparse_array<Component>::reference_type emplace_component(entity const &to, Params &&... p) {
             Component c;
-            c.build_component(p...);
+            c.set_component(p...);
             get_components<Component>().insert_at(to, c);
         };
 
