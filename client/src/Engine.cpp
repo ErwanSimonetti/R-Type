@@ -13,9 +13,11 @@ Engine::Engine(uint16_t width, uint16_t height, boost::asio::io_service &io_serv
     _reg.register_component<Velocity>();
     _reg.register_component<Drawable>();
     _reg.register_component<Pet>();
+    _reg.register_component<Hitbox>();
     _reg.register_component<Controllable>();
     _reg.register_component<FollowPath>();
 
+    _reg.add_system<Position, Hitbox>(collision_system);
     _reg.add_system<Position, Velocity>(position_system);
     _reg.add_system<Position, Drawable>(std::bind(&RenderGame::draw_system, &_game, std::placeholders::_1, std::placeholders::_2));
     _reg.add_system<Position, Velocity, FollowPath>(followPathSystem);
@@ -112,16 +114,20 @@ entity Engine::create_enemy_entity(int id, sf::Color col, const int16_t velX, co
     Drawable draw;
     Position pos;
     Velocity vel;
+    Hitbox hbx;
 
     _reg.add_component<Position>(ret, std::move(pos));
     _reg.emplace_component<Position>(ret, posX, posY);
 
     _reg.add_component<Velocity>(ret, std::move(vel));
     _reg.emplace_component<Velocity>(ret, velX, 0);
-    
+
+    _reg.add_component<Hitbox>(ret, std::move(hbx));
+    _reg.emplace_component<Hitbox>(ret, posX+45, posY+45);
+
     _reg.add_component<Drawable>(ret, std::move(draw));
     _reg.emplace_component<Drawable>(ret, 45, col);
-    std::cout << "ennemy created" << std::endl;
+
     return ret;
 }
 
