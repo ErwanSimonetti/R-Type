@@ -83,3 +83,21 @@ EntityEvent control_system(registry &r, std::vector<int> &directions, sparse_arr
     }
     return entityEvent;
 }
+
+bool isCollision(Position& a, Hitbox& aHitbox, Position& b, Hitbox& bHitbox)
+{
+    return (a._x < b._x + bHitbox._width && a._x + aHitbox._width > b._x && a._y < b._y + bHitbox._height && a._y + aHitbox._height > b._y);
+}
+
+void collision_system(sparse_array<Position> &positions, sparse_array<Hitbox> &hitboxes)
+{
+    for (int i = 0; i < positions.size(); ++i) {
+        for (int j = i + 1; j < positions.size(); ++j) {
+            if (positions[i].has_value() && hitboxes[i].has_value() && positions[j].has_value() && hitboxes[j].has_value()) {
+                if (isCollision(positions[i].value(), hitboxes[i].value(), positions[j].value(), hitboxes[j].value())) {
+                    std::cout << "jeanne au secours" << std::endl;
+                }
+            }
+        }
+    }
+}
