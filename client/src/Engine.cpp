@@ -41,14 +41,14 @@ entity Engine::create_friendly_entity(int id, sf::Color col, const uint16_t spee
     return ret;
 }
 
-entity Engine::create_enemy_entity(int id, sf::Color col, const uint16_t speedX, const uint16_t speedY, const uint16_t posX, const uint16_t posY)
+entity Engine::create_enemy_entity(int id, sf::Color col, const uint16_t speedX, const uint16_t speedY, const uint16_t posX, const uint16_t posY) // FIXME: replace positions by just the name of the file handling the path
 {    
     entity ret(id);
 
     _reg.emplace_component<Position>(ret, posX, posY);
     _reg.emplace_component<Velocity>(ret, 1, 1, speedX, speedY);
     _reg.emplace_component<Drawable>(ret, 45, col);
-    _reg.emplace_component<FollowPath>(ret, "upward_curve");
+    _reg.emplace_component<FollowPath>(ret, "middle_diagonal");
 
     std::cout << _reg.get_components<FollowPath>()[ret].value() << std::endl;
     return ret;
