@@ -16,8 +16,10 @@
 #include <boost/array.hpp>
 #include "Engine_utils.hpp"
 
-/// @brief Engine class used to handle everything related to the game engine
-
+/**
+ * @brief A class used to handle everything related to the game engine
+ * 
+ */
 class Engine {
     public:
         /// @brief Create a new instance of object Engine, with a game window size of width and height 
