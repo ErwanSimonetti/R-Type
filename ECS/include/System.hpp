@@ -15,6 +15,7 @@
 #include "Velocity.hpp"
 #include "Position.hpp"
 #include "Controllable.hpp"
+#include "Pet.hpp"
 #include "Drawable.hpp"
 #include "FollowPath.hpp"
 #include "Engine_utils.hpp"
