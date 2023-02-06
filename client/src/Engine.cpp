@@ -79,7 +79,6 @@ entity Engine::create_player(int id, sf::Color col, const uint16_t velX, const u
     _reg.emplace_component<Drawable>(ret, 45, col);
     
     _reg.add_component<Controllable>(ret, std::move(contr));
-
     return ret;
 }
 
@@ -93,9 +92,9 @@ entity Engine::create_projectile(int parentId, sf::Color col, const uint16_t vel
     Velocity vel;
     Pet pet;
 
-    pos.set_component(_reg.get_components<Position>()[parentId].value()._x, _reg.get_components<Position>()[parentId].value()._y);
+    pos.set_component(_reg.get_components<Position>()[parentId].value()._x, _reg.get_components<Position>()[parentId].value()._y*1.5-5);
     vel.set_component(velX, velY);
-    draw.set_component(45, col);
+    draw.set_component(10, col);
     pet.set_component(_reg.entity_from_index(parentId));
 
     _reg.add_component<Position>(ret, std::move(pos));
@@ -103,8 +102,6 @@ entity Engine::create_projectile(int parentId, sf::Color col, const uint16_t vel
     _reg.add_component<Drawable>(ret, std::move(draw));
     
     _reg.add_component<Pet>(ret, std::move(pet));
-    std::cout << "108" << std::endl;
-
     return ret;
 }
 
@@ -150,7 +147,7 @@ ClientData Engine::buildClientData(EntityEvent entityEvent)
     return clientData;
 }
 
-entity Engine::create_enemy_entity(int id, sf::Color col, const uint16_t velX, const uint16_t velY, const uint16_t posX, const uint16_t posY)
+entity Engine::create_enemy_entity(int id, sf::Color col, const int16_t velX, const uint16_t posX, const uint16_t posY)
 {    
     entity ret = _reg.spawn_entity_by_id(id);
 
@@ -162,11 +159,11 @@ entity Engine::create_enemy_entity(int id, sf::Color col, const uint16_t velX, c
     _reg.emplace_component<Position>(ret, posX, posY);
 
     _reg.add_component<Velocity>(ret, std::move(vel));
-    _reg.emplace_component<Velocity>(ret, velX, velY);
+    _reg.emplace_component<Velocity>(ret, velX, 0);
     
     _reg.add_component<Drawable>(ret, std::move(draw));
     _reg.emplace_component<Drawable>(ret, 45, col);
-    
+    std::cout << "ennemy created" << std::endl;
     return ret;
 }
 
