@@ -12,6 +12,7 @@ Engine::Engine(uint16_t width, uint16_t height, boost::asio::io_service &io_serv
     _reg.register_component<Position>();
     _reg.register_component<Velocity>();
     _reg.register_component<Drawable>();
+    _reg.register_component<Pet>();
     _reg.register_component<Controllable>();
     _reg.register_component<FollowPath>();
 
@@ -104,6 +105,26 @@ ClientData Engine::buildClientData(EntityEvent entityEvent)
     return clientData;
 }
 
+entity Engine::create_enemy_entity(int id, sf::Color col, const uint16_t velX, const uint16_t velY, const uint16_t posX, const uint16_t posY)
+{    
+    entity ret = _reg.spawn_entity_by_id(id);
+
+    Drawable draw;
+    Position pos;
+    Velocity vel;
+
+    _reg.add_component<Position>(ret, std::move(pos));
+    _reg.emplace_component<Position>(ret, posX, posY);
+
+    _reg.add_component<Velocity>(ret, std::move(vel));
+    _reg.emplace_component<Velocity>(ret, velX, velY);
+    
+    _reg.add_component<Drawable>(ret, std::move(draw));
+    _reg.emplace_component<Drawable>(ret, 45, col);
+    
+    return ret;
+}
+
 void Engine::sendData(ClientData data) 
 {
     char *buffer = _network.getProtocol().serialiseData<ClientData>(data);
@@ -147,8 +168,13 @@ void Engine::runNetwork()
 
 void Engine::runGame() 
 {
+    EntityEvent evt;
     while (1) {
-        ClientData clientData = buildClientData(_game.gameLoop(_reg));
+        evt = _game.gameLoop(_reg);
+        if (std::find(evt.events.begin(), evt.events.end(), GAME_EVENT::SHOOT )  != evt.events.end()) {
+            create_projectile(1, sf::Color::Green, 150, 0);
+        }
+        ClientData clientData = buildClientData(evt);
         if(clientData.entity == -1)
             continue;
         sendData(clientData);
