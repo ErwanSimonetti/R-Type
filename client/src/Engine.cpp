@@ -105,7 +105,7 @@ ClientData Engine::buildClientData(EntityEvent entityEvent)
     return clientData;
 }
 
-entity Engine::create_enemy_entity(int id, sf::Color col, const uint16_t velX, const uint16_t velY, const uint16_t posX, const uint16_t posY)
+entity Engine::create_enemy_entity(int id, sf::Color col, const int16_t velX, const uint16_t posX, const uint16_t posY)
 {    
     entity ret = _reg.spawn_entity_by_id(id);
 
@@ -117,11 +117,11 @@ entity Engine::create_enemy_entity(int id, sf::Color col, const uint16_t velX, c
     _reg.emplace_component<Position>(ret, posX, posY);
 
     _reg.add_component<Velocity>(ret, std::move(vel));
-    _reg.emplace_component<Velocity>(ret, velX, velY);
+    _reg.emplace_component<Velocity>(ret, velX, 0);
     
     _reg.add_component<Drawable>(ret, std::move(draw));
     _reg.emplace_component<Drawable>(ret, 45, col);
-    
+    std::cout << "ennemy created" << std::endl;
     return ret;
 }
 
