@@ -5,11 +5,12 @@
 ** system
 */
 
+#include <cstdlib>
 #include "System.hpp"
 #include "registry.hpp"
 #include "SFML_utils.hpp"
 
-void followPathSystem(const sparse_array<Position> &positions, sparse_array<Velocity> &velocities, const sparse_array<FollowPath> &paths) {
+void followPathSystem(const sparse_array<Position> &positions, sparse_array<Velocity> &velocities, sparse_array<FollowPath> &paths) {
     int16_t xToReach = 0;
     int16_t yToReach = 0;
     int16_t newXVelocity = 0;
@@ -31,6 +32,10 @@ void followPathSystem(const sparse_array<Position> &positions, sparse_array<Velo
                 newXVelocity = -1 * vel.value()._speedX;
             if (pos.value()._y > yToReach)
                 newYVelocity = -1 * vel.value()._speedY;
+            if (std::abs(pos.value()._x - xToReach) <= 10 && std::abs(pos.value()._y - yToReach) <= 10) {
+                std::cout << "Reached checkpoint" << std::endl;
+                path.value()._current_checkpoint += 1;
+            }
             vel.value().build_component(newXVelocity, newYVelocity, vel.value()._speedX, vel.value()._speedY);
         }
     }
