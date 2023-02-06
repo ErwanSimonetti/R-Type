@@ -53,6 +53,14 @@ class Engine {
 
         entity create_entity(int id, sf::Color col, const uint16_t velX, const uint16_t velY, const uint16_t posX, const uint16_t posY);
         
+        /// @brief Generate a projectile using the id of a previously generated ship entity
+        /// @param parentId id of the parent ship
+        /// @param col color
+        /// @param velX x velocity
+        /// @param velY y velocity
+        /// @return a projectile entity 
+        entity create_projectile(int parentId, sf::Color col, const uint16_t velX, const uint16_t velY);
+        
         /// @brief function used to launch the whole game, systems and all
         void run();
 

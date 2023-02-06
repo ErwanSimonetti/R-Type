@@ -12,6 +12,7 @@ Engine::Engine(uint16_t width, uint16_t height, boost::asio::io_service &io_serv
     _reg.register_component<Position>();
     _reg.register_component<Velocity>();
     _reg.register_component<Drawable>();
+    _reg.register_component<Pet>();
     _reg.register_component<Controllable>();
 
     _reg.add_system<Position, Velocity>(position_system);
@@ -23,6 +24,7 @@ Engine::Engine(uint16_t width, uint16_t height, boost::asio::io_service &io_serv
     _reg.register_component<Position>();
     _reg.register_component<Velocity>();
     _reg.register_component<Drawable>();
+    _reg.register_component<Pet>();
     _reg.register_component<Controllable>();
 
     _reg.add_system<Position, Velocity>(position_system);
@@ -81,24 +83,28 @@ entity Engine::create_player(int id, sf::Color col, const uint16_t velX, const u
     return ret;
 }
 
-entity Engine::create_enemy_entity(int id, sf::Color col, const uint16_t velX, const uint16_t velY, const uint16_t posX, const uint16_t posY)
-{    
-    entity ret = _reg.spawn_entity_by_id(id);
 
-    Drawable draw;
+entity Engine::create_projectile(int parentId, sf::Color col, const uint16_t velX, const uint16_t velY)
+{
+    entity ret(_reg.spawn_entity());
+
+    Drawable draw; 
     Position pos;
     Velocity vel;
-    Controllable contr;
+    Pet pet;
+
+    pos.set_component(_reg.get_components<Position>()[parentId].value()._x, _reg.get_components<Position>()[parentId].value()._y);
+    vel.set_component(velX, velY);
+    draw.set_component(45, col);
+    pet.set_component(_reg.entity_from_index(parentId));
 
     _reg.add_component<Position>(ret, std::move(pos));
-    _reg.emplace_component<Position>(ret, posX, posY);
-
     _reg.add_component<Velocity>(ret, std::move(vel));
-    _reg.emplace_component<Velocity>(ret, velX, velY);
-
     _reg.add_component<Drawable>(ret, std::move(draw));
-    _reg.emplace_component<Drawable>(ret, 45, col);
     
+    _reg.add_component<Pet>(ret, std::move(pet));
+    std::cout << "108" << std::endl;
+
     return ret;
 }
 
@@ -110,7 +116,7 @@ ClientData Engine::buildClientData(EntityEvent entityEvent)
         clientData.entity = -1;
         return clientData;
     }
-    Position &pos = _reg.get_components<Position>()[1].value();
+    Position &pos = _reg.get_components<Position>()[entityEvent.entity].value();
     int size = 0;
     clientData.entity = entityEvent.entity;
     clientData.posX = pos._x;
@@ -144,6 +150,26 @@ ClientData Engine::buildClientData(EntityEvent entityEvent)
     return clientData;
 }
 
+entity Engine::create_enemy_entity(int id, sf::Color col, const uint16_t velX, const uint16_t velY, const uint16_t posX, const uint16_t posY)
+{    
+    entity ret = _reg.spawn_entity_by_id(id);
+
+    Drawable draw;
+    Position pos;
+    Velocity vel;
+
+    _reg.add_component<Position>(ret, std::move(pos));
+    _reg.emplace_component<Position>(ret, posX, posY);
+
+    _reg.add_component<Velocity>(ret, std::move(vel));
+    _reg.emplace_component<Velocity>(ret, velX, velY);
+    
+    _reg.add_component<Drawable>(ret, std::move(draw));
+    _reg.emplace_component<Drawable>(ret, 45, col);
+    
+    return ret;
+}
+
 void Engine::sendData(ClientData data) 
 {
     char *buffer = _network._protocol.serialiseData<ClientData>(data);
@@ -168,13 +194,17 @@ void Engine::runNetwork()
 {
     _network.UDPReceiveClient(std::bind(&Engine::updateRegistry, this, std::placeholders::_1));
     _network.getIOService().run();
-
 }
 
 void Engine::runGame() 
 {
+    EntityEvent evt;
     while (1) {
-        ClientData clientData = buildClientData(_game.gameLoop(_reg));
+        evt = _game.gameLoop(_reg);
+        if (std::find(evt.events.begin(), evt.events.end(), GAME_EVENT::SHOOT )  != evt.events.end()) {
+            create_projectile(1, sf::Color::Green, 150, 0);
+        }
+        ClientData clientData = buildClientData(evt);
         if(clientData.entity == -1)
             continue;
         printf("send\n");

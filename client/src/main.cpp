@@ -15,6 +15,7 @@ int main(void)
     printf("client\n");
 
     eng.create_player(1, sf::Color::Blue, 50, 50, 0, 0);
+    eng.create_enemy_entity(2, sf::Color::Red, 40, 40, 200, 200);
     eng.run();
     // ClientData clientData;
     // clientData.event = 12;
