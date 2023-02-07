@@ -72,6 +72,8 @@ class Engine {
 
         ClientData buildClientData(EntityEvent entityEvent);
 
+        void deleteOutmapEntitySystem(sparse_array<Position>& position);
+
         MyNetwork _network;
     protected:
     private:
@@ -80,6 +82,8 @@ class Engine {
 
         /// @brief SFML encapsulation
         RenderGame _game;
+        uint16_t _width;
+        uint16_t _height;
 };
 
 #endif /* !ENGINE_HPP_ */

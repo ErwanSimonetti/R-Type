@@ -7,7 +7,12 @@
 
 #include "Engine.hpp"
 
-Engine::Engine(uint16_t width, uint16_t height, boost::asio::io_service &io_service, const std::string &port) : _reg(), _game(width, height), _network(io_service, port)
+Engine::Engine(uint16_t width, uint16_t height, boost::asio::io_service &io_service, const std::string &port) :
+    _reg(),
+    _game(width, height),
+    _width(width),
+    _height(height),
+    _network(io_service, port)
 {
     _reg.register_component<Position>();
     _reg.register_component<Velocity>();
@@ -17,6 +22,7 @@ Engine::Engine(uint16_t width, uint16_t height, boost::asio::io_service &io_serv
     _reg.register_component<Controllable>();
 
     _reg.add_system<Position, Hitbox>(collision_system);
+    _reg.add_system<Position>(std::bind(&Engine::deleteOutmapEntitySystem, this, std::placeholders::_1));
     _reg.add_system<Position, Velocity>(position_system);
     _reg.add_system<Position, Drawable>(std::bind(&RenderGame::draw_system, &_game, std::placeholders::_1, std::placeholders::_2));
 }
@@ -86,7 +92,6 @@ entity Engine::create_player(int id, sf::Color col, const uint16_t velX, const u
     _reg.emplace_component<Velocity>(ret, velX, velY);
     
     _reg.add_component<Drawable>(ret, std::move(draw));
-    printf("player\n");
     _reg.emplace_component<Drawable>(ret, SHIP);
     
     _reg.add_component<Hitbox>(ret, std::move(hbx));
@@ -246,3 +251,16 @@ void Engine::run()
     gameThread.join();
     //networkThread.join();
 }
+
+void Engine::deleteOutmapEntitySystem(sparse_array<Position>& positions)
+{
+    for (size_t i = 0; i < positions.size(); i++) {
+        auto &pos = positions[i];
+        if (pos) {
+            if (pos.value()._x < 0 || pos.value()._y < 0 || pos.value()._x > _width || pos.value()._y > _height) {
+                _reg.kill_entity(entity(i));
+            }
+        }
+    }   
+}
+
