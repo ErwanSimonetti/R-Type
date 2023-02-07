@@ -7,6 +7,7 @@
 
 #include <SFML/Graphics.hpp>
 #include <unordered_map>
+#include <memory>
 
 #pragma once
 
@@ -29,17 +30,17 @@ std::unordered_map<OBJECT, sf::IntRect> boundsMap = {
 };
     Drawable() = default;
     void set_component(const OBJECT &obj) {
-        printf("%s\n", textureMap[SHIP].c_str());
-        // sf::Texture _texture;
-        if (!_texture.loadFromFile(textureMap[SHIP].c_str())) {
-        std::cerr << "Failed to load texture " << textureMap[SHIP].c_str() << std::endl;
+        printf("%s\n", textureMap[obj].c_str());
+        _texture = std::make_shared<sf::Texture>();
+        if (!_texture->loadFromFile(textureMap[obj].c_str())) {
+        std::cerr << "Failed to load texture " << textureMap[obj].c_str() << std::endl;
         }
-        _sprite.setTexture(_texture);
-        // _sprite.setTextureRect(boundsMap[SHIP]);
+        _sprite.setTexture(*_texture);
+        _sprite.setTextureRect(boundsMap[obj]);
         // _sprite.setColor(sf::Color(255, 255, 255, 200));
         // _sprite.setPosition(100, 25);
     }
     // sf::CircleShape _sprite;
     sf::Sprite _sprite;
-    sf::Texture _texture;
+    std::shared_ptr<sf::Texture> _texture;
 };
