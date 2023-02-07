@@ -64,7 +64,7 @@ entity Engine::create_entity(int id, sf::Color col, const uint16_t velX, const u
     _reg.emplace_component<Hitbox>(ret, posX+45, posY+45);
     
     _reg.add_component<Drawable>(ret, std::move(draw));
-    _reg.emplace_component<Drawable>(ret, 45, col);
+    _reg.emplace_component<Drawable>(ret, SHIP);
 
     return ret;
 }
@@ -86,7 +86,8 @@ entity Engine::create_player(int id, sf::Color col, const uint16_t velX, const u
     _reg.emplace_component<Velocity>(ret, velX, velY);
     
     _reg.add_component<Drawable>(ret, std::move(draw));
-    _reg.emplace_component<Drawable>(ret, 45, col);
+    printf("player\n");
+    _reg.emplace_component<Drawable>(ret, SHIP);
     
     _reg.add_component<Hitbox>(ret, std::move(hbx));
     _reg.emplace_component<Hitbox>(ret, posX+45, posY+45);
@@ -115,7 +116,7 @@ entity Engine::create_projectile(int parentId, sf::Color col, const uint16_t vel
     vel.set_component(velX, velY);
     _reg.add_component<Velocity>(ret, std::move(vel));
    
-    draw.set_component(10, col);
+    draw.set_component(BULLET);
     _reg.add_component<Drawable>(ret, std::move(draw));
    
     pet.set_component(_reg.entity_from_index(parentId));
@@ -125,7 +126,7 @@ entity Engine::create_projectile(int parentId, sf::Color col, const uint16_t vel
     _reg.emplace_component<Hitbox>(ret, posX+10, posY+10);
     
     return ret;
-}
+}   
 
 ClientData Engine::buildClientData(EntityEvent entityEvent) 
 {
@@ -188,7 +189,7 @@ entity Engine::create_enemy_entity(int id, sf::Color col, const int16_t velX, co
     _reg.emplace_component<Hitbox>(ret, posX+45, posY+45);
 
     _reg.add_component<Drawable>(ret, std::move(draw));
-    _reg.emplace_component<Drawable>(ret, 45, col);
+    _reg.emplace_component<Drawable>(ret, SHIP);
 
     return ret;
 }
@@ -224,14 +225,14 @@ void Engine::runGame()
     EntityEvent evt;
     while (1) {
         evt = _game.gameLoop(_reg);
-        if (std::find(evt.events.begin(), evt.events.end(), GAME_EVENT::SHOOT )  != evt.events.end()) {
-            create_projectile(1, sf::Color::Green, 150, 0);
-        }
+        // if (std::find(evt.events.begin(), evt.events.end(), GAME_EVENT::SHOOT )  != evt.events.end()) {
+        //     create_projectile(1, sf::Color::Green, 150, 0);
+        // }
         ClientData clientData = buildClientData(evt);
         if(clientData.entity == -1)
             continue;
-        printf("send\n");
-        sendData(clientData);
+        // printf("send\n");
+        // sendData(clientData);
     }
 }
 
@@ -243,5 +244,5 @@ void Engine::run()
     std::thread networkThread(&Engine::runGame, this);
 
     gameThread.join();
-    networkThread.join();
+    //networkThread.join();
 }
