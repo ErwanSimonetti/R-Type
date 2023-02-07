@@ -32,6 +32,45 @@ void position_system(sparse_array<Position> &positions, const sparse_array<Veloc
     }
 }
 
+void parallax_system(sparse_array<Animatable> &animatable, sparse_array<Position> &positions, sparse_array<Parallax> &parallax) {
+    for (size_t i = 0; i < positions.size() && i < animatable.size(); ++ i) {
+        auto &pos = positions[i];
+        auto &anim = animatable[i];
+        auto &para = parallax[i];
+        if(pos && anim && para) {
+            if (anim.value()._clock.getElapsedTime().asMilliseconds() >= 10) {
+                pos.value()._x -= anim.value()._speed;
+                anim.value()._clock.restart();
+            }
+            if (pos.value()._x <= para.value()._endPos) {
+                pos.value()._x = para.value()._startPos;
+            }
+        }
+    }
+}
+
+void animation_system(sparse_array<Animatable> &animatable, sparse_array<Drawable> &drawable) 
+{
+    for (size_t i = 0; i < animatable.size(); ++ i) {
+        auto &anim = animatable[i];
+        auto &draw = drawable[i];
+        if (anim && draw) {
+            if (anim.value()._clock.getElapsedTime().asMilliseconds() >= anim.value()._speed) {
+                sf::IntRect newRect =  draw.value()._sprite.getTextureRect();
+                newRect.left += draw.value()._textureRect;
+                draw.value()._sprite.setTextureRect(newRect);
+                anim.value()._clock.restart();
+            }
+            if (draw.value()._sprite.getTextureRect().left >= draw.value()._textureSize) {
+                sf::IntRect newRect =  draw.value()._sprite.getTextureRect();
+                newRect.left = 0;
+                draw.value()._sprite.setTextureRect(newRect);
+
+            }
+        }
+    }
+}
+
 EntityEvent control_system(registry &r, std::vector<int> &directions, sparse_array<Position> &positions, sparse_array<Controllable> &controllables, sparse_array<Velocity> &velocities) {
 
     EntityEvent entityEvent;
@@ -95,7 +134,7 @@ void collision_system(sparse_array<Position> &positions, sparse_array<Hitbox> &h
         for (int j = i + 1; j < positions.size(); ++j) {
             if (positions[i].has_value() && hitboxes[i].has_value() && positions[j].has_value() && hitboxes[j].has_value()) {
                 if (isCollision(positions[i].value(), hitboxes[i].value(), positions[j].value(), hitboxes[j].value())) {
-                    std::cout << "jeanne au secours" << std::endl;
+                    // std::cout << "jeanne au secours" << std::endl;
                 }
             }
         }

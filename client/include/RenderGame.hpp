@@ -31,7 +31,6 @@ class RenderGame {
                 if (drawables[i] && positions[i]) {
                     drawables[i].value()._sprite.setPosition(positions[i].value()._x, positions[i].value()._y);
                     _window->draw(drawables[i].value()._sprite);
-                    printf("%s\n", drawables[i].value()._texture);
                 }
             }
         }

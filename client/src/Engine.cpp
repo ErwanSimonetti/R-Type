@@ -15,9 +15,13 @@ Engine::Engine(uint16_t width, uint16_t height, boost::asio::io_service &io_serv
     _reg.register_component<Pet>();
     _reg.register_component<Hitbox>();
     _reg.register_component<Controllable>();
+    _reg.register_component<Animatable>();
+    _reg.register_component<Parallax>();
 
     _reg.add_system<Position, Hitbox>(collision_system);
     _reg.add_system<Position, Velocity>(position_system);
+    _reg.add_system<Animatable, Position, Parallax>(parallax_system);
+    _reg.add_system<Animatable, Drawable>(animation_system);
     _reg.add_system<Position, Drawable>(std::bind(&RenderGame::draw_system, &_game, std::placeholders::_1, std::placeholders::_2));
 }
 
@@ -29,9 +33,13 @@ Engine::Engine(uint16_t width, uint16_t height, boost::asio::io_service &io_serv
     _reg.register_component<Pet>();
     _reg.register_component<Hitbox>();
     _reg.register_component<Controllable>();
+    _reg.register_component<Animatable>();
+    _reg.register_component<Parallax>();
 
     _reg.add_system<Position, Hitbox>(collision_system);
     _reg.add_system<Position, Velocity>(position_system);
+    _reg.add_system<Animatable, Position, Parallax>(parallax_system);
+    _reg.add_system<Animatable, Drawable>(animation_system);
     _reg.add_system<Position, Drawable>(std::bind(&RenderGame::draw_system, &_game, std::placeholders::_1, std::placeholders::_2));
 }
 
@@ -43,8 +51,31 @@ registry Engine::get_registry() {
     return _reg;
 }
 
+entity Engine::create_parallax(const int16_t id, const uint16_t posX, const uint16_t posY, const uint16_t speed, const OBJECT obj) 
+{
+    entity ret = _reg.spawn_entity_by_id(id);
 
-entity Engine::create_entity(int id, sf::Color col, const uint16_t velX, const uint16_t velY, const uint16_t posX, const uint16_t posY)
+    Drawable draw;
+    Position pos;
+    Animatable anim;
+    Parallax para;
+
+    _reg.add_component<Position>(ret, std::move(pos));
+    _reg.emplace_component<Position>(ret, posX, posY);
+
+    _reg.add_component<Drawable>(ret, std::move(draw));
+    _reg.emplace_component<Drawable>(ret, obj);
+
+    _reg.add_component<Animatable>(ret, std::move(anim));
+    _reg.emplace_component<Animatable>(ret, speed);
+
+    _reg.add_component<Parallax>(ret, std::move(para));
+    _reg.emplace_component<Parallax>(ret, -1920, 1920);
+
+    return ret;
+}
+
+entity Engine::create_entity(int id, const uint16_t velX, const uint16_t velY, const uint16_t posX, const uint16_t posY)
 {
     entity ret = _reg.spawn_entity_by_id(id);
 
@@ -69,7 +100,7 @@ entity Engine::create_entity(int id, sf::Color col, const uint16_t velX, const u
     return ret;
 }
 
-entity Engine::create_player(int id, sf::Color col, const uint16_t velX, const uint16_t velY, const uint16_t posX, const uint16_t posY)
+entity Engine::create_player(int id, const uint16_t velX, const uint16_t velY, const uint16_t posX, const uint16_t posY)
 {
     entity ret = _reg.spawn_entity_by_id(id);
 
@@ -78,6 +109,7 @@ entity Engine::create_player(int id, sf::Color col, const uint16_t velX, const u
     Velocity vel;
     Hitbox hbx;
     Controllable contr;
+    Animatable anim;
 
     _reg.add_component<Position>(ret, std::move(pos));
     _reg.emplace_component<Position>(ret, posX, posY);
@@ -86,9 +118,11 @@ entity Engine::create_player(int id, sf::Color col, const uint16_t velX, const u
     _reg.emplace_component<Velocity>(ret, velX, velY);
     
     _reg.add_component<Drawable>(ret, std::move(draw));
-    printf("player\n");
     _reg.emplace_component<Drawable>(ret, SHIP);
     
+    _reg.add_component<Animatable>(ret, std::move(anim));
+    _reg.emplace_component<Animatable>(ret, 90);
+
     _reg.add_component<Hitbox>(ret, std::move(hbx));
     _reg.emplace_component<Hitbox>(ret, posX+45, posY+45);
 
@@ -97,7 +131,7 @@ entity Engine::create_player(int id, sf::Color col, const uint16_t velX, const u
 }
 
 
-entity Engine::create_projectile(int parentId, sf::Color col, const uint16_t velX, const uint16_t velY)
+entity Engine::create_projectile(int parentId, const uint16_t velX, const uint16_t velY)
 {
     entity ret(_reg.spawn_entity());
 
@@ -106,11 +140,11 @@ entity Engine::create_projectile(int parentId, sf::Color col, const uint16_t vel
     Velocity vel;
     Hitbox hbx;
     Pet pet;
+    Animatable anim;
 
     int16_t posX =_reg.get_components<Position>()[parentId].value()._x;
     int16_t posY =_reg.get_components<Position>()[parentId].value()._y;
-
-    pos.set_component(posX, posY*1.5-5);
+    pos.set_component(posX, posY + 3);
     _reg.add_component<Position>(ret, std::move(pos));
    
     vel.set_component(velX, velY);
@@ -124,6 +158,9 @@ entity Engine::create_projectile(int parentId, sf::Color col, const uint16_t vel
 
     _reg.add_component<Hitbox>(ret, std::move(hbx));
     _reg.emplace_component<Hitbox>(ret, posX+10, posY+10);
+
+    anim.set_component(10);
+    _reg.add_component<Animatable>(ret, std::move(anim));
     
     return ret;
 }   
@@ -170,7 +207,7 @@ ClientData Engine::buildClientData(EntityEvent entityEvent)
     return clientData;
 }
 
-entity Engine::create_enemy_entity(int id, sf::Color col, const int16_t velX, const uint16_t posX, const uint16_t posY)
+entity Engine::create_enemy_entity(int id, const int16_t velX, const uint16_t posX, const uint16_t posY)
 {    
     entity ret = _reg.spawn_entity_by_id(id);
 
@@ -205,7 +242,7 @@ void Engine::updateRegistry(ServerData data)
 {
     for (int i = 0; i < 4; i++) {
         if (!_reg.is_entity_alive(data.entities[i])) {
-            create_entity(data.entities[i], sf::Color::Blue, 0, 0, data.posX[i], data.posY[i]);
+            create_entity(data.entities[i], 0, 0, data.posX[i], data.posY[i]);
             return;
         }
         _reg.get_components<Position>()[data.entities[i]].value().set_component(data.posX[i], data.posY[i]);
@@ -225,9 +262,9 @@ void Engine::runGame()
     EntityEvent evt;
     while (1) {
         evt = _game.gameLoop(_reg);
-        // if (std::find(evt.events.begin(), evt.events.end(), GAME_EVENT::SHOOT )  != evt.events.end()) {
-        //     create_projectile(1, sf::Color::Green, 150, 0);
-        // }
+        if (std::find(evt.events.begin(), evt.events.end(), GAME_EVENT::SHOOT) != evt.events.end()) {
+            create_projectile(evt.entity, 15, 0);
+        }
         ClientData clientData = buildClientData(evt);
         if(clientData.entity == -1)
             continue;
