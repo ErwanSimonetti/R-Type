@@ -12,7 +12,7 @@ struct FollowPath {
     FollowPath() = default;
 
     void parse_follow_path_file(const std::string &fileFollowPath);
-    void build_component(const std::string &fileFollowPath);
+    void set_component(const std::string &fileFollowPath);
 
     friend std::ostream &operator<<(std::ostream &output, const FollowPath &component) {
         output << "displaying checkpoint coords :" << std::endl;
