@@ -125,7 +125,7 @@ void collision_system(sparse_array<Position> &positions, sparse_array<Hitbox> &h
         for (int j = i + 1; j < positions.size(); ++j) {
             if (positions[i].has_value() && hitboxes[i].has_value() && positions[j].has_value() && hitboxes[j].has_value()) {
                 if (isCollision(positions[i].value(), hitboxes[i].value(), positions[j].value(), hitboxes[j].value())) {
-                    std::cout << "jeanne au secours" << std::endl;
+                    // std::cout << "jeanne au secours" << std::endl;
                 }
             }
         }

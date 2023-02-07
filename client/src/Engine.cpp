@@ -19,6 +19,8 @@ Engine::Engine(uint16_t width, uint16_t height, boost::asio::io_service &io_serv
 
     _reg.add_system<Position, Hitbox>(collision_system);
     _reg.add_system<Position, Velocity>(position_system);
+    _reg.add_system<Animatable, Position, Parallax>(parallax_system);
+    _reg.add_system<Animatable, Drawable>(animation_system);
     _reg.add_system<Position, Drawable>(std::bind(&RenderGame::draw_system, &_game, std::placeholders::_1, std::placeholders::_2));
     _reg.add_system<Position, Velocity, FollowPath>(followPathSystem);
 }
@@ -31,6 +33,9 @@ registry Engine::get_registry() {
     return _reg;
 }
 
+entity Engine::create_parallax(const int16_t id, const uint16_t posX, const uint16_t posY, const uint16_t speed, const OBJECT obj) 
+{
+    entity ret = _reg.spawn_entity_by_id(id);
 
 void Engine::create_entity(entity newEntity, sf::Color col, const uint16_t speedX, const uint16_t speedY, const uint16_t posX, const uint16_t posY)
 {
@@ -42,6 +47,7 @@ void Engine::create_entity(entity newEntity, sf::Color col, const uint16_t speed
 void Engine::create_player(entity newEntity, sf::Color col, const uint16_t speedX, const uint16_t speedY, const uint16_t posX, const uint16_t posY)
 {
     Controllable contr;
+    Animatable anim;
 
     _reg.emplace_component<Position>(newEntity, posX, posY);
     _reg.emplace_component<Velocity>(newEntity, speedX, speedY, 0, 0);
@@ -107,7 +113,7 @@ ClientData Engine::buildClientData(EntityEvent entityEvent)
     return clientData;
 }
 
-entity Engine::create_enemy_entity(int id, sf::Color col, const int16_t velX, const uint16_t posX, const uint16_t posY)
+entity Engine::create_enemy_entity(int id, const int16_t velX, const uint16_t posX, const uint16_t posY)
 {    
     entity ret = _reg.spawn_entity_by_id(id);
 
@@ -177,9 +183,9 @@ void Engine::runGame()
     EntityEvent evt;
     while (1) {
         evt = _game.gameLoop(_reg);
-        // if (std::find(evt.events.begin(), evt.events.end(), GAME_EVENT::SHOOT )  != evt.events.end()) {
-        //     create_projectile(1, sf::Color::Green, 150, 0);
-        // }
+        if (std::find(evt.events.begin(), evt.events.end(), GAME_EVENT::SHOOT) != evt.events.end()) {
+            create_projectile(evt.entity, 15, 0);
+        }
         ClientData clientData = buildClientData(evt);
         if(clientData.entity == -1)
             continue;
