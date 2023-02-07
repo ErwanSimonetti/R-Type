@@ -22,8 +22,8 @@ TEST(Registry, RegisterComponent) {
     entity a = res.spawn_entity();
     Position pos;
     Velocity vel;
-    pos.build_component(1, 1);
-    vel.build_component(3, 4, 5, 6);
+    pos.set_component(1, 1);
+    vel.set_component(3, 4, 5, 6);
 
 
     res.add_component(a, std::move(pos));
