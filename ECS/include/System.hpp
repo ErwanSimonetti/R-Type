@@ -14,7 +14,10 @@
 #include "registry.hpp"
 #include "Velocity.hpp"
 #include "Position.hpp"
+#include "Controllable.hpp"
+#include "Drawable.hpp"
 #include "FollowPath.hpp"
+#include "Engine_utils.hpp"
 
 void logging_system (sparse_array<Position> const& positions, sparse_array<Velocity> const& velocities);
 void position_system(sparse_array<Position> &positions, sparse_array<Velocity> &velocities);

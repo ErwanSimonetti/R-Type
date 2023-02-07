@@ -44,7 +44,7 @@ registry Engine::get_registry() {
 void Engine::create_entity(entity newEntity, sf::Color col, const uint16_t speedX, const uint16_t speedY, const uint16_t posX, const uint16_t posY)
 {
     _reg.emplace_component<Position>(newEntity, posX, posY);
-    _reg.emplace_component<Velocity>(newEntity, speedX, speedY);
+    _reg.emplace_component<Velocity>(newEntity, speedX, speedY, 0, 0);
     _reg.emplace_component<Drawable>(newEntity, 45, col);
 }
 
@@ -53,7 +53,7 @@ void Engine::create_player(entity newEntity, sf::Color col, const uint16_t speed
     Controllable contr;
 
     _reg.emplace_component<Position>(newEntity, posX, posY);
-    _reg.emplace_component<Velocity>(newEntity, speedX, speedY);
+    _reg.emplace_component<Velocity>(newEntity, speedX, speedY, 0, 0);
     _reg.emplace_component<Drawable>(newEntity, 45, col);
     _reg.add_component<Controllable>(newEntity, std::move(contr));
     // can shoot component
@@ -63,9 +63,9 @@ void Engine::create_player(entity newEntity, sf::Color col, const uint16_t speed
 void Engine::create_enemy_entity(entity newEntity, sf::Color col, const uint16_t speedX, const uint16_t speedY, const uint16_t posX, const uint16_t posY)
 {    
     _reg.emplace_component<Position>(newEntity, posX, posY);
-    _reg.emplace_component<Velocity>(newEntity, speedX, speedY);
+    _reg.emplace_component<Velocity>(newEntity, speedX, speedY, 0, 0);
     _reg.emplace_component<Drawable>(newEntity, 45, col);
-    _reg.emplace_component<FollowPath>(ret, "middle_diagonal");
+    _reg.emplace_component<FollowPath>(newEntity, "middle_diagonal");
     // can shoot component
 }
 
@@ -145,7 +145,7 @@ void Engine::updateRegistry(ServerData data)
             create_entity(_reg.spawn_entity_by_id(data.entities[i]), sf::Color::Blue, 0, 0, data.posX[i], data.posY[i]);
         } else {
             _reg.get_components<Position>()[data.entities[i]].value().set_component(data.posX[i], data.posY[i]);
-            _reg.get_components<Velocity>()[data.entities[i]].value().set_component(data.directionsX[i], data.directionsY[i]);
+            _reg.get_components<Velocity>()[data.entities[i]].value().set_component(data.directionsX[i], data.directionsY[i], 0, 0);
         }   
     }
 }
