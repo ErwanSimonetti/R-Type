@@ -62,14 +62,21 @@ class MyNetwork {
 
         boost::asio::ip::udp::endpoint getServerEndpoint();
         boost::asio::io_service &getIOService();
-        
+
+        Protocol &getProtocol() {
+            return _protocol;
+        }
+
+        std::vector<boost::asio::ip::udp::endpoint> &getEndpoints()
+        {
+            return _endpoints;
+        }
 
     protected:
     private:
         std::vector<boost::asio::ip::udp::endpoint> _endpoints;
         boost::asio::ip::udp::endpoint _endpoint;
         Protocol _protocol;
-        boost::asio::ip::udp::endpoint _serverEndpoint;
         boost::asio::ip::udp::socket _socket;
         boost::asio::io_service &_io_services;
         char _recvBuffer[1024];
