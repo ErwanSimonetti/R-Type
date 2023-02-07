@@ -26,7 +26,7 @@ struct ClientData {
 };
 
 struct ServerData {
-    uint16_t entities[4];
+    int16_t entities[4];
     uint16_t posX[4];
     uint16_t posY[4];
     int16_t directionsX[4];
@@ -78,5 +78,8 @@ class Protocol {
     protected:
     private:
 };
+
+void printClientData(const ClientData &data);
+void printServerData(const ServerData &data);
 
 #endif /* !PROTOCOL_HPP_ */

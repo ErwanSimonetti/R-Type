@@ -14,7 +14,6 @@ int main(void)
     Engine eng(1920, 1080, io_service, "127.0.0.1", "1234");
     printf("client\n");
 
-    eng.create_player(1, sf::Color::Blue, 50, 50, 0, 0);
     eng.run();
     // ClientData clientData;
     // clientData.event = 12;

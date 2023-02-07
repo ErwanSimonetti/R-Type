@@ -23,7 +23,6 @@ class Engine {
         /// @brief Create a new instance of object Engine, with a game window size of width and height 
         /// @param width Width of the game window
         /// @param height Height of the game window
-        Engine(uint16_t width, uint16_t height, boost::asio::io_service &io_service, const std::string &port);
         Engine(uint16_t width, uint16_t height, boost::asio::io_service &io_service, const std::string &host, const std::string &port);
         ~Engine();
         
@@ -38,8 +37,7 @@ class Engine {
         /// @param velY uint_16_t corresponding to the horizontal velocity
         /// @param posX uint_16_t corresponding to the vertical position
         /// @param posY uint_16_t corresponding to the horizontal position
-        /// @return a friendly entity, that is controllable
-        entity create_player(int id, sf::Color col, const uint16_t speedX, const uint16_t speedY, const uint16_t posX, const uint16_t posY);
+        void create_player(entity newEntity, sf::Color col, const uint16_t speedX, const uint16_t speedY, const uint16_t posX, const uint16_t posY);
         
         /// @brief Function used to create an enemy "character" entity, giving it an id, and various parameters 
         /// @param id Entity ID, has to be unused
@@ -48,31 +46,29 @@ class Engine {
         /// @param velY uint_16_t corresponding to the horizontal velocity
         /// @param posX uint_16_t corresponding to the vertical position
         /// @param posY uint_16_t corresponding to the horizontal position
-        /// @return an enemy enity, that cannot be controlled by the user
-        entity create_enemy_entity(int id, sf::Color col, const uint16_t speedX, const uint16_t speedY, const uint16_t posX, uint16_t posY);
+        void create_enemy_entity(entity newEntity, sf::Color col, const uint16_t speedX, const uint16_t speedY, const uint16_t posX, uint16_t posY);
 
-        entity create_entity(int id, sf::Color col, const uint16_t speedX, const uint16_t speedY, const uint16_t posX, const uint16_t posY);
+        void create_entity(entity newEntity, sf::Color col, const uint16_t speedX, const uint16_t speedY, const uint16_t posX, const uint16_t posY);
         
-        /// @brief function used to launch the whole game, systems and all
-        void run();
-
+        void connectToServer();
+        ClientData buildClientData(EntityEvent entityEvent);
         void sendData(ClientData data);
-
         void updateRegistry(ServerData data);
 
         void runNetwork();
         void runGame();
+        /// @brief function used to launch the whole game, systems and all
+        void run();
 
-        ClientData buildClientData(EntityEvent entityEvent);
 
-        MyNetwork _network;
     protected:
     private:
         /// @brief registry object 
         registry _reg;
-
+        MyNetwork _network;
         /// @brief SFML encapsulation
         RenderGame _game;
+        entity _player;
 };
 
 #endif /* !ENGINE_HPP_ */
