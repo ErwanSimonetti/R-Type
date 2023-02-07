@@ -118,7 +118,7 @@ ClientData Engine::buildClientData(EntityEvent entityEvent)
 
 void Engine::sendData(ClientData data) 
 {
-    char *buffer = _network._protocol.serialiseData<ClientData>(data);
+    char *buffer = _network.getProtocol().serialiseData<ClientData>(data);
     _network.udpSend<ClientData>(buffer, _network.getServerEndpoint());
 }
 

@@ -86,12 +86,12 @@ ServerData Engine::buildServerData()
 
 void Engine::sendData(ServerData data) 
 {
-    char *buffer = _network._protocol.serialiseData<ServerData>(data);
-    ServerData serverData = _network._protocol.readServer(buffer);
+    char *buffer = _network.getProtocol().serialiseData<ServerData>(data);
+    ServerData serverData = _network.getProtocol().readServer(buffer);
 
-    for (int it = 0; it < _network._endpoints.size(); it++) {
-        std::cout << _network._endpoints[it].address().to_string() << std::endl;
-        _network.udpSend<ServerData>(buffer, _network._endpoints.at(it));
+    for (int it = 0; it < _network.getEndpoints().size(); it++) {
+        std::cout << _network.getEndpoints()[it].address().to_string() << std::endl;
+        _network.udpSend<ServerData>(buffer, _network.getEndpoints().at(it));
     }
 }
 
