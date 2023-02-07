@@ -32,10 +32,8 @@ void followPathSystem(const sparse_array<Position> &positions, sparse_array<Velo
                 newXVelocity = -1 * vel.value()._speedX;
             if (pos.value()._y > yToReach)
                 newYVelocity = -1 * vel.value()._speedY;
-            if (std::abs(pos.value()._x - xToReach) <= 10 && std::abs(pos.value()._y - yToReach) <= 10) {
-                std::cout << "Reached checkpoint" << std::endl;
+            if (std::abs(pos.value()._x - xToReach) <= 10 && std::abs(pos.value()._y - yToReach) <= 10)
                 path.value()._current_checkpoint += 1;
-            }
             vel.value().build_component(newXVelocity, newYVelocity, vel.value()._speedX, vel.value()._speedY);
         }
     }
