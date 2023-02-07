@@ -5,7 +5,6 @@
 ** Engine
 */
 
-#include "FollowPath.hpp"
 #include "Engine.hpp"
 
 Engine::Engine(uint16_t width, uint16_t height) : _reg(), _game(width, height)
@@ -50,7 +49,6 @@ entity Engine::create_enemy_entity(int id, sf::Color col, const uint16_t speedX,
     _reg.emplace_component<Drawable>(ret, 45, col);
     _reg.emplace_component<FollowPath>(ret, "middle_diagonal");
 
-    std::cout << _reg.get_components<FollowPath>()[ret].value() << std::endl;
     return ret;
 }
 
