@@ -81,13 +81,25 @@ class registry
             return new_entity;
         }
 
+        /**
+         * @brief create an entity with his id.
+         * 
+         * @param id of the entity.
+         * @return entity created.
+         */
         entity spawn_entity_by_id(size_t id) {
-            size_t id_entity = id;
-            entity new_entity(id_entity);
+            entity new_entity(id);
             _entities.emplace_back(new_entity);
             return new_entity;
         }
 
+        /**
+         * @brief check if an entity id exist in the entity vector.
+         * 
+         * @param id of the entity.
+         * @return true if she exist.
+         * @return false if she doesn't exist.
+         */
         bool is_entity_alive(size_t id) {
             std::cout << id << "\n";
             auto it = std::find(_entities.begin(), _entities.end(), id);
@@ -125,11 +137,11 @@ class registry
         };
 
         /**
-         * @brief 
+         * @brief add component in an entity
          * 
-         * @tparam Component 
-         * @param to 
-         * @param c 
+         * @tparam Component type of components
+         * @param to index in the ECS
+         * @param c components struct move in ECS
          * @return sparse_array<Component>::reference_type 
          */
         template <typename Component>
@@ -138,12 +150,12 @@ class registry
         };
 
         /**
-         * @brief 
+         * @brief emplace a component in a entity
          * 
-         * @tparam Component 
-         * @tparam Params 
-         * @param to 
-         * @param p 
+         * @tparam Component type of component 
+         * @tparam Params give params for setting components
+         * @param to entity for give id in ECS
+         * @param p list of parameters given in set components
          * @return sparse_array<Component>::reference_type 
          */
         template <typename Component, typename... Params>
