@@ -126,7 +126,7 @@ entity Engine::create_enemy_entity(int id, sf::Color col, const int16_t velX, co
     _reg.emplace_component<Hitbox>(ret, posX+45, posY+45);
 
     _reg.add_component<Drawable>(ret, std::move(draw));
-    _reg.emplace_component<Drawable>(ret, 45, col);
+    _reg.emplace_component<Drawable>(ret, SHIP);
 
     return ret;
 }
@@ -177,9 +177,9 @@ void Engine::runGame()
     EntityEvent evt;
     while (1) {
         evt = _game.gameLoop(_reg);
-        if (std::find(evt.events.begin(), evt.events.end(), GAME_EVENT::SHOOT )  != evt.events.end()) {
-            create_projectile(1, sf::Color::Green, 150, 0);
-        }
+        // if (std::find(evt.events.begin(), evt.events.end(), GAME_EVENT::SHOOT )  != evt.events.end()) {
+        //     create_projectile(1, sf::Color::Green, 150, 0);
+        // }
         ClientData clientData = buildClientData(evt);
         if(clientData.entity == -1)
             continue;
@@ -215,5 +215,5 @@ void Engine::run()
     std::thread networkThread(&Engine::runNetwork, this);
 
     gameThread.join();
-    networkThread.join();
+    //networkThread.join();
 }
