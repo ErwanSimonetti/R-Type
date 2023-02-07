@@ -9,7 +9,7 @@
 
 struct Position {
     Position() = default;
-    void set_component(const uint16_t &x, const uint16_t &y) {
+    void set_component(const int16_t &x, const int16_t &y) {
         _x = x;
         _y = y;
     }
@@ -17,6 +17,6 @@ struct Position {
         output << "x = " << D._x << " y = " <<  D._y << std::endl;
         return output;
     }
-    uint16_t _x;
-    uint16_t _y;
+    int16_t _x;
+    int16_t _y;
 };

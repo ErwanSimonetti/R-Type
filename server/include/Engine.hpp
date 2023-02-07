@@ -38,10 +38,9 @@ class Engine {
         /// @param velY uint_16_t corresponding to the horizontal velocity
         /// @param posX uint_16_t corresponding to the vertical position
         /// @param posY uint_16_t corresponding to the horizontal position
-        /// @return a friendly entity, that is controllable
-        entity create_player(int id, sf::Color col, const uint16_t velX, const uint16_t velY, const uint16_t posX, const uint16_t posY);
+        void create_player(entity newEntity, sf::Color col, const uint16_t velX, const uint16_t velY, const uint16_t posX, const uint16_t posY);
 
-        entity create_entity(int id, sf::Color col, const uint16_t velX, const uint16_t velY, const uint16_t posX, const uint16_t posY);
+        void create_entity(entity newEntity, sf::Color col, const uint16_t velX, const uint16_t velY, const uint16_t posX, const uint16_t posY);
         
         /// @brief Function used to create an enemy "character" entity, giving it an id, and various parameters 
         /// @param id Entity ID, has to be unused
@@ -50,8 +49,7 @@ class Engine {
         /// @param velY uint_16_t corresponding to the horizontal velocity
         /// @param posX uint_16_t corresponding to the vertical position
         /// @param posY uint_16_t corresponding to the horizontal position
-        /// @return an enemy enity, that cannot be controlled by the user
-        entity create_enemy_entity(int id, sf::Color col, const uint16_t velX, const uint16_t velY, const uint16_t posX, uint16_t posY);
+        void create_enemy_entity(entity newEntity, sf::Color col, const uint16_t velX, const uint16_t velY, const uint16_t posX, uint16_t posY);
         
         /// @brief function used to launch the whole game, systems and all
         void run();
@@ -60,7 +58,7 @@ class Engine {
 
         void updateRegistry(ClientData data);
 
-        ServerData createServerData();
+        ServerData buildServerData();
 
         void runNetwork();
 
@@ -71,7 +69,7 @@ class Engine {
     private:
         /// @brief registry object 
         registry _reg;
-        std::vector<entity> _player;
+        std::vector<entity> _players;
 };
 
 #endif /* !ENGINE_HPP_ */

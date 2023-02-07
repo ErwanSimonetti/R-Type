@@ -59,11 +59,8 @@ class registry
         }
 
         bool is_entity_alive(size_t id) {
-            std::cout << id << "\n";
             auto it = std::find(_entities.begin(), _entities.end(), id);
-            // std::cout << static_cast<size_t>(*it) << "\n";
             if (it == _entities.end()) {
-                printf("jaj\n");
                 return false;
             }
             return true;
@@ -83,7 +80,6 @@ class registry
             _entities.erase(it); 
         };
 
-        // not sure about this one
         template <typename Component>
         typename sparse_array<Component>::reference_type add_component(entity const &to, Component &&c) {
             std::any_cast<sparse_array<Component>&>(_components_arrays.find(std::type_index(typeid(Component)))->second).insert_at(to, std::forward<Component>(c));
@@ -114,9 +110,8 @@ class registry
             auto system = [f](registry& reg) {
                 f(reg.get_components<Components>()...);
             };
-            
             _systems.push_back(system);
-        }; // taking it by reference .
+        };
 
         void run_systems() {
             for(auto &element : _systems) {
@@ -128,6 +123,5 @@ class registry
     private:
         std::unordered_map<std::type_index, std::any> _components_arrays;
         std::vector<std::function<void(registry &, entity const &)>> _function_stored;
-        // std::vector<std::function<void(registry &, entity const &)>> _function_stored;
         std::vector<std::function<void(registry&)>> _systems;
 };
