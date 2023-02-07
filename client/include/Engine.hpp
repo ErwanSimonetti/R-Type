@@ -50,33 +50,12 @@ class Engine {
          * @param velY uint_16_t corresponding to the horizontal velocity
          * @param posX uint_16_t corresponding to the vertical position
          * @param posY uint_16_t corresponding to the horizontal position
-        /// @return a friendly entity, that is controllable
-
-        /**
-         * @brief Create a player object
-         * 
-         * @param id 
-         * @param col 
-         * @param velX 
-         * @param velY 
-         * @param posX 
-         * @param posY 
-         * @return entity 
-         */
+         * @return a friendly entity, that is controllable
+         **/
         entity create_player(int id, sf::Color col, const uint16_t velX, const uint16_t velY, const uint16_t posX, const uint16_t posY);
-        
-        /// @brief Function used to create an enemy "character" entity, giving it an id, and various parameters 
-        /// @param id Entity ID, has to be unused
-        /// @param col sf::Color object, until we use actual sprites
-        /// @param velX uint_16_t corresponding to the vertical velocity
-        /// @param velY uint_16_t corresponding to the horizontal velocity
-        /// @param posX uint_16_t corresponding to the vertical position
-        /// @param posY uint_16_t corresponding to the horizontal position
-        /// @return an enemy enity, that cannot be controlled by the user
 
         /**
-         * @brief Create a enemy entity object
-         * 
+         * @brief Function used to create an enemy "character" entity, giving it an id, and various parameters 
          * @param id Entity ID, has to be unused
          * @param col sf::Color object, until we use actual sprites
          * @param velX uint_16_t corresponding to the vertical velocity
@@ -136,10 +115,18 @@ class Engine {
         MyNetwork _network;
     protected:
     private:
-        /// @brief registry object 
+        /**
+         * @brief registry object 
+         *
+         *
+         **/ 
         registry _reg;
 
-        /// @brief SFML encapsulation
+        /**
+         * @brief SFML encapsulation 
+         *
+         *
+         **/
         RenderGame _game;
 };
 
