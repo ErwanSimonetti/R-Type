@@ -30,13 +30,13 @@ registry Engine::get_registry()
 void Engine::create_entity(entity newEntity, sf::Color col, const uint16_t velX, const uint16_t velY, const uint16_t posX, const uint16_t posY)
 {
     _reg.emplace_component<Position>(newEntity, posX, posY);
-    _reg.emplace_component<Velocity>(newEntity, velX, velY);
+    _reg.emplace_component<Velocity>(newEntity, velX, velY, 0, 0);
 }
 
 void Engine::create_player(entity newEntity, sf::Color col, const uint16_t velX, const uint16_t velY, const uint16_t posX, const uint16_t posY)
 {
     _reg.emplace_component<Position>(newEntity, posX, posY);
-    _reg.emplace_component<Velocity>(newEntity, velX, velY);
+    _reg.emplace_component<Velocity>(newEntity, velX, velY, 0, 0);
     // can shot component
 
     _players.emplace_back(newEntity);
@@ -45,7 +45,7 @@ void Engine::create_player(entity newEntity, sf::Color col, const uint16_t velX,
 void Engine::create_enemy_entity(entity newEntity, sf::Color col, const uint16_t velX, const uint16_t velY, const uint16_t posX, const uint16_t posY)
 {
     _reg.emplace_component<Position>(newEntity, posX, posY);
-    _reg.emplace_component<Velocity>(newEntity, velX, velY);
+    _reg.emplace_component<Velocity>(newEntity, velX, velY, 0, 0);
     // can shot component
 }
 
@@ -74,8 +74,8 @@ ServerData Engine::buildServerData()
 
         auto const &vel = velocities[_players.at(i)];
         if (vel) {
-            data.directionsX[i] = vel.value()._vx;
-            data.directionsY[i] = vel.value()._vy;
+            data.directionsX[i] = vel.value()._vX;
+            data.directionsY[i] = vel.value()._vY;
         }
     }
     printf("CREATE SERVER DATA:\n");
@@ -105,7 +105,7 @@ void Engine::updateRegistry(ClientData data)
         create_player(_reg.spawn_entity(), sf::Color::Blue, data.directionsX, data.directionsY, data.posX, data.posY);
     } else {
         // _reg.get_components<Position>()[data.entity].value().set_component(data.posX, data.posY);
-        _reg.get_components<Velocity>()[data.entity].value().set_component(data.directionsX, data.directionsY);
+        _reg.get_components<Velocity>()[data.entity].value().set_component(data.directionsX, data.directionsY, 0, 0);
     }
     sendData(buildServerData());
 }

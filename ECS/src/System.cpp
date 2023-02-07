@@ -33,7 +33,7 @@ void followPathSystem(const sparse_array<Position> &positions, sparse_array<Velo
                 newYVelocity = -1 * vel.value()._speedY;
             if (std::abs(pos.value()._x - xToReach) <= 10 && std::abs(pos.value()._y - yToReach) <= 10)
                 path.value()._current_checkpoint += 1;
-            vel.value().build_component(newXVelocity, newYVelocity, vel.value()._speedX, vel.value()._speedY);
+            vel.value().set_component(newXVelocity, newYVelocity, vel.value()._speedX, vel.value()._speedY);
         }
     }
 }
@@ -56,10 +56,10 @@ void position_system(sparse_array<Position> &positions, sparse_array<Velocity> &
         auto &pos = positions[i];
         auto &vel = velocities[i];
         if (pos && vel) {
-            pos.value()._x += vel.value()._vx;
-            pos.value()._y += vel.value()._vy;
-            vel.value()._vx = 0;
-            vel.value()._vy = 0;
+            pos.value()._x += vel.value()._vX;
+            pos.value()._y += vel.value()._vY;
+            vel.value()._vX = 0;
+            vel.value()._vY = 0;
         }
     }
 }
@@ -107,7 +107,7 @@ EntityEvent control_system(registry &r, std::vector<int> &directions, sparse_arr
                 xDirection = 0;
                 yDirection = 0;
             }
-            vel.value().build_component(xDirection * vel.value()._speedX, yDirection * vel.value()._speedY, vel.value()._speedX, vel.value()._speedY);
+            vel.value().set_component(xDirection * vel.value()._speedX, yDirection * vel.value()._speedY, vel.value()._speedX, vel.value()._speedY);
         }
     }
     return entityEvent;
