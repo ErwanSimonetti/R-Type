@@ -4,5 +4,4 @@ a.out
 launch
 r-type_client
 r-type_server
-r-type_bootstrap
-ecs_tests
+client_tests
