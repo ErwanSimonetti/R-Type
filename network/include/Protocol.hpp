@@ -31,6 +31,7 @@ struct ServerData {
     uint16_t posY[4];
     int16_t directionsX[4];
     int16_t directionsY[4];
+    uint16_t hasShot[4];
 };
 
 // enum DataTypes {

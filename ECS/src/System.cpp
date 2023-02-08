@@ -51,21 +51,38 @@ void logging_system (sparse_array<Position> const& positions, sparse_array<Veloc
     }
 }
 
-void position_system(sparse_array<Position> &positions, const sparse_array<Velocity> &velocities) {
+void position_system(sparse_array<Position> &positions, sparse_array<Velocity> &velocities, const sparse_array<Controllable> &controllables) {
     for (size_t i = 0; i < positions.size() && i < velocities.size(); ++ i) {
         auto &pos = positions[i];
-        auto const &vel = velocities[i];
+        auto &vel = velocities[i];
         if (pos && vel) {
             pos.value()._x += vel.value()._vX;
             pos.value()._y += vel.value()._vY;
-            vel.value()._vX = 0;
-            vel.value()._vY = 0;
+
+            if (i < controllables.size() && controllables[i]) {
+                vel.value()._vX = 0;
+                vel.value()._vY = 0;
+            }
+        }
+    }
+}
+
+void shoot_system(sparse_array<Shootable> &shootable) 
+{
+    for (size_t i = 0; i < shootable.size(); ++i) {
+        auto &shoot = shootable[i];
+        if (shoot) {
+            if (shoot.value()._clock.getElapsedTime().asMilliseconds() <= 1000) {
+                shoot.value()._canShoot = false;
+            } else {
+                shoot.value()._canShoot = true;
+            }
         }
     }
 }
 
 void parallax_system(sparse_array<Animatable> &animatable, sparse_array<Position> &positions, sparse_array<Parallax> &parallax) {
-    for (size_t i = 0; i < positions.size() && i < animatable.size(); ++ i) {
+    for (size_t i = 0; i < positions.size() && i < animatable.size() && i < parallax.size(); ++ i) {
         auto &pos = positions[i];
         auto &anim = animatable[i];
         auto &para = parallax[i];
@@ -83,7 +100,7 @@ void parallax_system(sparse_array<Animatable> &animatable, sparse_array<Position
 
 void animation_system(sparse_array<Animatable> &animatable, sparse_array<Drawable> &drawable) 
 {
-    for (size_t i = 0; i < animatable.size(); ++ i) {
+    for (size_t i = 0; i < animatable.size() && i < drawable.size(); ++ i) {
         auto &anim = animatable[i];
         auto &draw = drawable[i];
         if (anim && draw) {
@@ -103,18 +120,19 @@ void animation_system(sparse_array<Animatable> &animatable, sparse_array<Drawabl
     }
 }
 
-EntityEvent control_system(registry &r, std::vector<int> &directions, sparse_array<Position> &positions, sparse_array<Controllable> &controllables, sparse_array<Velocity> &velocities) {
+EntityEvent control_system(registry &r, std::vector<int> &directions, sparse_array<Position> &positions, sparse_array<Controllable> &controllables, sparse_array<Velocity> &velocities, sparse_array<Shootable> &shootable) {
 
     EntityEvent entityEvent;
     entityEvent.entity = -1;
     int current_direction = 0;
     int16_t xDirection = 0;
     int16_t yDirection = 0;
-    for (size_t i = 0; i < velocities.size() && i < controllables.size() && i < positions.size(); ++ i) {
+    for (size_t i = 0; i < velocities.size() && i < controllables.size() && i < positions.size() && i < shootable.size(); ++ i) {
         auto &vel = velocities[i];
         auto &pos = positions[i];
         auto &contr = controllables[i];
-        if (vel && contr && pos) {
+        auto &shoot = shootable[i];
+        if (vel && contr && pos && shoot) {
             for(std::size_t j = 0; j < directions.size(); ++j) {
                 entityEvent.entity = i;
                 current_direction = directions[j];
@@ -135,6 +153,12 @@ EntityEvent control_system(registry &r, std::vector<int> &directions, sparse_arr
                     case KEYBOARD::ARROW_RIGHT:
                         xDirection = 1;
                         entityEvent.events.emplace_back(GAME_EVENT::RIGHT);
+                        break;
+                    case KEYBOARD::SPACE:
+                        if (shoot.value()._canShoot == true) {
+                            entityEvent.events.emplace_back(GAME_EVENT::SHOOT);
+                            shoot.value()._clock.restart();
+                        }
                         break;
                     default:
                         xDirection = 0;
@@ -159,7 +183,7 @@ bool isCollision(Position& a, Hitbox& aHitbox, Position& b, Hitbox& bHitbox)
 
 void collision_system(sparse_array<Position> &positions, sparse_array<Hitbox> &hitboxes)
 {
-    for (int i = 0; i < positions.size(); ++i) {
+    for (int i = 0; i < positions.size(); ++i) {;
         for (int j = i + 1; j < positions.size(); ++j) {
             if (positions[i].has_value() && hitboxes[i].has_value() && positions[j].has_value() && hitboxes[j].has_value()) {
                 if (isCollision(positions[i].value(), hitboxes[i].value(), positions[j].value(), hitboxes[j].value())) {

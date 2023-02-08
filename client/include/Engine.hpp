@@ -28,7 +28,7 @@ class Engine {
         
         /// @brief Registry variable getter
         /// @return the registry object
-        registry get_registry();
+        registry &get_registry();
 
         /// @brief Function used to create a friendly "character" entity, giving it an id, and various parameters 
         /// @param id Entity ID
@@ -56,9 +56,9 @@ class Engine {
         /// @param velX x velocity
         /// @param velY y velocity
         /// @return a projectile entity 
-        entity create_projectile(int parentId, const uint16_t velX, const uint16_t velY);
+        void create_projectile(entity newEntity, int16_t parentId, const uint16_t velX, const uint16_t velY);
 
-        entity create_parallax(const int16_t id, const uint16_t posX, const uint16_t posY, const uint16_t speed, const OBJECT obj);
+        void create_parallax(entity newEntity, const uint16_t posX, const uint16_t posY, const uint16_t speed, const OBJECT obj);
         
         void connectToServer();
         ClientData buildClientData(EntityEvent entityEvent);
