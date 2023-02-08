@@ -15,7 +15,11 @@ void followPathSystem(const sparse_array<Position> &positions, sparse_array<Velo
     int16_t newXVelocity = 0;
     int16_t newYVelocity = 0;
 
+    std::cout << "positions size = " << positions.size() << std::endl;
+    std::cout << "velocities size = " << velocities.size() << std::endl;
+    std::cout << "paths size = " << paths.size() << std::endl;
     for (size_t i = 0; i < positions.size() && i < velocities.size() && i < paths.size(); ++i) {
+        std::cout << "entity nb " << i << std::endl;
         auto &pos = positions[i];
         auto &vel = velocities[i];
         auto &path = paths[i];
@@ -23,6 +27,10 @@ void followPathSystem(const sparse_array<Position> &positions, sparse_array<Velo
         if (pos && vel && path) {
             xToReach = path.value()._checkpoints[path.value()._current_checkpoint][0];
             yToReach = path.value()._checkpoints[path.value()._current_checkpoint][1];
+            std::cout << "x to reach = " << xToReach << std::endl;
+            std::cout << "y to reach = " << yToReach << std::endl;
+            std::cout << "current x = " << pos.value()._x << std::endl;
+            std::cout << "current y = " << pos.value()._y << std::endl;
             if (pos.value()._x < xToReach)
                 newXVelocity = 1 * vel.value()._speedX;
             if (pos.value()._y < yToReach)
