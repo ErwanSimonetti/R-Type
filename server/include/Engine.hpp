@@ -18,6 +18,11 @@
 
 /// @brief Engine class used to handle everything related to the game engine
 
+struct Player {
+    entity id;
+    bool hasShot;
+};
+
 class Engine {
     public:
         /// @brief Create a new instance of object Engine, with a game window size of width and height 

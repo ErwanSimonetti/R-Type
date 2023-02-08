@@ -42,8 +42,8 @@ void Engine::create_player(entity newEntity, sf::Color col, const uint16_t velX,
     _reg.emplace_component<Velocity>(newEntity, 0, 0, velX, velX);
     _reg.add_component<Controllable>(newEntity, std::move(contr));
     // can shot component
-
-    _players.emplace_back(newEntity);
+    Player newPlayer{newEntity, false};
+    _players.emplace_back(newPlayer);
 }
 
 void Engine::create_enemy_entity(entity newEntity, sf::Color col, const uint16_t velX, const uint16_t velY, const uint16_t posX, const uint16_t posY)
@@ -71,17 +71,20 @@ ServerData Engine::buildServerData()
             continue;
         }
         
-        data.entities[i] = _players.at(i);
-        auto const &pos = positions[_players.at(i)];
+        data.entities[i] = _players.at(i).id;
+        auto const &pos = positions[_players.at(i).id];
         if (pos) {
             data.posX[i] = pos.value()._x;
             data.posY[i] = pos.value()._y;
         }
 
-        auto const &vel = velocities[_players.at(i)];
+        auto const &vel = velocities[_players.at(i).id];
         if (vel) {
             data.directionsX[i] = vel.value()._vX;
             data.directionsY[i] = vel.value()._vY;
+        }
+        if (_players.at(i).hasShot) {
+            data.hasShot[i] = 1;
         }
     }
     printf("CREATE SERVER DATA:\n");
@@ -112,6 +115,15 @@ void Engine::updateRegistry(ClientData data)
     } else {
         // _reg.get_components<Position>()[data.entity].value().set_component(data.posX, data.posY);
         _reg.get_components<Velocity>()[data.entity].value().set_component(data.directionsX, data.directionsY, 10, 10);
+        for (int i = 0; i < _players.size(); i++) {
+            if (_players.at(i).id == data.entity) {
+                    if (data.hasShot) {
+                        create_entity(_reg.spawn_entity(), 0, 0, data.posX, data.posX);
+                        _players.at(i).hasShot = true;
+                    } else
+                        _players.at(i).hasShot = false;
+            }
+        }
     }
     sendData(buildServerData());
 }
