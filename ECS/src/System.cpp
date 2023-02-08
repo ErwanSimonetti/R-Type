@@ -58,8 +58,25 @@ void position_system(sparse_array<Position> &positions, sparse_array<Velocity> &
         if (pos && vel) {
             pos.value()._x += vel.value()._vX;
             pos.value()._y += vel.value()._vY;
-            vel.value()._vX = 0;
-            vel.value()._vY = 0;
+
+            if (i < controllables.size() && controllables[i]) {
+                vel.value()._vX = 0;
+                vel.value()._vY = 0;
+            }
+        }
+    }
+}
+
+void shoot_system(sparse_array<Shootable> &shootable) 
+{
+    for (size_t i = 0; i < shootable.size(); ++i) {
+        auto &shoot = shootable[i];
+        if (shoot) {
+            if (shoot.value()._clock.getElapsedTime().asMilliseconds() <= 1000) {
+                shoot.value()._canShoot = false;
+            } else {
+                shoot.value()._canShoot = true;
+            }
         }
     }
 }
@@ -73,7 +90,8 @@ EntityEvent control_system(registry &r, std::vector<int> &directions, sparse_arr
         auto &vel = velocities[i];
         auto &pos = positions[i];
         auto &contr = controllables[i];
-        if (vel && contr && pos) {
+        auto &shoot = shootable[i];
+        if (vel && contr && pos && shoot) {
             for(std::size_t j = 0; j < directions.size(); ++j) {
                 entityEvent.entity = i;
                 current_direction = directions[j];
@@ -121,7 +139,7 @@ bool isCollision(Position& a, Hitbox& aHitbox, Position& b, Hitbox& bHitbox)
 
 void collision_system(sparse_array<Position> &positions, sparse_array<Hitbox> &hitboxes)
 {
-    for (int i = 0; i < positions.size(); ++i) {
+    for (int i = 0; i < positions.size(); ++i) {;
         for (int j = i + 1; j < positions.size(); ++j) {
             if (positions[i].has_value() && hitboxes[i].has_value() && positions[j].has_value() && hitboxes[j].has_value()) {
                 if (isCollision(positions[i].value(), hitboxes[i].value(), positions[j].value(), hitboxes[j].value())) {

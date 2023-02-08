@@ -46,7 +46,7 @@ class RenderGame {
                 for (std::map<sf::Keyboard::Key, KEYBOARD>::iterator it = KeyboardMap.begin(); it != KeyboardMap.end(); it++)
                     if (sf::Keyboard::isKeyPressed(it->first))
                         inputs.emplace_back(it->second);
-                return control_system(reg, inputs, reg.get_components<Position>(), reg.get_components<Controllable>(), reg.get_components<Velocity>());
+                return control_system(reg, inputs, reg.get_components<Position>(), reg.get_components<Controllable>(), reg.get_components<Velocity>(), reg.get_components<Shootable>());
             }
             return entityEvent;
         }

@@ -19,6 +19,7 @@
 #include "Hitbox.hpp"
 #include "Drawable.hpp"
 #include "FollowPath.hpp"
+#include "Shootable.hpp"
 #include "Engine_utils.hpp"
 
 void collision_system(sparse_array<Position> &positions, sparse_array<Hitbox> &hitboxes);

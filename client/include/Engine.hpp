@@ -28,7 +28,7 @@ class Engine {
         
         /// @brief Registry variable getter
         /// @return the registry object
-        registry get_registry();
+        registry &get_registry();
 
         /// @brief Function used to create a friendly "character" entity, giving it an id, and various parameters 
         /// @param id Entity ID

@@ -77,10 +77,7 @@ class Protocol {
     private:
 };
 
-<<<<<<< HEAD
 void printClientData(const ClientData &data);
 void printServerData(const ServerData &data);
 
-=======
->>>>>>> 6be9af8 (feat(hierarchy) split the project in two section: client & server)
 #endif /* !PROTOCOL_HPP_ */

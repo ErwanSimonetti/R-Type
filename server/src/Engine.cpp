@@ -13,8 +13,9 @@ Engine::Engine(uint16_t width, uint16_t height, boost::asio::io_service &io_serv
     _reg.register_component<Velocity>();
     _reg.register_component<Drawable>();
     _reg.register_component<Controllable>();
+    _reg.register_component<Shootable>();
 
-    _reg.add_system<Position, Velocity>(position_system);
+    _reg.add_system<Position, Velocity, Controllable>(position_system);
     // boost::asio::io_service io_service;
 }
 
@@ -30,13 +31,16 @@ registry Engine::get_registry()
 void Engine::create_entity(entity newEntity, sf::Color col, const uint16_t velX, const uint16_t velY, const uint16_t posX, const uint16_t posY)
 {
     _reg.emplace_component<Position>(newEntity, posX, posY);
-    _reg.emplace_component<Velocity>(newEntity, velX, velY, 0, 0);
+    _reg.emplace_component<Velocity>(newEntity, velX, velY, 10, 10);
 }
 
 void Engine::create_player(entity newEntity, sf::Color col, const uint16_t velX, const uint16_t velY, const uint16_t posX, const uint16_t posY)
 {
+    Controllable contr;
+
     _reg.emplace_component<Position>(newEntity, posX, posY);
-    _reg.emplace_component<Velocity>(newEntity, velX, velY, 0, 0);
+    _reg.emplace_component<Velocity>(newEntity, 0, 0, velX, velX);
+    _reg.add_component<Controllable>(newEntity, std::move(contr));
     // can shot component
 
     _players.emplace_back(newEntity);
@@ -45,7 +49,7 @@ void Engine::create_player(entity newEntity, sf::Color col, const uint16_t velX,
 void Engine::create_enemy_entity(entity newEntity, sf::Color col, const uint16_t velX, const uint16_t velY, const uint16_t posX, const uint16_t posY)
 {
     _reg.emplace_component<Position>(newEntity, posX, posY);
-    _reg.emplace_component<Velocity>(newEntity, velX, velY, 0, 0);
+    _reg.emplace_component<Velocity>(newEntity, velX, velY, 10, 10);
     // can shot component
 }
 
@@ -60,11 +64,13 @@ ServerData Engine::buildServerData()
         data.posY[i] = 0;
         data.directionsX[i] = 0;
         data.directionsY[i] = 0;
+        data.hasShot[i] = 0;
 
         if (i >= _players.size()) {
             data.entities[i] = -1;
             continue;
         }
+        
         data.entities[i] = _players.at(i);
         auto const &pos = positions[_players.at(i)];
         if (pos) {
@@ -102,10 +108,10 @@ void Engine::updateRegistry(ClientData data)
     printf("\n");
     if (!_reg.is_entity_alive(data.entity)) {
         printf("new PLayer\n");
-        create_player(_reg.spawn_entity(), sf::Color::Blue, data.directionsX, data.directionsY, data.posX, data.posY);
+        create_player(_reg.spawn_entity(), 10, 10, data.posX, data.posY);
     } else {
         // _reg.get_components<Position>()[data.entity].value().set_component(data.posX, data.posY);
-        _reg.get_components<Velocity>()[data.entity].value().set_component(data.directionsX, data.directionsY, 0, 0);
+        _reg.get_components<Velocity>()[data.entity].value().set_component(data.directionsX, data.directionsY, 10, 10);
     }
     sendData(buildServerData());
 }
@@ -126,7 +132,18 @@ void Engine::runGame()
 
 void Engine::run() 
 {
-    create_entity(_reg.spawn_entity_by_id(0), sf::Color::Red, 0, 0, 100, 100);
+    // create_entity(_reg.spawn_entity_by_id(0), 0, 0, 100, 100);
+    create_entity(_reg.spawn_entity(), 0, 0, 100, 100);
+    create_entity(_reg.spawn_entity(), 0, 0, 100, 100);
+    create_entity(_reg.spawn_entity(), 0, 0, 100, 100);
+    create_entity(_reg.spawn_entity(), 0, 0, 100, 100);
+    create_entity(_reg.spawn_entity(), 0, 0, 100, 100);
+    create_entity(_reg.spawn_entity(), 0, 0, 100, 100);
+    create_entity(_reg.spawn_entity(), 0, 0, 100, 100);
+    create_entity(_reg.spawn_entity(), 0, 0, 100, 100);
+    create_entity(_reg.spawn_entity(), 0, 0, 100, 100);
+    create_entity(_reg.spawn_entity(), 0, 0, 100, 100);
+    create_entity(_reg.spawn_entity(), 0, 0, 100, 100);
     std::thread gameThread(&Engine::runGame, this);
 
     std::thread networkThread(&Engine::runNetwork, this);
