@@ -18,9 +18,21 @@
 #include "sparse_array.hpp"
 #include "exception.hpp"
 
+/**
+ * 
+ * @class registry
+ * @brief A class to manage the ECS
+ * 
+ */
 class registry
 {
     public:
+        /**
+         * @brief this function is used to add a new component in _component_arrays.
+         * 
+         * @tparam Component type to register.
+         * @return sparse_array<Component>& the register type array.
+         */
         template <class Component>
         sparse_array<Component> &register_component() {
             static sparse_array<Component> newElem;
@@ -32,16 +44,33 @@ class registry
             return newElem;
         };
 
+        /**
+         * @brief Get the components object with a type given in template
+         * 
+         * @tparam Component given
+         * @return sparse_array<Component>& get reference on the table
+         */
         template <class Component>
         sparse_array<Component> &get_components() {
             return std::any_cast<sparse_array<Component>&>(_components_arrays.find(std::type_index(typeid(Component)))->second);
         };
 
+        /**
+         * @brief Get the components object with a type given in template
+         * 
+         * @tparam Component given
+         * @return sparse_array<Component> const& get const reference on the array
+         */
         template <class Component>
         sparse_array<Component> const &get_components() const {
             return std::any_cast<sparse_array<Component>&>(_components_arrays.find(std::type_index(typeid(Component)))->second);
         };
 
+        /**
+         * @brief Add new entity in _entities array.
+         * 
+         * @return entity create.
+         */
         entity spawn_entity() {
             size_t id_entity = 0;
             if (!_entities.empty())
@@ -51,6 +80,12 @@ class registry
             return new_entity;
         }
 
+        /**
+         * @brief create an entity with his id.
+         * 
+         * @param id of the entity.
+         * @return entity created.
+         */
         entity spawn_entity_by_id(size_t id) {
             size_t id_entity = id;
             entity new_entity(id_entity);
@@ -58,6 +93,13 @@ class registry
             return new_entity;
         }
 
+        /**
+         * @brief check if an entity id exist in the entity vector.
+         * 
+         * @param id of the entity.
+         * @return true if she exist.
+         * @return false if she doesn't exist.
+         */
         bool is_entity_alive(size_t id) {
             auto it = std::find(_entities.begin(), _entities.end(), id);
             if (it == _entities.end()) {
@@ -66,12 +108,23 @@ class registry
             return true;
         }
 
+        /**
+         * @brief return the entity with this indexin the array.
+         * 
+         * @param idx, pos in the array.
+         * @return entity at the position idx.
+         */
         entity entity_from_index(std::size_t idx) {
             if (idx > _entities.size() - 1)
                 throw NoEntityFound();
             return (_entities.at(idx));
         }
 
+        /**
+         * @brief delete all elements of an entity in each array.
+         * 
+         * @param e, entity to remove.
+         */
         void kill_entity(entity const &e) {
             for(auto &element : _function_stored) {
                 element(*this, e);
@@ -80,11 +133,28 @@ class registry
             _entities.erase(it); 
         };
 
+        /**
+         * @brief add component in an entity
+         * 
+         * @tparam Component type of components
+         * @param to index in the ECS
+         * @param c components struct move in ECS
+         * @return sparse_array<Component>::reference_type 
+         */
         template <typename Component>
         typename sparse_array<Component>::reference_type add_component(entity const &to, Component &&c) {
             std::any_cast<sparse_array<Component>&>(_components_arrays.find(std::type_index(typeid(Component)))->second).insert_at(to, std::forward<Component>(c));
         };
 
+        /**
+         * @brief emplace a component in a entity
+         * 
+         * @tparam Component type of component 
+         * @tparam Params give params for setting components
+         * @param to entity for give id in ECS
+         * @param p list of parameters given in set components
+         * @return sparse_array<Component>::reference_type 
+         */
         template <typename Component, typename... Params>
         typename sparse_array<Component>::reference_type emplace_component(entity const &to, Params &&... p) {
             Component c;
@@ -92,11 +162,24 @@ class registry
             get_components<Component>().insert_at(to, c);
         };
 
+        /**
+         * @brief remove component in sparse array with the type of the component.
+         * 
+         * @tparam Component type will be delete;
+         * @param from the index of the node will be delete in sparse array.
+         */
         template <typename Component>
         void remove_component(entity const &from) {
             std::any_cast<sparse_array<Component>&>(_components_arrays.find(std::type_index(typeid(Component)))->second).erase(from);
         }
 
+        /**
+         * @brief add a system in _system array with std::funtion, the function will be move in the vector.
+         * 
+         * @tparam List of components needed in the function.
+         * @tparam Function type.
+         * @param f the std::function to move in _systems array.
+         */
         template <class ... Components, typename Function>
         void add_system (Function && f) {
             auto system = [f](registry& reg) {
@@ -105,6 +188,13 @@ class registry
             _systems.push_back(system);
         }
 
+        /**
+         * @brief add a system in _system array with a reference on a std::funtion.
+         * 
+         * @tparam List of components needed in the function.
+         * @tparam Function type.
+         * @param f the std::function to add in _systems array.
+         */
         template <class... Components , typename Function>
         void add_system(Function const & f) {
             auto system = [f](registry& reg) {
@@ -113,6 +203,10 @@ class registry
             _systems.push_back(system);
         };
 
+        /**
+         * @brief running all systems in _systems array.
+         * 
+         */
         void run_systems() {
             for(auto &element : _systems) {
                 element(*this);

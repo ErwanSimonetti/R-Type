@@ -8,12 +8,34 @@
 #include <vector>
 #include <ostream>
 
+/**
+ * @brief components for the ECS, set the entity's FollowPath if it's an IA
+ * 
+ */
 struct FollowPath {
     FollowPath() = default;
 
+    /**
+     * @brief 
+     * 
+     * @param fileFollowPath 
+     */
     void parse_follow_path_file(const std::string &fileFollowPath);
+
+    /**
+     * @brief Set the component object
+     * 
+     * @param fileFollowPath 
+     */
     void set_component(const std::string &fileFollowPath);
 
+    /**
+     * @brief overload << operator
+     * 
+     * @param output , variable to fill for print the result of the function.
+     * @param component class with the field to print. 
+     * @return std::ostream&, output.
+     */
     friend std::ostream &operator<<(std::ostream &output, const FollowPath &component) {
         output << "displaying checkpoint coords :" << std::endl;
         for(std::size_t i = 0; i < component._checkpoints.size(); ++i) {

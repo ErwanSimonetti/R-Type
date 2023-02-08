@@ -18,14 +18,49 @@
 
 #include "Protocol.hpp"
 
+/**
+ * @brief Network Encapsulation of the lib boost asio udp
+ * 
+ */
 class MyNetwork {
     public:
+        /**
+         * @brief Construct a new My Network object
+         * 
+         * @param io_service give variable of asio lib
+         * @param host ip adress of the server
+         * @param port port in the ip adress
+         */
         MyNetwork(boost::asio::io_service &io_service, const std::string& host, const std::string& port);
+
+        /**
+         * @brief Construct a new My Network object
+         * 
+         * @param io_service give variable of asio lib
+         * @param port port in the ip adress
+         */
         MyNetwork(boost::asio::io_service& io_service, const std::string &port);
+
+        /**
+         * @brief Destroy the My Network object
+         * 
+         */
         ~MyNetwork();
-        
+
+        /**
+         * @brief Add endpoint to the list of endpoint in the server.
+         * 
+         * @param endpoint of the client
+         */
         void addEndpoint(boost::asio::ip::udp::endpoint endpoint);
-        
+
+        /**
+         * @brief send a buffer in udp
+         * 
+         * @tparam Data binerize with data type
+         * @param buffer char * to send
+         * @param endpoint target of the message
+         */
         template <typename Data>
         void udpSend(char *buffer, boost::asio::ip::udp::endpoint endpoint) {
             _socket.async_send_to(boost::asio::buffer(buffer, sizeof(Data)), endpoint,
@@ -34,6 +69,12 @@ class MyNetwork {
             });
         }
 
+        /**
+         * @brief receive message in the client
+         * 
+         * @param func manager for the receive
+         * @param shouldCallback state of send or not a message in return
+         */
         void UDPReceiveClient(std::function<void(ServerData)> func, bool shouldCallback) {
             std::memset(_recvBuffer, '\0', 1024);
             boost::asio::ip::udp::endpoint endpoint;
@@ -48,6 +89,11 @@ class MyNetwork {
             });
         };
 
+        /**
+         * @brief receive message in the server
+         * 
+         * @param func manager for the receive
+         */
         void UDPReceiveServer(std::function<void(ClientData)> func) {
             std::memset(_recvBuffer, '\0', 1024);
             _socket.async_receive_from(boost::asio::buffer(_recvBuffer), _endpoint,
@@ -60,13 +106,34 @@ class MyNetwork {
             });
         };
 
+        /**
+         * @brief Get the Server Endpoint object
+         * 
+         * @return boost::asio::ip::udp::endpoint 
+         */
         boost::asio::ip::udp::endpoint getServerEndpoint();
+
+        /**
+         * @brief getter for IO service
+         * 
+         * @return boost::asio::io_service& 
+         */
         boost::asio::io_service &getIOService();
 
+        /**
+         * @brief getter the Protocol object
+         * 
+         * @return Protocol& 
+         */
         Protocol &getProtocol() {
             return _protocol;
         }
 
+        /**
+         * @brief Get the Endpoints object with all target of the server
+         * 
+         * @return std::vector<boost::asio::ip::udp::endpoint>& 
+         */
         std::vector<boost::asio::ip::udp::endpoint> &getEndpoints()
         {
             return _endpoints;
