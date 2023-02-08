@@ -35,8 +35,11 @@ void Engine::create_entity(entity newEntity, sf::Color col, const uint16_t velX,
 
 void Engine::create_player(entity newEntity, sf::Color col, const uint16_t velX, const uint16_t velY, const uint16_t posX, const uint16_t posY)
 {
+    Controllable contr;
+
     _reg.emplace_component<Position>(newEntity, posX, posY);
     _reg.emplace_component<Velocity>(newEntity, velX, velY, 0, 0);
+    _reg.add_component<Controllable>(newEntity, std::move(contr));
     // can shot component
 
     _players.emplace_back(newEntity);

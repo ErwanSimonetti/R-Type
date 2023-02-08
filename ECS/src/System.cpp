@@ -66,8 +66,6 @@ void position_system(sparse_array<Position> &positions, sparse_array<Velocity> &
         if (pos && vel) {
             pos.value()._x += vel.value()._vX;
             pos.value()._y += vel.value()._vY;
-            vel.value()._vX = 0;
-            vel.value()._vY = 0;
         }
     }
 }
