@@ -12,15 +12,15 @@ MyNetwork::MyNetwork(boost::asio::io_service &io_service, const std::string& hos
     _io_services(io_service), _socket(io_service, boost::asio::ip::udp::v4())
 {
     boost::asio::ip::udp::endpoint serverEndpoint(boost::asio::ip::address::from_string(host), std::stoi(port));
-    // addEndpoint(serverEndpoint);
-    _serverEndpoint = serverEndpoint;
+    _endpoints.emplace_back(serverEndpoint);
+    _shouldCallback = false;
 }
 
 // server
 MyNetwork::MyNetwork(boost::asio::io_service& io_service, const std::string &port)
     : _io_services(io_service), _socket(io_service, boost::asio::ip::udp::endpoint(boost::asio::ip::udp::v4(), 1234))
 {
-    std::cout << "jaj create server\n";
+    _shouldCallback = false;
 }
 
 MyNetwork::~MyNetwork()
@@ -39,7 +39,7 @@ void MyNetwork::addEndpoint(boost::asio::ip::udp::endpoint endpoint)
 
 boost::asio::ip::udp::endpoint MyNetwork::getServerEndpoint()
 {
-    return _serverEndpoint;
+    return _endpoints.at(0);
 }
 
 boost::asio::io_service &MyNetwork::getIOService() {

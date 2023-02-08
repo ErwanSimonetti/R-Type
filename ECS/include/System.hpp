@@ -20,6 +20,7 @@
 #include "Drawable.hpp"
 #include "Animatable.hpp"
 #include "Parallax.hpp"
+#include "FollowPath.hpp"
 #include "Engine_utils.hpp"
 
 void collision_system(sparse_array<Position> &positions, sparse_array<Hitbox> &hitboxes);
@@ -27,6 +28,7 @@ void logging_system (sparse_array<Position> const& positions, sparse_array<Veloc
 void position_system(sparse_array<Position> &positions, const sparse_array<Velocity> &velocities);
 void parallax_system(sparse_array<Animatable> &animatable, sparse_array<Position> &positions, sparse_array<Parallax> &parallax);
 void animation_system(sparse_array<Animatable> &animatable, sparse_array<Drawable> &drawable);
+void followPathSystem(const sparse_array<Position> &positions, sparse_array<Velocity> &velocities, sparse_array<FollowPath> &paths);
 EntityEvent control_system(registry &r, std::vector<int> &directions, sparse_array<Position> &positions, sparse_array<Controllable> &controllables, sparse_array<Velocity> &velocities);
 
 

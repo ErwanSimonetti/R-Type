@@ -12,11 +12,11 @@ if [ $# -eq 1 ]; then
     if [ $1 = "server" ]; then
         mkdir $CMAKE_DIRECTORY_SERVER && cd $CMAKE_DIRECTORY_SERVER && cmake .. && cmake --build . && cd .. && mv $BINARY_SERVER .. && cd ..
     elif [ $1 == "client" ]; then
-        mkdir $CMAKE_DIRECTORY_CLIENT && cd $CMAKE_DIRECTORY_CLIENT && cmake .. && cmake --build . && cd .. && mv $BINARY_CLIENT .. && cd ..
+        mkdir $CMAKE_DIRECTORY_CLIENT && cd $CMAKE_DIRECTORY_CLIENT && cmake .. && cmake --build . && cd .. && mv $BINARY_CLIENT ..  && cd .. && mv "./client/clients_tests" . && ./clients_tests
     elif [ $1 == "bootstrap" ]; then
         mkdir $CMAKE_DIRECTORY_BOOTSTRAP && cd $CMAKE_DIRECTORY_BOOTSTRAP && cmake .. && cmake --build . && cd .. && mv $BINARY_BOOTSTRAP .. && cd ..
     elif [ $1 = "clean" ]; then
-        rm -rf $CMAKE_DIRECTORY_SERVER $CMAKE_DIRECTORY_CLIENT $CMAKE_DIRECTORY_BOOTSTRAP && rm -rf $BINARY_SERVER $BINARY_CLIENT $BINARY_BOOTSTRAP && rm -rf client/*_test server/*_test bootstrap/*_tests
+        rm -rf $CMAKE_DIRECTORY_SERVER $CMAKE_DIRECTORY_CLIENT $CMAKE_DIRECTORY_BOOTSTRAP && rm -rf $BINARY_SERVER $BINARY_CLIENT $BINARY_BOOTSTRAP && rm -rf client/*_tests server/*_test bootstrap/*_tests *_tests
     fi
 else
     echo $USAGE

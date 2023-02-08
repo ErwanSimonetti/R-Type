@@ -5,6 +5,7 @@ pull_request_rules:
         - base=main
         - base=dev
       - -closed
+      - check-success=gtest
     actions:
       request_reviews:
         users:
@@ -24,6 +25,7 @@ pull_request_rules:
       - "#review-threads-unresolved=0"
       - "#changes-requested-reviews-by=0"
       - label!=manual merge
+      - check-success=gtest
     actions:
       merge:
         method: rebase

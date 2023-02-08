@@ -8,6 +8,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR})
 set(SOURCE_FILES 
   src/main.cpp
   src/Engine.cpp
+  ../ECS/src/FollowPath.cpp
   ../ECS/src/System.cpp
   ../network/src/MyNetwork.cpp
   ../network/src/Protocol.cpp
@@ -60,35 +61,23 @@ if (WIN32 AND BUILD_SHARED_LIBS)
         COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_RUNTIME_DLLS:r-type_client> $<TARGET_FILE_DIR:r-type_client> COMMAND_EXPAND_LISTS)
 endif()
 
-set(Boost_USE_STATIC_LIBS OFF) 
-set(Boost_USE_MULTITHREADED ON)  
-set(Boost_USE_STATIC_RUNTIME OFF) 
-find_package(Boost 1.45.0 COMPONENTS asio array) 
-
-if(Boost_FOUND)
-    include_directories(${Boost_INCLUDE_DIRS})
-    add_executable(r-type_client src/asio.cpp)
-    # target_link_libraries(progname ${Boost_LIBRARIES})
-    target_link_libraries(r-type_client ${Boost_ASIO_LIBRARY} ${Boost_ARRAY_LIBRARY})
-endif()
-
-include(FetchContent)
-FetchContent_Declare(
-  googletest
-  URL https://github.com/google/googletest/archive/03597a01ee50ed33e9dfd640b249b4be3799d395.zip
-)
 # For Windows: Prevent overriding the parent project's compiler/linker settings
 
 enable_testing()
 
 add_executable(
-  ecs_tests
+  clients_tests
   tests/ecs_tests.cpp
+  ../ECS/src/FollowPath.cpp
+  tests/sparse_array_tests.cpp
+  tests/entity_tests.cpp
+  tests/registry_tests.cpp
+  tests/component_tests.cpp
 )
 target_link_libraries(
-  ecs_tests
+  clients_tests
   GTest::gtest_main
 )
 
 include(GoogleTest)
-gtest_discover_tests(ecs_tests)
+gtest_discover_tests(clients_tests)

@@ -11,6 +11,7 @@
 #include <iostream>
 #include <vector>
 #include <array>
+#include <exception>
 
 template <typename Component>
 class sparse_array
@@ -52,13 +53,14 @@ class sparse_array
 
         reference_type operator[](size_t idx)
         {
-            return _data[idx];
+            return _data.at(idx);
         };
 
         const_reference_type operator[](size_t idx) const
         {
-            return _data[idx];
+            return _data.at(idx);
         }
+
         iterator begin() { return _data.begin(); };
         const_iterator begin() const { return *_data.begin(); };
         const_iterator cbegin() const { return *_data.begin(); };
@@ -99,16 +101,14 @@ class sparse_array
         template <class ... Params >
         reference_type emplace_at ( size_type pos , Params &&... par)
         {
-            // for (int x = 0; x< sizeof...(par) ;x++)
-            //     std::cout << par << std::endl;
-            //     // _data.emplace(params, pos);
             for (std::size_t x = 0; x < sizeof...(par); ++x)
                 std::cout << std::array<typename std::common_type<Params...>::type,sizeof...(par)>{par...}[x] << std::endl;
         }
 
         void erase(size_type pos)
         {
-            _data.erase(_data.begin() + pos);
+            if (_data.at(pos).has_value())
+                _data.at(pos) = std::nullopt;
         };
 
         size_type get_index(value_type const &it) const
@@ -123,7 +123,7 @@ class sparse_array
             return index;
         };
 
-        bool  empty() const
+        bool empty() const
         {
             return _data.empty();
         };
@@ -132,7 +132,7 @@ class sparse_array
             if (!D.empty()) {
                 for (size_t i = 0; i != D.size(); i++) {
                     if (D[i].has_value()) {
-                        output << i << ": " << D[i].value();
+                        output << i << ": " << D[i].value() << std::endl;
                     }
                 }
                 return output;            
