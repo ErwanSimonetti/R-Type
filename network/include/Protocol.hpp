@@ -20,7 +20,7 @@ struct ClientData {
     int16_t entity;
     int16_t directionsX;
     int16_t directionsY;
-    bool shoot;
+    uint16_t hasShot;
     uint16_t posX;
     uint16_t posY;
 };

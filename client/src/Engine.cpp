@@ -126,7 +126,7 @@ ClientData Engine::buildClientData(EntityEvent entityEvent)
     clientData.posY = pos._y;
     clientData.directionsX = 0;
     clientData.directionsY = 0;
-    clientData.shoot = false;
+    clientData.hasShot = 0;
 
     for (auto &it : entityEvent.events) {
         switch (it) {
@@ -147,7 +147,7 @@ ClientData Engine::buildClientData(EntityEvent entityEvent)
             size++;
             break;
         case GAME_EVENT::SHOOT:
-            clientData.shoot = true;
+            clientData.hasShot = 1;
             break;
         default:
             break;
@@ -187,6 +187,9 @@ void Engine::updateRegistry(ServerData data)
         } else {
             _reg.get_components<Position>()[data.entities[i]].value().set_component(data.posX[i], data.posY[i]);
             _reg.get_components<Velocity>()[data.entities[i]].value().set_component(data.directionsX[i], data.directionsY[i], 10, 10);
+            if (data.hasShot[i] == 1 && data.entities[i] != _player) {
+                create_projectile(_reg.spawn_entity(), data.entities[i], 15, 0);
+            }
         }   
     }
     printf("end of this shit\n");
@@ -220,7 +223,7 @@ void Engine::connectToServer()
     clientData.directionsX = 0;
     clientData.directionsY = 0;
     clientData.entity = -1;
-    clientData.shoot = false;
+    clientData.hasShot = 0;
     clientData.posX = 0;
     clientData.posY = 0;
 

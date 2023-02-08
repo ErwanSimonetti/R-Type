@@ -50,13 +50,20 @@ void printServerData(const ServerData &data) {
         if (i < 3) std::cout << ", ";
     }
     std::cout << "]" << std::endl;
+
+    std::cout << "hasShot: [";
+    for (int i = 0; i < 4; i++) {
+        std::cout << data.hasShot[i];
+        if (i < 3) std::cout << ", ";
+    }
+    std::cout << "]" << std::endl;
 }
 
 void printClientData(const ClientData &data) {
     std::cout << "entity: " << data.entity << std::endl;
     std::cout << "directionsX: " << data.directionsX << std::endl;
     std::cout << "directionsY: " << data.directionsY << std::endl;
-    std::cout << "shoot: " << (data.shoot ? "true" : "false") << std::endl;
+    std::cout << "shoot: " << data.hasShot << std::endl;
     std::cout << "posX: " << data.posX << std::endl;
     std::cout << "posY: " << data.posY << std::endl;
 }
