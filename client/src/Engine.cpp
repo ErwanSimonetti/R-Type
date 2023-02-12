@@ -18,7 +18,7 @@ Engine::Engine(uint16_t width, uint16_t height, boost::asio::io_service &io_serv
     _reg.register_component<FollowPath>();
     _reg.register_component<Shootable>();
 
-    // _reg.add_system<Position, Hitbox>(collision_system);
+    _reg.add_system<Position, Hitbox>(collision_system);
     _reg.add_system<Position, Velocity, Controllable>(position_system);
     _reg.add_system<Shootable>(shoot_system);
     _reg.add_system<Animatable, Position, Parallax>(parallax_system);
@@ -212,9 +212,8 @@ void Engine::connectToServer()
     // _network.getIOService().run();
 }
 
-void Engine::run() 
+void Engine::runParallax()
 {
-    create_entity(_reg.spawn_entity_by_id(0), 0, 0, 100, 100);
     create_parallax(_reg.spawn_entity(), 1920, 0, 3, PARA_1);
     create_parallax(_reg.spawn_entity(), 0, 0, 3, PARA_1);
     create_parallax(_reg.spawn_entity(), 1920, 0, 6, PARA_2);
@@ -223,7 +222,12 @@ void Engine::run()
     create_parallax(_reg.spawn_entity(), 0, 0, 9, PARA_3);
     create_parallax(_reg.spawn_entity(), 1920, 346, 12, PARA_4);
     create_parallax(_reg.spawn_entity(), 0, 346, 12, PARA_4);
-    // create_enemy_entity(_reg.spawn_entity(), 0, 0, 1900, 200);
+}
+void Engine::run() 
+{
+    create_entity(_reg.spawn_entity_by_id(0), 0, 0, 100, 100);
+    runParallax();
+    create_enemy_entity(_reg.spawn_entity(), -20, 0, 1900, 0);
     // create_player(_reg.spawn_entity(), 10, 10, 0, 0);
 
     connectToServer();

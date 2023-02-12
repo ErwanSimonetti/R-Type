@@ -53,7 +53,7 @@ class Engine {
         ClientData buildClientData(EntityEvent entityEvent);
         void sendData(ClientData data);
         void updateRegistry(ServerData data);
-
+        void runParallax();
         void runNetwork();
         void runGame();
         /// @brief function used to launch the whole game, systems and all
