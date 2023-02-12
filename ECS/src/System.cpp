@@ -9,7 +9,7 @@
 #include "System.hpp"
 #include "registry.hpp"
 
-void followPathSystem(const sparse_array<Position> &positions, sparse_array<Velocity> &velocities, sparse_array<FollowPath> &paths) {
+void followPathSystem(registry &r, const sparse_array<Position> &positions, sparse_array<Velocity> &velocities, sparse_array<FollowPath> &paths) {
     int16_t xToReach = 0;
     int16_t yToReach = 0;
     int16_t newXVelocity = 0;
@@ -38,7 +38,7 @@ void followPathSystem(const sparse_array<Position> &positions, sparse_array<Velo
     }
 }
 
-void logging_system (sparse_array<Position> const& positions, sparse_array<Velocity> const& velocities) {
+void logging_system (registry &r, sparse_array<Position> const& positions, sparse_array<Velocity> const& velocities) {
 
     for (size_t i = 0; i < positions.size() && i < velocities.size() ; ++i) {
         auto const &pos = positions[i];
@@ -55,6 +55,7 @@ void position_system(sparse_array<Position> &positions, sparse_array<Velocity> &
     for (size_t i = 0; i < positions.size() && i < velocities.size(); ++ i) {
         auto &pos = positions[i];
         auto &vel = velocities[i];
+
         if (pos && vel) {
             pos.value()._x += vel.value()._vX;
             pos.value()._y += vel.value()._vY;
@@ -67,7 +68,7 @@ void position_system(sparse_array<Position> &positions, sparse_array<Velocity> &
     }
 }
 
-void shoot_system(sparse_array<Shootable> &shootable) 
+void shoot_system(registry &r, sparse_array<Shootable> &shootable) 
 {
     for (size_t i = 0; i < shootable.size(); ++i) {
         auto &shoot = shootable[i];
@@ -134,16 +135,27 @@ EntityEvent control_system(registry &r, std::vector<int> &directions, sparse_arr
 
 bool isCollision(Position& a, Hitbox& aHitbox, Position& b, Hitbox& bHitbox)
 {
-    return (a._x < b._x + bHitbox._width && a._x + aHitbox._width > b._x && a._y < b._y + bHitbox._height && a._y + aHitbox._height > b._y);
+    // if (b._x > a._x && b._x < aHitbox._width && b._y > a._y && b._y < aHitbox._height)
+    //     return true;
+    // return false; 
+   return (a._x < b._x + bHitbox._width && a._x + aHitbox._width > b._x && a._y < b._y + bHitbox._height && a._y + aHitbox._height > b._y);
 }
 
-void collision_system(sparse_array<Position> &positions, sparse_array<Hitbox> &hitboxes)
+void collision_system(registry &r, sparse_array<Position> &positions, sparse_array<Hitbox> &hitboxes)
 {
     for (int i = 0; i < positions.size(); ++i) {;
         for (int j = i + 1; j < positions.size(); ++j) {
-            if (positions[i].has_value() && hitboxes[i].has_value() && positions[j].has_value() && hitboxes[j].has_value()) {
-                if (isCollision(positions[i].value(), hitboxes[i].value(), positions[j].value(), hitboxes[j].value())) {
-                    // std::cout << "jeanne au secours" << std::endl;
+            auto &hbxI = hitboxes[i];
+            auto &hbxJ = hitboxes[j];
+            if (positions[i] && hbxI && positions[j] && hbxJ 
+                && isCollision(positions[i].value(), hbxI.value(), positions[j].value(), hbxJ.value())) {
+                    if ((hbxI.value()._type == ENEMY || hbxI.value()._type == PROJECTILE)
+                     && (hbxJ.value()._type == ENEMY || hbxJ.value()._type == PROJECTILE) 
+                     && hbxI.value()._active && hbxJ.value()._active ) {
+                        hbxI.value()._active = false;
+                        hbxJ.value()._active = false;
+                        r.kill_entity(entity(i));
+                        r.kill_entity(entity(j));
                 }
             }
         }
