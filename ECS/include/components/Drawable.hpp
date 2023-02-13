@@ -8,19 +8,8 @@
 #include <SFML/Graphics.hpp>
 #include <unordered_map>
 #include <memory>
-
+#include "ECS_Utils.hpp"
 #pragma once
-
-enum OBJECT {
-    SHIP,
-    ENEMYSHIP,
-    BULLET,
-    PARA_1,
-    PARA_2,
-    PARA_3,
-    PARA_4
-};
-
 
 struct Drawable {
 

@@ -7,19 +7,14 @@
 
 #pragma once
 
+#include "ECS_Utils.hpp"
 #include "../entity.hpp"
 #include <SFML/Graphics.hpp>
-
-enum TYPE {
-    PLAYER,
-    ENEMY,
-    PROJECTILE
-};
 
 struct Hitbox {
     Hitbox() = default;
 
-    void set_component(uint16_t width, uint16_t height, TYPE type) {
+    void set_component(uint16_t width, uint16_t height, OBJECT type) {
         _width = width;
         _height = height;
         _type = type;
@@ -28,7 +23,7 @@ struct Hitbox {
 
     uint16_t _width;
     uint16_t _height;
-    TYPE _type;
+    OBJECT _type;
     bool _active;
 
 };
