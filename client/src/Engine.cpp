@@ -15,16 +15,18 @@ Engine::Engine(uint16_t width, uint16_t height, boost::asio::io_service &io_serv
     _reg.register_component<Pet>();
     _reg.register_component<Hitbox>();
     _reg.register_component<Controllable>();
+    _reg.register_component<Animatable>();
+    _reg.register_component<Parallax>();
     _reg.register_component<FollowPath>();
     _reg.register_component<Shootable>();
 
-    _reg.add_system<Position, Hitbox>(collision_system);
+    // _reg.add_system<Position, Hitbox>(collision_system);
     _reg.add_system<Position, Velocity, Controllable>(position_system);
     _reg.add_system<Shootable>(shoot_system);
     _reg.add_system<Animatable, Position, Parallax>(parallax_system);
     _reg.add_system<Animatable, Drawable>(animation_system);
     _reg.add_system<Position, Drawable>(std::bind(&RenderGame::draw_system, &_game, std::placeholders::_1, std::placeholders::_2));
-    _reg.add_system<Position, Velocity, FollowPath>(followPathSystem);
+    // _reg.add_system<Position, Velocity, FollowPath>(followPathSystem);
 }
 
 Engine::~Engine()
@@ -35,38 +37,79 @@ registry &Engine::get_registry() {
     return _reg;
 }
 
-entity Engine::create_parallax(const int16_t id, const uint16_t posX, const uint16_t posY, const uint16_t speed, const OBJECT obj) 
-{
-    entity ret = _reg.spawn_entity_by_id(id);
 
-void Engine::create_entity(entity newEntity, sf::Color col, const uint16_t speedX, const uint16_t speedY, const uint16_t posX, const uint16_t posY)
+void Engine::create_entity(entity newEntity, const uint16_t speedX, const uint16_t speedY, const uint16_t posX, const uint16_t posY)
 {
     _reg.emplace_component<Position>(newEntity, posX, posY);
     _reg.emplace_component<Velocity>(newEntity, speedX, speedY, 0, 0);
-    _reg.emplace_component<Drawable>(newEntity, 45, col);
+    _reg.emplace_component<Drawable>(newEntity, SHIP);
+    _reg.emplace_component<Animatable>(newEntity, 90);
 }
 
-void Engine::create_player(entity newEntity, sf::Color col, const uint16_t speedX, const uint16_t speedY, const uint16_t posX, const uint16_t posY)
+void Engine::create_player(entity newEntity, const uint16_t speedX, const uint16_t speedY, const uint16_t posX, const uint16_t posY)
 {
     Controllable contr;
-    Animatable anim;
 
     _reg.emplace_component<Position>(newEntity, posX, posY);
-    _reg.emplace_component<Velocity>(newEntity, speedX, speedY, 0, 0);
-    _reg.emplace_component<Drawable>(newEntity, 45, col);
+    _reg.emplace_component<Velocity>(newEntity, 0, 0, speedX, speedY);
+    _reg.emplace_component<Drawable>(newEntity, SHIP);
     _reg.add_component<Controllable>(newEntity, std::move(contr));
+    _reg.emplace_component<Animatable>(newEntity, 90);
+    _reg.emplace_component<Hitbox>(newEntity, posX+45, posY+45, PLAYER);
+    _reg.emplace_component<Shootable>(newEntity);
+    // _player = newEntity;
     // can shoot component
 
 }
 
-void Engine::create_enemy_entity(entity newEntity, sf::Color col, const uint16_t speedX, const uint16_t speedY, const uint16_t posX, const uint16_t posY)
+void Engine::create_enemy_entity(entity newEntity, const uint16_t speedX, const uint16_t speedY, const uint16_t posX, const uint16_t posY)
 {    
     _reg.emplace_component<Position>(newEntity, posX, posY);
     _reg.emplace_component<Velocity>(newEntity, speedX, speedY, 0, 0);
-    _reg.emplace_component<Drawable>(newEntity, 45, col);
+    _reg.emplace_component<Drawable>(newEntity, SHIP);
+    _reg.emplace_component<Hitbox>(newEntity, posX+45, posY+45, ENEMY);
     _reg.emplace_component<FollowPath>(newEntity, "middle_diagonal");
     // can shoot component
 }
+
+
+void Engine::create_parallax(entity newEntity, const uint16_t posX, const uint16_t posY, const uint16_t speed, const OBJECT obj) 
+{
+    _reg.emplace_component<Position>(newEntity, posX, posY);
+    _reg.emplace_component<Drawable>(newEntity, obj);
+    _reg.emplace_component<Animatable>(newEntity, speed);
+    _reg.emplace_component<Parallax>(newEntity, -1920, 1920);
+}
+
+void Engine::create_projectile(entity newEntity, int16_t parentId, const uint16_t velX, const uint16_t velY)
+{
+    Drawable draw; 
+    Position pos;
+    Velocity vel;
+    Hitbox hbx;
+    Pet pet;
+    Animatable anim;
+
+    int16_t posX =_reg.get_components<Position>()[parentId].value()._x;
+    int16_t posY =_reg.get_components<Position>()[parentId].value()._y;
+    pos.set_component(posX, posY + 3);
+    _reg.add_component<Position>(newEntity, std::move(pos));
+
+    vel.set_component(velX, velY, 0, 0);
+    _reg.add_component<Velocity>(newEntity, std::move(vel));
+
+    draw.set_component(BULLET);
+    _reg.add_component<Drawable>(newEntity, std::move(draw));
+
+    pet.set_component(entity(parentId));
+    _reg.add_component<Pet>(newEntity, std::move(pet));
+
+    _reg.add_component<Hitbox>(newEntity, std::move(hbx));
+    _reg.emplace_component<Hitbox>(newEntity, posX+10, posY+10, PROJECTILE);
+
+    anim.set_component(10);
+    _reg.add_component<Animatable>(newEntity, std::move(anim));
+}  
 
 ClientData Engine::buildClientData(EntityEvent entityEvent) 
 {
@@ -83,6 +126,7 @@ ClientData Engine::buildClientData(EntityEvent entityEvent)
     clientData.posY = pos._y;
     clientData.directionsX = 0;
     clientData.directionsY = 0;
+    clientData.hasShot = 0;
 
     for (auto &it : entityEvent.events) {
         switch (it) {
@@ -113,30 +157,6 @@ ClientData Engine::buildClientData(EntityEvent entityEvent)
     printClientData(clientData);
     printf("\n");
     return clientData;
-}
-
-entity Engine::create_enemy_entity(int id, const int16_t velX, const uint16_t posX, const uint16_t posY)
-{    
-    entity ret = _reg.spawn_entity_by_id(id);
-
-    Drawable draw;
-    Position pos;
-    Velocity vel;
-    Hitbox hbx;
-
-    _reg.add_component<Position>(ret, std::move(pos));
-    _reg.emplace_component<Position>(ret, posX, posY);
-
-    _reg.add_component<Velocity>(ret, std::move(vel));
-    _reg.emplace_component<Velocity>(ret, velX, 0);
-
-    _reg.add_component<Hitbox>(ret, std::move(hbx));
-    _reg.emplace_component<Hitbox>(ret, posX+45, posY+45);
-
-    _reg.add_component<Drawable>(ret, std::move(draw));
-    _reg.emplace_component<Drawable>(ret, SHIP);
-
-    return ret;
 }
 
 void Engine::sendData(ClientData data) 
@@ -172,7 +192,7 @@ void Engine::updateRegistry(ServerData data)
             }
         }   
     }
-    std::cout << "update client registry" << std::endl;
+    printf("end of this shit\n");
 }
 
 void Engine::runNetwork() 
@@ -212,8 +232,9 @@ void Engine::connectToServer()
     // _network.getIOService().run();
 }
 
-void Engine::runParallax()
+void Engine::run() 
 {
+    create_entity(_reg.spawn_entity_by_id(0), 0, 0, 100, 100);
     create_parallax(_reg.spawn_entity(), 1920, 0, 3, PARA_1);
     create_parallax(_reg.spawn_entity(), 0, 0, 3, PARA_1);
     create_parallax(_reg.spawn_entity(), 1920, 0, 6, PARA_2);
@@ -222,12 +243,7 @@ void Engine::runParallax()
     create_parallax(_reg.spawn_entity(), 0, 0, 9, PARA_3);
     create_parallax(_reg.spawn_entity(), 1920, 346, 12, PARA_4);
     create_parallax(_reg.spawn_entity(), 0, 346, 12, PARA_4);
-}
-void Engine::run() 
-{
-    create_entity(_reg.spawn_entity_by_id(0), 0, 0, 100, 100);
-    runParallax();
-    create_enemy_entity(_reg.spawn_entity(), -20, 0, 1900, 0);
+    // create_enemy_entity(_reg.spawn_entity(), 0, 0, 1900, 200);
     // create_player(_reg.spawn_entity(), 10, 10, 0, 0);
 
     connectToServer();
@@ -238,5 +254,5 @@ void Engine::run()
     std::thread networkThread(&Engine::runNetwork, this);
 
     gameThread.join();
-    //networkThread.join();
+    networkThread.join();
 }

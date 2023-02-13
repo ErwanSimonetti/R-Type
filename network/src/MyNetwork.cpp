@@ -46,10 +46,6 @@ boost::asio::io_service &MyNetwork::getIOService() {
     return _io_services;
 }
 
-boost::asio::io_service &MyNetwork::getIOService() {
-    return _io_services;
-}
-    
 // void Network::UDPReceive(std::function<void()> func, bool isServer)
 // {
 //     std::memset(_recvBuffer, '\0', 1024);
