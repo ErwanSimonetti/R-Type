@@ -51,7 +51,7 @@ void logging_system (registry &r, sparse_array<Position> const& positions, spars
     }
 }
 
-void position_system(sparse_array<Position> &positions, sparse_array<Velocity> &velocities) {
+void position_system(sparse_array<Position> &positions, sparse_array<Velocity> &velocities, sparse_array<Controllable> &controllables) {
     for (size_t i = 0; i < positions.size() && i < velocities.size(); ++ i) {
         auto &pos = positions[i];
         auto &vel = velocities[i];
@@ -81,13 +81,15 @@ void shoot_system(registry &r, sparse_array<Shootable> &shootable)
         }
     }
 }
-EntityEvent control_system(registry &r, std::vector<int> &directions, sparse_array<Position> &positions, sparse_array<Controllable> &controllables, sparse_array<Velocity> &velocities) {
+
+EntityEvent control_system(registry &r, std::vector<int> &directions, sparse_array<Position> &positions, sparse_array<Controllable> &controllables, sparse_array<Velocity> &velocities, sparse_array<Shootable> &shootable) {
+
     EntityEvent entityEvent;
     entityEvent.entity = -1;
     int current_direction = 0;
-    int x_velocity = 0;
-    int y_velocity = 0;
-    for (size_t i = 0; i < velocities.size() && i < controllables.size() && i < positions.size(); ++ i) {
+    int16_t xDirection = 0;
+    int16_t yDirection = 0;
+    for (size_t i = 0; i < velocities.size() && i < controllables.size() && i < positions.size() && i < shootable.size(); ++ i) {
         auto &vel = velocities[i];
         auto &pos = positions[i];
         auto &contr = controllables[i];
@@ -99,35 +101,38 @@ EntityEvent control_system(registry &r, std::vector<int> &directions, sparse_arr
                 contr.value()._current_action = current_direction;
                 switch (current_direction) {
                     case KEYBOARD::ARROW_UP:
-                        y_velocity = -1; // FIXME: should be 1 and not minus
+                        yDirection = -1;
                         entityEvent.events.emplace_back(GAME_EVENT::UP);
                         break;
+                    case KEYBOARD::ARROW_DOWN:
+                        yDirection = 1;
+                        entityEvent.events.emplace_back(GAME_EVENT::DOWN);
+                        break;
                     case KEYBOARD::ARROW_LEFT:
-                        x_velocity = -1;
+                        xDirection = -1;
                         entityEvent.events.emplace_back(GAME_EVENT::LEFT);
                         break;
                     case KEYBOARD::ARROW_RIGHT:
-                        x_velocity = 1;
-                        entityEvent.events.emplace_back(GAME_EVENT::RIGHT);
-                        break;
-                    case KEYBOARD::ARROW_DOWN:
-                        y_velocity = 1;
+                        xDirection = 1;
                         entityEvent.events.emplace_back(GAME_EVENT::RIGHT);
                         break;
                     case KEYBOARD::SPACE:
-                        entityEvent.events.emplace_back(GAME_EVENT::SHOOT);
+                        if (shoot.value()._canShoot == true) {
+                            entityEvent.events.emplace_back(GAME_EVENT::SHOOT);
+                            shoot.value()._clock.restart();
+                        }
                         break;
                     default:
-                        x_velocity = 0;
-                        y_velocity = 0;
+                        xDirection = 0;
+                        yDirection = 0;
                         break;
                 }
             }
             if (directions.empty()) {
-                x_velocity = 0;
-                y_velocity = 0;
+                xDirection = 0;
+                yDirection = 0;
             }
-            vel.value().set_component(x_velocity, y_velocity);
+            vel.value().set_component(xDirection * vel.value()._speedX, yDirection * vel.value()._speedY, vel.value()._speedX, vel.value()._speedY);
         }
     }
     return entityEvent;
@@ -135,9 +140,6 @@ EntityEvent control_system(registry &r, std::vector<int> &directions, sparse_arr
 
 bool isCollision(Position& a, Hitbox& aHitbox, Position& b, Hitbox& bHitbox)
 {
-    // if (b._x > a._x && b._x < aHitbox._width && b._y > a._y && b._y < aHitbox._height)
-    //     return true;
-    // return false; 
    return (a._x < b._x + bHitbox._width && a._x + aHitbox._width > b._x && a._y < b._y + bHitbox._height && a._y + aHitbox._height > b._y);
 }
 
