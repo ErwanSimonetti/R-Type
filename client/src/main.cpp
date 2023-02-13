@@ -13,12 +13,6 @@ void salut()
     std::cout << "hello";
 }
 
-void printMonCul(ClientData clientData) {
-    std::cerr << "⠄⠄⠸⣿⣿⢣⢶⣟⣿⣖⣿⣷⣻⣮⡿⣽⣿⣻⣖⣶⣤⣭⡉⠄⠄⠄⠄⠄\n⠄⠄⠄⢹⠣⣛⣣⣭⣭⣭⣁⡛⠻⢽⣿⣿⣿⣿⢻⣿⣿⣿⣽⡧⡄⠄⠄⠄\n⠄⠄⠄⠄⣼⣿⣿⣿⣿⣿⣿⣿⣿⣶⣌⡛⢿⣽⢘⣿⣷⣿⡻⠏⣛⣀⠄⠄\n⠄⠄⠄⣼⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣦⠙⡅⣿⠚⣡⣴⣿⣿⣿⡆⠄\n⠄⠄⣰⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⠄⣱⣾⣿⣿⣿⣿⣿⣿⠄\n⠄⢀⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⢸⣿⣿⣿⣿⣿⣿⣿⣿⠄\n⠄⣸⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⠣⣿⣿⣿⣿⣿⣿⣿⣿⣿⠄\n⠄⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠿⠛⠑⣿⣮⣝⣛⠿⠿⣿⣿⣿⣿⠄\n⢠⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣶⠄⠄⠄⠄⣿⣿⣿⣿⣿⣿⣿⣿⣿⡟⠄\n⢸⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠇⠄⠄⠄⠄⢹⣿⣿⣿⣿⣿⣿⣿⣿⠁⠄\n⣸⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠏⠄⠄⠄⠄⠄⠸⣿⣿⣿⣿⣿⡿⢟⣣⣀\n";
-    std::cerr << "|" << clientData.entity << "|" << "\n";
-    std::cerr << "|" << clientData.posX << " " << clientData.posY << "|" << "\n";
-}
-
 int main(void)
 {   
     boost::asio::io_service io_service;
@@ -26,18 +20,5 @@ int main(void)
     printf("client\n");
 
     eng.run();
-    // ClientData clientData;
-    // clientData.event = 12;
-    // strcpy(clientData.string, "you massive fuck");
-
-    // Protocol prot;
-    // // DataTypes lel = typeA;
-    // char *ok = prot.serialiseData<ClientData>(clientData);
-    // // ClientData test;
-    // // std::memcpy(&test, ok, sizeof(ClientData));
-    // // std::cerr << test.event << " " << test.string << "\n\n";
-    // eng._network.udpSend<ClientData>(ok, eng._network._endpoints.at(0));
-    // eng.printMonCul();
-
     return 0;
 }
