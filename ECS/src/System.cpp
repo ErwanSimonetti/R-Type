@@ -38,6 +38,45 @@ void followPathSystem(registry &r, const sparse_array<Position> &positions, spar
     }
 }
 
+void parallax_system(registry &r, sparse_array<Animatable> &animatable, sparse_array<Position> &positions, sparse_array<Parallax> &parallax) {
+    for (size_t i = 0; i < positions.size() && i < animatable.size() && i < parallax.size(); ++ i) {
+        auto &pos = positions[i];
+        auto &anim = animatable[i];
+        auto &para = parallax[i];
+        if(pos && anim && para) {
+            if (anim.value()._clock.getElapsedTime().asMilliseconds() >= 10) {
+                pos.value()._x -= anim.value()._speed;
+                anim.value()._clock.restart();
+            }
+            if (pos.value()._x <= para.value()._endPos) {
+                pos.value()._x = para.value()._startPos;
+            }
+        }
+    }
+}
+
+void animation_system(registry &r, sparse_array<Animatable> &animatable, sparse_array<Drawable> &drawable) 
+{
+    for (size_t i = 0; i < animatable.size() && i < drawable.size(); ++ i) {
+        auto &anim = animatable[i];
+        auto &draw = drawable[i];
+        if (anim && draw) {
+            if (anim.value()._clock.getElapsedTime().asMilliseconds() >= anim.value()._speed) {
+                sf::IntRect newRect =  draw.value()._sprite.getTextureRect();
+                newRect.left += draw.value()._textureRect;
+                draw.value()._sprite.setTextureRect(newRect);
+                anim.value()._clock.restart();
+            }
+            if (draw.value()._sprite.getTextureRect().left >= draw.value()._textureSize) {
+                sf::IntRect newRect =  draw.value()._sprite.getTextureRect();
+                newRect.left = 0;
+                draw.value()._sprite.setTextureRect(newRect);
+
+            }
+        }
+    }
+}
+
 void logging_system (registry &r, sparse_array<Position> const& positions, sparse_array<Velocity> const& velocities) {
 
     for (size_t i = 0; i < positions.size() && i < velocities.size() ; ++i) {
@@ -51,7 +90,8 @@ void logging_system (registry &r, sparse_array<Position> const& positions, spars
     }
 }
 
-void position_system(sparse_array<Position> &positions, sparse_array<Velocity> &velocities, sparse_array<Controllable> &controllables) {
+void position_system(registry &r, sparse_array<Position> &positions, sparse_array<Velocity> &velocities, const sparse_array<Controllable> &controllables) 
+{
     for (size_t i = 0; i < positions.size() && i < velocities.size(); ++ i) {
         auto &pos = positions[i];
         auto &vel = velocities[i];
