@@ -28,13 +28,13 @@ registry Engine::get_registry()
     return _reg;
 }
 
-void Engine::create_entity(entity newEntity, sf::Color col, const uint16_t velX, const uint16_t velY, const uint16_t posX, const uint16_t posY)
+void Engine::create_entity(entity newEntity, const uint16_t velX, const uint16_t velY, const uint16_t posX, const uint16_t posY)
 {
     _reg.emplace_component<Position>(newEntity, posX, posY);
     _reg.emplace_component<Velocity>(newEntity, velX, velY, 10, 10);
 }
 
-void Engine::create_player(entity newEntity, sf::Color col, const uint16_t velX, const uint16_t velY, const uint16_t posX, const uint16_t posY)
+void Engine::create_player(entity newEntity, const uint16_t velX, const uint16_t velY, const uint16_t posX, const uint16_t posY)
 {
     Controllable contr;
 
@@ -46,7 +46,7 @@ void Engine::create_player(entity newEntity, sf::Color col, const uint16_t velX,
     _players.emplace_back(newPlayer);
 }
 
-void Engine::create_enemy_entity(entity newEntity, sf::Color col, const uint16_t velX, const uint16_t velY, const uint16_t posX, const uint16_t posY)
+void Engine::create_enemy_entity(entity newEntity, const uint16_t velX, const uint16_t velY, const uint16_t posX, const uint16_t posY)
 {
     _reg.emplace_component<Position>(newEntity, posX, posY);
     _reg.emplace_component<Velocity>(newEntity, velX, velY, 10, 10);
@@ -130,7 +130,6 @@ void Engine::updateRegistry(ClientData data)
 
 void Engine::runNetwork() 
 {
-    printf("before UDPReceiveServer\n");
     _network.UDPReceiveServer(std::bind(&Engine::updateRegistry, this, std::placeholders::_1));
     _network.getIOService().run();
 }
