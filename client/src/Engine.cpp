@@ -50,13 +50,14 @@ void Engine::create_player(entity newEntity, const uint16_t speedX, const uint16
 {
     Controllable contr;
 
+    _reg.add_component<Controllable>(newEntity, std::move(contr));
+
+    _reg.emplace_component<Shootable>(newEntity);
+    _reg.emplace_component<Drawable>(newEntity, SHIP);
+    _reg.emplace_component<Animatable>(newEntity, 90);
     _reg.emplace_component<Position>(newEntity, posX, posY);
     _reg.emplace_component<Velocity>(newEntity, 0, 0, speedX, speedY);
-    _reg.emplace_component<Drawable>(newEntity, SHIP);
-    _reg.add_component<Controllable>(newEntity, std::move(contr));
-    _reg.emplace_component<Animatable>(newEntity, 90);
-    _reg.emplace_component<Hitbox>(newEntity, posX+45, posY+45, PLAYER);
-    _reg.emplace_component<Shootable>(newEntity);
+    _reg.emplace_component<Hitbox>(newEntity, posX+45, posY+45, SHIP);
     // _player = newEntity;
     // can shoot component
 
@@ -67,7 +68,7 @@ void Engine::create_enemy_entity(entity newEntity, const uint16_t speedX, const 
     _reg.emplace_component<Position>(newEntity, posX, posY);
     _reg.emplace_component<Velocity>(newEntity, speedX, speedY, 0, 0);
     _reg.emplace_component<Drawable>(newEntity, ENEMYSHIP);
-    _reg.emplace_component<Hitbox>(newEntity, posX+45, posY+45, ENEMY);
+    _reg.emplace_component<Hitbox>(newEntity, posX+45, posY+45, ENEMYSHIP);
     _reg.emplace_component<FollowPath>(newEntity, "middle_diagonal");
     // can shoot component
 }
@@ -104,7 +105,7 @@ void Engine::create_projectile(entity newEntity, int16_t parentId, const uint16_
     _reg.add_component<Pet>(newEntity, std::move(pet));
 
     _reg.add_component<Hitbox>(newEntity, std::move(hbx));
-    _reg.emplace_component<Hitbox>(newEntity, posX+10, posY+10, PROJECTILE);
+    _reg.emplace_component<Hitbox>(newEntity, posX+10, posY+10, BULLET);
 
     anim.set_component(10);
     _reg.add_component<Animatable>(newEntity, std::move(anim));
@@ -242,7 +243,7 @@ void Engine::run()
     create_parallax(_reg.spawn_entity(), 0, 0, 9, PARA_3);
     create_parallax(_reg.spawn_entity(), 1920, 346, 12, PARA_4);
     create_parallax(_reg.spawn_entity(), 0, 346, 12, PARA_4);
-    create_enemy_entity(_reg.spawn_entity(), -20, 0, 1900, 200);
+    create_enemy_entity(_reg.spawn_entity(), -10, 0, 1900, 200);
     // create_player(_reg.spawn_entity(), 10, 10, 0, 0);
 
     connectToServer();

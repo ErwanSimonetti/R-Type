@@ -4,9 +4,4 @@ a.out
 launch
 r-type_client
 r-type_server
-<<<<<<< HEAD
 client_tests
-=======
-r-type_bootstrap
-ecs_tests
->>>>>>> 7368265 (feat: Refactored everything)
