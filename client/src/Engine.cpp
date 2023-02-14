@@ -58,8 +58,6 @@ void Engine::create_player(entity newEntity, const uint16_t speedX, const uint16
     _reg.emplace_component<Position>(newEntity, posX, posY);
     _reg.emplace_component<Velocity>(newEntity, 0, 0, speedX, speedY);
     _reg.emplace_component<Hitbox>(newEntity, posX+45, posY+45, SHIP);
-    // _player = newEntity;
-    // can shoot component
 
 }
 
@@ -229,7 +227,6 @@ void Engine::connectToServer()
 
     _network.UDPReceiveClient(std::bind(&Engine::updateRegistry, this, std::placeholders::_1), false);
     sendData(clientData);
-    // _network.getIOService().run();
 }
 
 void Engine::run() 
@@ -244,7 +241,6 @@ void Engine::run()
     create_parallax(_reg.spawn_entity(), 1920, 346, 12, PARA_4);
     create_parallax(_reg.spawn_entity(), 0, 346, 12, PARA_4);
     create_enemy_entity(_reg.spawn_entity(), -10, 0, 1900, 200);
-    // create_player(_reg.spawn_entity(), 10, 10, 0, 0);
 
     connectToServer();
 
