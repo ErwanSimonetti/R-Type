@@ -25,7 +25,7 @@
 #include "Engine_utils.hpp"
 
 /**
- * @brief system of logging displa all nodes with position and velocity
+ * @brief logging system displaying all nodes with their position & velocity
  * 
  * @param r registry modifiable object for change data in the ECS
  * @param positions sparse array of positions
