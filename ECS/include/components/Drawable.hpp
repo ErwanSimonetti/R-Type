@@ -12,15 +12,6 @@
 
 #pragma once
 
-enum OBJECT {
-    SHIP,
-    BULLET,
-    PARA_1,
-    PARA_2,
-    PARA_3,
-    PARA_4
-};
-
 struct Drawable {
 
 std::unordered_map<OBJECT, std::string> textureMap = {

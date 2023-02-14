@@ -5,6 +5,9 @@
 ** ECS_Utils
 */
 
+#ifndef ECS_UTILS_HPP_
+#define ECS_UTILS_HPP_
+
 #pragma once
 
 enum OBJECT {
@@ -16,3 +19,5 @@ enum OBJECT {
     PARA_3,
     PARA_4
 };
+
+#endif /* !ECS_UTILS_HPP_ */
