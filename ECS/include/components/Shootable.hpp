@@ -7,7 +7,6 @@
 
 #pragma once
 
-// #include "../entity.hpp"
 #include <SFML/Graphics.hpp>
 
 struct Shootable {

@@ -8,6 +8,7 @@
 #include <SFML/Graphics.hpp>
 #include <unordered_map>
 #include <memory>
+#include "ECS_Utils.hpp"
 
 #pragma once
 
@@ -20,11 +21,11 @@ enum OBJECT {
     PARA_4
 };
 
-
 struct Drawable {
 
 std::unordered_map<OBJECT, std::string> textureMap = {
     { SHIP, "ressources/ship.png" },
+    { ENEMYSHIP, "ressources/enemyship.png" },
     { BULLET, "ressources/shoot.png" },
     { PARA_1, "ressources/para_1.png" },
     { PARA_2, "ressources/para_2.png" },
@@ -34,6 +35,7 @@ std::unordered_map<OBJECT, std::string> textureMap = {
 
 std::unordered_map<OBJECT, sf::IntRect> boundsMap = {
     { SHIP, sf::IntRect(0, 0, 101, 41) },
+    { ENEMYSHIP, sf::IntRect(0, 0, 101, 41) },
     { BULLET, sf::IntRect(0, 0, 43, 41) },
     { PARA_1, sf::IntRect(0, 0, 1920, 1129) },
     { PARA_2, sf::IntRect(0, 0, 1920, 1059) },
@@ -43,6 +45,7 @@ std::unordered_map<OBJECT, sf::IntRect> boundsMap = {
 
 std::unordered_map<OBJECT, uint16_t> textureSize = {
     { SHIP,  808},
+    { ENEMYSHIP,  808},
     { BULLET, 174 },
     { PARA_1, 1920 },
     { PARA_2, 1920 },
@@ -52,6 +55,7 @@ std::unordered_map<OBJECT, uint16_t> textureSize = {
 
 std::unordered_map<OBJECT, uint16_t> textureRect = {
     { SHIP,  101},
+    { ENEMYSHIP,  101},
     { BULLET, 43 },
     { PARA_1, 1920 },
     { PARA_2, 1920 },

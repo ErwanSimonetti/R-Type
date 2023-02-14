@@ -94,7 +94,10 @@ class registry
 
         template <typename Component>
         void remove_component(entity const &from) {
-            std::any_cast<sparse_array<Component>&>(_components_arrays.find(std::type_index(typeid(Component)))->second).erase(from);
+            auto componentArray = std::any_cast<sparse_array<Component>&>(_components_arrays.find(std::type_index(typeid(Component)))->second);
+            if (from < componentArray.size()) {
+                std::any_cast<sparse_array<Component>&>(_components_arrays.find(std::type_index(typeid(Component)))->second).erase(from);
+            }
         }
 
         template <class ... Components, typename Function>
@@ -108,7 +111,7 @@ class registry
         template <class... Components , typename Function>
         void add_system(Function const & f) {
             auto system = [f](registry& reg) {
-                f(reg.get_components<Components>()...);
+                f(reg, reg.get_components<Components>()...);
             };
             _systems.push_back(system);
         };
