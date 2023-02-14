@@ -16,7 +16,7 @@
 struct NoEntityFound : public std::exception
 {
     /**
-     * @brief give a char * for explain error
+     * @brief  to explain an error
      * 
      * @return const char* value of error
      */

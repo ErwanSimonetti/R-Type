@@ -39,7 +39,7 @@ class Engine {
          * 
          * @return registry 
          */
-        registry get_registry();
+        registry &get_registry();
 
         /** 
          * @brief Function used to create a friendly "character" entity, giving it an id, and various parameters 
@@ -51,7 +51,7 @@ class Engine {
          * @param posY uint_16_t corresponding to the horizontal position
          * @return a friendly entity, that is controllable
          **/
-        void create_player(entity newEntity, sf::Color col, const uint16_t speedX, const uint16_t speedY, const uint16_t posX, const uint16_t posY);
+        void create_player(entity newEntity, const uint16_t speedX, const uint16_t speedY, const uint16_t posX, const uint16_t posY);
         
         /**
          * @brief Function used to create an enemy "character" entity, giving it an id, and various parameters 
@@ -63,7 +63,7 @@ class Engine {
          * @param posY uint_16_t corresponding to the horizontal position
          * @return an enemy enity, that might be controlled by the user
          **/
-        void create_enemy_entity(entity newEntity, sf::Color col, const uint16_t speedX, const uint16_t speedY, const uint16_t posX, uint16_t posY);
+        void create_enemy_entity(entity newEntity, const uint16_t speedX, const uint16_t speedY, const uint16_t posX, uint16_t posY);
 
         /** 
          * @brief Function used to create an entity, giving it an id, and various parameters.
@@ -74,7 +74,7 @@ class Engine {
          * @param posY uint_16_t corresponding to the horizontal position
          * @return an enity, that might be controlled by the user
          */
-        void create_entity(entity newEntity, sf::Color col, const uint16_t speedX, const uint16_t speedY, const uint16_t posX, const uint16_t posY);
+        void create_entity(entity newEntity, const uint16_t speedX, const uint16_t speedY, const uint16_t posX, const uint16_t posY);
 
         /// @brief Generate a projectile using the id of a previously generated ship entity
         /// @param parentId id of the parent ship
