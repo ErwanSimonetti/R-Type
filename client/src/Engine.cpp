@@ -37,7 +37,6 @@ registry &Engine::get_registry() {
     return _reg;
 }
 
-
 void Engine::create_entity(entity newEntity, const uint16_t speedX, const uint16_t speedY, const uint16_t posX, const uint16_t posY)
 {
     _reg.emplace_component<Position>(newEntity, posX, posY);
