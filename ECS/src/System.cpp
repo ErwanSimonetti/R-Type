@@ -77,7 +77,7 @@ void animation_system(registry &r, sparse_array<Animatable> &animatable, sparse_
     }
 }
 
-void logging_system (registry &r, sparse_array<Position> const& positions, sparse_array<Velocity> const& velocities) {
+void logging_system(registry &r, sparse_array<Position> const& positions, sparse_array<Velocity> const& velocities) {
 
     for (size_t i = 0; i < positions.size() && i < velocities.size() ; ++i) {
         auto const &pos = positions[i];

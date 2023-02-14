@@ -50,6 +50,12 @@ class Engine {
 
         void create_entity(entity newEntity, const uint16_t speedX, const uint16_t speedY, const uint16_t posX, const uint16_t posY);
 
+        /// @brief Generate a projectile using the id of a previously generated ship entity
+        /// @param parentId id of the parent ship
+        /// @param col color
+        /// @param velX x velocity
+        /// @param velY y velocity
+        /// @return a projectile entity 
         void create_projectile(entity newEntity, int16_t parentId, const uint16_t velX, const uint16_t velY);
 
         void create_parallax(entity newEntity, const uint16_t posX, const uint16_t posY, const uint16_t speed, const OBJECT obj);

@@ -19,7 +19,6 @@ Engine::Engine(uint16_t width, uint16_t height, boost::asio::io_service &io_serv
     _reg.register_component<Parallax>();
     _reg.register_component<FollowPath>();
     _reg.register_component<Shootable>();
-
     _reg.add_system<Position, Hitbox>(collision_system);
     _reg.add_system<Position, Velocity, Controllable>(position_system);
     _reg.add_system<Shootable>(shoot_system);
@@ -55,6 +54,11 @@ void Engine::create_player(entity newEntity, const uint16_t speedX, const uint16
     _reg.emplace_component<Animatable>(newEntity, 90);
     _reg.emplace_component<Position>(newEntity, posX, posY);
     _reg.emplace_component<Velocity>(newEntity, 0, 0, speedX, speedY);
+    _reg.emplace_component<Drawable>(newEntity, SHIP);
+    _reg.emplace_component<Animatable>(newEntity, 90);
+    _reg.emplace_component<Shootable>(newEntity);
+    // _player = newEntity;
+    // can shoot component
     _reg.emplace_component<Hitbox>(newEntity, posX+45, posY+45, SHIP);
 
 }
@@ -63,8 +67,13 @@ void Engine::create_enemy_entity(entity newEntity, const uint16_t speedX, const 
 {    
     _reg.emplace_component<Position>(newEntity, posX, posY);
     _reg.emplace_component<Velocity>(newEntity, speedX, speedY, 0, 0);
+
+    _reg.emplace_component<Drawable>(newEntity, SHIP);
+    _reg.emplace_component<Hitbox>(newEntity, posX+45, posY+45, SHIP);
+    
     _reg.emplace_component<Drawable>(newEntity, ENEMYSHIP);
     _reg.emplace_component<Hitbox>(newEntity, posX+45, posY+45, ENEMYSHIP);
+
     _reg.emplace_component<FollowPath>(newEntity, "middle_diagonal");
     // can shoot component
 }
