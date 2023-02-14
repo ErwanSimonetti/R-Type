@@ -72,7 +72,7 @@ void Engine::create_enemy_entity(entity newEntity, const uint16_t speedX, const 
     
     _reg.emplace_component<Drawable>(newEntity, ENEMYSHIP);
     _reg.emplace_component<Hitbox>(newEntity, posX+45, posY+45, ENEMYSHIP);
-
+    _reg.emplace_component<Animatable>(newEntity, 90);
     _reg.emplace_component<FollowPath>(newEntity, "middle_diagonal");
     // can shoot component
 }
