@@ -10,7 +10,7 @@
 #include <exception>
 
 /**
- * @brief is class inherited from expection for throw when NoEntityFound in the ECS.
+ * @brief this class inherits from expection, its purpose is to manage errors in the ECS.
  * 
  */
 struct NoEntityFound : public std::exception
