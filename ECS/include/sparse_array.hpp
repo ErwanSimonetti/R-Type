@@ -89,15 +89,6 @@ class sparse_array
             return _data[pos];
         };
 
-
-        // template <class Component, class ... Params>
-        // reference_type recurs_emplace_at(size_type pos , Component &&c, Params &&...p) {
-        //     insert_at(pos, c);
-        //     recurs_emplace_at<Params>(pos, p...);
-        // }; // optional
-
-        // template <class ... Params>
-        // reference_type emplace_at (size_type pos , Params &&...p); // optional
         template <class ... Params >
         reference_type emplace_at ( size_type pos , Params &&... par)
         {

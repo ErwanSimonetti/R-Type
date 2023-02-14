@@ -34,13 +34,6 @@ struct ServerData {
     uint16_t hasShot[4];
 };
 
-// enum DataTypes {
-//     typeA = 1,
-//     typeB = 2,
-//     typeC = 3,
-//     typeD = 4
-// };
-
 class Protocol {
     public:
         Protocol();
