@@ -16,7 +16,6 @@ Engine::Engine(uint16_t width, uint16_t height, boost::asio::io_service &io_serv
     _reg.register_component<Shootable>();
 
     _reg.add_system<Position, Velocity, Controllable>(position_system);
-    // boost::asio::io_service io_service;
 }
 
 Engine::~Engine()
@@ -113,7 +112,6 @@ void Engine::updateRegistry(ClientData data)
         printf("new PLayer\n");
         create_player(_reg.spawn_entity(), 10, 10, data.posX, data.posY);
     } else {
-        // _reg.get_components<Position>()[data.entity].value().set_component(data.posX, data.posY);
         _reg.get_components<Velocity>()[data.entity].value().set_component(data.directionsX, data.directionsY, 10, 10);
         for (int i = 0; i < _players.size(); i++) {
             if (_players.at(i).id == data.entity) {

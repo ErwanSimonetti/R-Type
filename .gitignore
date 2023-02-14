@@ -4,4 +4,4 @@ a.out
 launch
 r-type_client
 r-type_server
-client_tests
+clients_tests
