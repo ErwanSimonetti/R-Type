@@ -48,10 +48,8 @@ void Engine::create_entity(entity newEntity, const uint16_t speedX, const uint16
 
 void Engine::create_player(entity newEntity, const uint16_t speedX, const uint16_t speedY, const uint16_t posX, const uint16_t posY)
 {
-    Controllable contr;
 
-    _reg.add_component<Controllable>(newEntity, std::move(contr));
-
+    _reg.emplace_component<Controllable>(newEntity);
     _reg.emplace_component<Shootable>(newEntity);
     _reg.emplace_component<Drawable>(newEntity, SHIP);
     _reg.emplace_component<Animatable>(newEntity, 90);
@@ -81,32 +79,15 @@ void Engine::create_parallax(entity newEntity, const uint16_t posX, const uint16
 
 void Engine::create_projectile(entity newEntity, int16_t parentId, const uint16_t velX, const uint16_t velY)
 {
-    Drawable draw; 
-    Position pos;
-    Velocity vel;
-    Hitbox hbx;
-    Pet pet;
-    Animatable anim;
-
     int16_t posX =_reg.get_components<Position>()[parentId].value()._x;
     int16_t posY =_reg.get_components<Position>()[parentId].value()._y;
-    pos.set_component(posX, posY + 3);
-    _reg.add_component<Position>(newEntity, std::move(pos));
 
-    vel.set_component(velX, velY, 0, 0);
-    _reg.add_component<Velocity>(newEntity, std::move(vel));
-
-    draw.set_component(BULLET);
-    _reg.add_component<Drawable>(newEntity, std::move(draw));
-
-    pet.set_component(entity(parentId));
-    _reg.add_component<Pet>(newEntity, std::move(pet));
-
-    _reg.add_component<Hitbox>(newEntity, std::move(hbx));
+    _reg.emplace_component<Position>(newEntity, posX, posY);
+    _reg.emplace_component<Velocity>(newEntity, velX, velY ,0, 0);
+    _reg.emplace_component<Drawable>(newEntity, BULLET);
+    _reg.emplace_component<Pet>(newEntity, entity(parentId));
     _reg.emplace_component<Hitbox>(newEntity, posX+10, posY+10, BULLET);
-
-    anim.set_component(10);
-    _reg.add_component<Animatable>(newEntity, std::move(anim));
+    _reg.emplace_component<Animatable>(newEntity, 10);
 }  
 
 ClientData Engine::buildClientData(EntityEvent entityEvent) 
