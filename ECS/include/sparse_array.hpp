@@ -234,7 +234,7 @@ class sparse_array
         };
 
         /**
-         * @brief Get the information if the vector is empty or not.
+         * @brief Get the information of whether the vector is empty or not.
          * 
          * @return true, the vector is empty
          * @return false, the vector is not empty
