@@ -13,7 +13,7 @@
 #include "registry.hpp"
 
 /**
- * @brief system of logging displa all nodes with position and velocity
+ * @brief logging system displaying all nodes with their position & velocity
  * 
  * @param positions sparse array of positions
  * @param velocities sparse array of velocity
