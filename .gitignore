@@ -5,5 +5,5 @@ launch
 r-type_client
 r-type_server
 r-type_bootstrap
-ecs_tests
-client_tests
+server/ecs_tests
+clients_tests
