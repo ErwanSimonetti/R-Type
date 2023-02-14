@@ -66,7 +66,7 @@ class Engine {
         void create_enemy_entity(entity newEntity, sf::Color col, const uint16_t speedX, const uint16_t speedY, const uint16_t posX, uint16_t posY);
 
         /** 
-         * @brief Function used to create an entity, giving it an id, and various parameters @brief Create a entity object
+         * @brief Function used to create an entity, giving it an id, and various parameters.
          * @param id Entity ID, has to be unused
          * @param velX uint_16_t corresponding to the vertical velocity
          * @param velY uint_16_t corresponding to the horizontal velocity
