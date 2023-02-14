@@ -25,7 +25,7 @@ std::unordered_map<OBJECT, std::string> textureMap = {
 
 std::unordered_map<OBJECT, sf::IntRect> boundsMap = {
     { SHIP, sf::IntRect(0, 0, 101, 41) },
-    { ENEMYSHIP, sf::IntRect(0, 0, 101, 41) },
+    { ENEMYSHIP, sf::IntRect(0, 0, 103, 75) },
     { BULLET, sf::IntRect(0, 0, 43, 41) },
     { PARA_1, sf::IntRect(0, 0, 1920, 1129) },
     { PARA_2, sf::IntRect(0, 0, 1920, 1059) },
@@ -35,7 +35,7 @@ std::unordered_map<OBJECT, sf::IntRect> boundsMap = {
 
 std::unordered_map<OBJECT, uint16_t> textureSize = {
     { SHIP,  808},
-    { ENEMYSHIP,  808},
+    { ENEMYSHIP,  809},
     { BULLET, 174 },
     { PARA_1, 1920 },
     { PARA_2, 1920 },
@@ -45,7 +45,7 @@ std::unordered_map<OBJECT, uint16_t> textureSize = {
 
 std::unordered_map<OBJECT, uint16_t> textureRect = {
     { SHIP,  101},
-    { ENEMYSHIP,  101},
+    { ENEMYSHIP,  103},
     { BULLET, 43 },
     { PARA_1, 1920 },
     { PARA_2, 1920 },
