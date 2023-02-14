@@ -69,7 +69,7 @@ class registry
         /**
          * @brief Add new entity in _entities array.
          * 
-         * @return entity create.
+         * @return created entity
          */
         entity spawn_entity() {
             size_t id_entity = 0;
@@ -97,8 +97,8 @@ class registry
          * @brief check if an entity id exist in the entity vector.
          * 
          * @param id of the entity.
-         * @return true if she exist.
-         * @return false if she doesn't exist.
+         * @return return true if _it_ exist
+         * @return return false if _it_ doesn't exist
          */
         bool is_entity_alive(size_t id) {
             auto it = std::find(_entities.begin(), _entities.end(), id);

@@ -17,6 +17,15 @@
 #include "Engine_utils.hpp"
 
 /**
+ * @brief 
+ * 
+ */
+struct Player {
+    entity id;
+    bool hasShot;
+};
+
+/**
  * @brief A class used to handle everything related to the game engine
  * 
  */
@@ -54,14 +63,13 @@ class Engine {
 
         /** @brief Function used to create a friendly "character" entity, giving it an id, and various parameters 
          * @param id Entity ID
-         * @param col sf::Color object, until we use actual sprites
          * @param velX uint_16_t corresponding to the vertical velocity
          * @param velY uint_16_t corresponding to the horizontal velocity
          * @param posX uint_16_t corresponding to the vertical position
          * @param posY uint_16_t corresponding to the horizontal position
          * @return a friendly entity, that is controllable
          **/
-        void create_player(entity newEntity, sf::Color col, const uint16_t velX, const uint16_t velY, const uint16_t posX, const uint16_t posY);
+        void create_player(entity newEntity, const uint16_t velX, const uint16_t velY, const uint16_t posX, const uint16_t posY);
 
         /** 
          * @brief Function used to create an entity, giving it an id, and various parameters @brief Create a entity object
@@ -72,19 +80,18 @@ class Engine {
          * @param posY uint_16_t corresponding to the horizontal position
          * @return an enity, that might be controlled by the user
          */
-        void create_entity(entity newEntity, sf::Color col, const uint16_t velX, const uint16_t velY, const uint16_t posX, const uint16_t posY);
+        void create_entity(entity newEntity, const uint16_t velX, const uint16_t velY, const uint16_t posX, const uint16_t posY);
         
         /**
          * @brief Function used to create an enemy "character" entity, giving it an id, and various parameters 
          * @param id Entity ID, has to be unused
-         * @param col sf::Color object, until we use actual sprites
          * @param velX uint_16_t corresponding to the vertical velocity
          * @param velY int_16_t corresponding to the horizontal velocity
          * @param posX uint_16_t corresponding to the vertical position
          * @param posY uint_16_t corresponding to the horizontal position
          * @return an enemy enity, that might be controlled by the user
          */
-        void create_enemy_entity(entity newEntity, sf::Color col, const uint16_t velX, const uint16_t velY, const uint16_t posX, uint16_t posY);
+        void create_enemy_entity(entity newEntity, const uint16_t velX, const uint16_t velY, const uint16_t posX, uint16_t posY);
         
         /**
          * @brief function used to launch the whole game, systems and all 
@@ -125,15 +132,11 @@ class Engine {
          * @brief registry object 
          **/
         registry _reg;
-<<<<<<< HEAD
-        std::vector<Player> _players;
-=======
 
         /**
          * @brief players vector 
          **/ 
-        std::vector<entity> _players;
->>>>>>> 7cb3148 (feat(documentation) add docs for ECS, and basic readme)
+        std::vector<Player> _players;
 };
 
 #endif /* !ENGINE_HPP_ */
