@@ -59,7 +59,6 @@ class registry
         }
 
         bool is_entity_alive(size_t id) {
-            std::cout << id << "\n";
             auto it = std::find(_entities.begin(), _entities.end(), id);
             if (it == _entities.end()) {
                 return false;
