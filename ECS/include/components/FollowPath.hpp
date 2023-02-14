@@ -9,14 +9,14 @@
 #include <ostream>
 
 /**
- * @brief components for the ECS, set the entity's FollowPath if it's an IA
+ * @brief components for the ECS, set the entity's FollowPath if it's an AI
  * 
  */
 struct FollowPath {
     FollowPath() = default;
 
     /**
-     * @brief 
+     * @brief parser for the config file
      * 
      * @param fileFollowPath 
      */
