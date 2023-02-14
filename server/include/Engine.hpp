@@ -18,6 +18,11 @@
 
 /// @brief Engine class used to handle everything related to the game engine
 
+struct Player {
+    entity id;
+    bool hasShot;
+};
+
 class Engine {
     public:
         /// @brief Create a new instance of object Engine, with a game window size of width and height 
@@ -38,9 +43,9 @@ class Engine {
         /// @param velY uint_16_t corresponding to the horizontal velocity
         /// @param posX uint_16_t corresponding to the vertical position
         /// @param posY uint_16_t corresponding to the horizontal position
-        void create_player(entity newEntity, sf::Color col, const uint16_t velX, const uint16_t velY, const uint16_t posX, const uint16_t posY);
+        void create_player(entity newEntity, const uint16_t velX, const uint16_t velY, const uint16_t posX, const uint16_t posY);
 
-        void create_entity(entity newEntity, sf::Color col, const uint16_t velX, const uint16_t velY, const uint16_t posX, const uint16_t posY);
+        void create_entity(entity newEntity, const uint16_t velX, const uint16_t velY, const uint16_t posX, const uint16_t posY);
         
         /// @brief Function used to create an enemy "character" entity, giving it an id, and various parameters 
         /// @param id Entity ID, has to be unused
@@ -49,7 +54,7 @@ class Engine {
         /// @param velY uint_16_t corresponding to the horizontal velocity
         /// @param posX uint_16_t corresponding to the vertical position
         /// @param posY uint_16_t corresponding to the horizontal position
-        void create_enemy_entity(entity newEntity, sf::Color col, const uint16_t velX, const uint16_t velY, const uint16_t posX, uint16_t posY);
+        void create_enemy_entity(entity newEntity, const uint16_t velX, const uint16_t velY, const uint16_t posX, uint16_t posY);
         
         /// @brief function used to launch the whole game, systems and all
         void run();
@@ -69,7 +74,7 @@ class Engine {
     private:
         /// @brief registry object 
         registry _reg;
-        std::vector<entity> _players;
+        std::vector<Player> _players;
 };
 
 #endif /* !ENGINE_HPP_ */

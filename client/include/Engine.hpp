@@ -28,7 +28,7 @@ class Engine {
         
         /// @brief Registry variable getter
         /// @return the registry object
-        registry get_registry();
+        registry &get_registry();
 
         /// @brief Function used to create a friendly "character" entity, giving it an id, and various parameters 
         /// @param id Entity ID
@@ -37,7 +37,7 @@ class Engine {
         /// @param velY uint_16_t corresponding to the horizontal velocity
         /// @param posX uint_16_t corresponding to the vertical position
         /// @param posY uint_16_t corresponding to the horizontal position
-        void create_player(entity newEntity, sf::Color col, const uint16_t speedX, const uint16_t speedY, const uint16_t posX, const uint16_t posY);
+        void create_player(entity newEntity, const uint16_t speedX, const uint16_t speedY, const uint16_t posX, const uint16_t posY);
         
         /// @brief Function used to create an enemy "character" entity, giving it an id, and various parameters 
         /// @param id Entity ID, has to be unused
@@ -46,9 +46,19 @@ class Engine {
         /// @param velY uint_16_t corresponding to the horizontal velocity
         /// @param posX uint_16_t corresponding to the vertical position
         /// @param posY uint_16_t corresponding to the horizontal position
-        void create_enemy_entity(entity newEntity, sf::Color col, const uint16_t speedX, const uint16_t speedY, const uint16_t posX, uint16_t posY);
+        void create_enemy_entity(entity newEntity, const uint16_t speedX, const uint16_t speedY, const uint16_t posX, uint16_t posY);
 
-        void create_entity(entity newEntity, sf::Color col, const uint16_t speedX, const uint16_t speedY, const uint16_t posX, const uint16_t posY);
+        void create_entity(entity newEntity, const uint16_t speedX, const uint16_t speedY, const uint16_t posX, const uint16_t posY);
+
+        /// @brief Generate a projectile using the id of a previously generated ship entity
+        /// @param parentId id of the parent ship
+        /// @param col color
+        /// @param velX x velocity
+        /// @param velY y velocity
+        /// @return a projectile entity 
+        void create_projectile(entity newEntity, int16_t parentId, const uint16_t velX, const uint16_t velY);
+
+        void create_parallax(entity newEntity, const uint16_t posX, const uint16_t posY, const uint16_t speed, const OBJECT obj);
         
         void connectToServer();
         ClientData buildClientData(EntityEvent entityEvent);
@@ -59,7 +69,6 @@ class Engine {
         void runGame();
         /// @brief function used to launch the whole game, systems and all
         void run();
-
 
     protected:
     private:
