@@ -66,6 +66,7 @@ void Engine::create_enemy_entity(entity newEntity, const uint16_t speedX, const 
     _reg.emplace_component<Drawable>(newEntity, ENEMYSHIP);
     _reg.emplace_component<Hitbox>(newEntity, posX+45, posY+45, ENEMYSHIP);
     _reg.emplace_component<FollowPath>(newEntity, "middle_diagonal");
+    _reg.emplace_component<Animatable>(newEntity, 90);
     // can shoot component
 }
 
@@ -83,7 +84,7 @@ void Engine::create_projectile(entity newEntity, int16_t parentId, const uint16_
     int16_t posY =_reg.get_components<Position>()[parentId].value()._y;
 
     _reg.emplace_component<Position>(newEntity, posX, posY);
-    _reg.emplace_component<Velocity>(newEntity, velX, velY ,0, 0);
+    _reg.emplace_component<Velocity>(newEntity, velX, velY, 0, 0);
     _reg.emplace_component<Drawable>(newEntity, BULLET);
     _reg.emplace_component<Pet>(newEntity, entity(parentId));
     _reg.emplace_component<Hitbox>(newEntity, posX+10, posY+10, BULLET);
