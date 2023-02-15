@@ -12,12 +12,10 @@
 
 #include <boost/asio.hpp>
 #include <boost/array.hpp>
-
+#include "GameEvents.hpp"
 #include "MyNetwork.hpp"
-#include "Engine_utils.hpp"
 #include "registry.hpp"
 #include "System.hpp"
-#include "Engine_utils.hpp"
 
 struct Player {
     entity id;

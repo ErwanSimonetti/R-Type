@@ -12,12 +12,11 @@
 
 #include <boost/asio.hpp>
 #include <boost/array.hpp>
-
 #include "MyNetwork.hpp"
-#include "Engine_utils.hpp"
 #include "IGraphic.hpp"
 #include "IGame.hpp"
 #include "LoadLibrary.hpp"
+#include "GameEvents.hpp"
 
 using create_d_graphic = std::shared_ptr<IGraphic> (*)();
 using create_d_game = std::shared_ptr<IGame> (*)();

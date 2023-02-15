@@ -2,29 +2,27 @@
 ** EPITECH PROJECT, 2023
 ** R-Type
 ** File description:
-** Enigne_utils
+** GameEvents
 */
 
-#ifndef ENIGNE_UTILS_HPP_
-#define ENIGNE_UTILS_HPP_
+#ifndef GAME_EVENTS_HPP_
+#define GAME_EVENTS_HPP_
 
 #include <stdint.h>
 #include <vector>
 
 enum GAME_EVENT {
-    LEFT,
-    RIGHT,
-    UP,
-    DOWN,
-    SHOOT,
+    SHOOT = 1,
     WINDOW_CLOSE = -1
 };
 
 struct EntityEvent {
     int16_t entity;
     std::vector<GAME_EVENT> events;
+    int16_t xVelocity;
+    int16_t yVelocity;
 };
 
 
 
-#endif /* !ENIGNE_UTILS_HPP_ */
+#endif /* !GAME_EVENTS_HPP_ */

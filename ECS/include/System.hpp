@@ -22,7 +22,7 @@
 #include "Parallax.hpp"
 #include "FollowPath.hpp"
 #include "Shootable.hpp"
-#include "Engine_utils.hpp"
+#include "GameEvents.hpp"
 
 /**
  * @brief logging system displaying all nodes with their position & velocity

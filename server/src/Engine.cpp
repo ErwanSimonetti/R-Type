@@ -61,8 +61,8 @@ ServerData Engine::buildServerData()
     for (int i = 0; i < 4; i++) {
         data.posX[i] = 0;
         data.posY[i] = 0;
-        data.directionsX[i] = 0;
-        data.directionsY[i] = 0;
+        data.xVelocity[i] = 0;
+        data.yVelocity[i] = 0;
         data.hasShot[i] = 0;
 
         if (i >= _players.size()) {
@@ -79,16 +79,16 @@ ServerData Engine::buildServerData()
 
         auto const &vel = velocities[_players.at(i).id];
         if (vel) {
-            data.directionsX[i] = vel.value()._vX;
-            data.directionsY[i] = vel.value()._vY;
+            data.xVelocity[i] = vel.value()._vX;
+            data.yVelocity[i] = vel.value()._vY;
         }
         if (_players.at(i).hasShot) {
             data.hasShot[i] = 1;
         }
     }
-    printf("CREATE SERVER DATA:\n");
-    printServerData(data);
-    printf("\n");
+    // // printf("CREATE SERVER DATA:\n");
+    // printServerData(data);
+    // printf("\n");
     return data;
 }
 
@@ -98,18 +98,18 @@ void Engine::sendData(ServerData data)
     ServerData serverData = _network.getProtocol().readServer(buffer);
 
     for (int it = 0; it < _network.getEndpoints().size(); it++) {
-        std::cout << _network.getEndpoints()[it].address().to_string() << std::endl;
+        // std::cout << _network.getEndpoints()[it].address().to_string() << std::endl;
         _network.udpSend<ServerData>(buffer, _network.getEndpoints().at(it));
     }
 }
 
 void Engine::updateRegistry(ClientData data)
 {
-    printf("UPDATE SERVER REG\n");
-    printClientData(data);
-    printf("\n");
+    // printf("UPDATE SERVER REG\n");
+    // printClientData(data);
+    // printf("\n");
     if (!_reg.is_entity_alive(data.entity)) {
-        printf("new PLayer\n");
+        // printf("new PLayer\n");
         create_player(_reg.spawn_entity(), 10, 10, data.posX, data.posY);
     } else {
         _reg.get_components<Velocity>()[data.entity].value().set_component(data.directionsX, data.directionsY);

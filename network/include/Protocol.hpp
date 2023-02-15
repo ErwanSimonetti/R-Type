@@ -18,8 +18,8 @@ struct Header {
 
 struct ClientData {
     int16_t entity;
-    int16_t directionsX;
-    int16_t directionsY;
+    int16_t xVelocity;
+    int16_t yVelocity;
     uint16_t hasShot;
     uint16_t posX;
     uint16_t posY;
@@ -29,8 +29,8 @@ struct ServerData {
     int16_t entities[4];
     uint16_t posX[4];
     uint16_t posY[4];
-    int16_t directionsX[4];
-    int16_t directionsY[4];
+    int16_t xVelocity[4];
+    int16_t yVelocity[4];
     uint16_t hasShot[4];
 };
 

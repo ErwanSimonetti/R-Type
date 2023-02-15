@@ -37,7 +37,8 @@ Engine::~Engine()
 {
 }
 
-registry &Engine::get_registry() {
+registry &Engine::get_registry()
+{
     return _reg;
 }
 
@@ -73,28 +74,12 @@ ClientData Engine::buildClientData(EntityEvent entityEvent)
     clientData.entity = entityEvent.entity;
     clientData.posX = pos._x;
     clientData.posY = pos._y;
-    clientData.directionsX = 0;
-    clientData.directionsY = 0;
+    clientData.xVelocity = entityEvent.xVelocity;
+    clientData.yVelocity = entityEvent.yVelocity;
     clientData.hasShot = 0;
 
     for (auto &it : entityEvent.events) {
         switch (it) {
-        case GAME_EVENT::LEFT:
-            clientData.directionsX += -1;
-            size++;
-            break;
-        case GAME_EVENT::RIGHT:
-            clientData.directionsX += 1;
-            size++;
-            break;
-        case GAME_EVENT::UP:
-            clientData.directionsY += -1;
-            size++;
-            break;
-        case GAME_EVENT::DOWN:
-            clientData.directionsY += 1;
-            size++;
-            break;
         case GAME_EVENT::SHOOT:
             clientData.hasShot = 1;
             break;
@@ -102,9 +87,8 @@ ClientData Engine::buildClientData(EntityEvent entityEvent)
             break;
         }
     }
-    printf("CREATE Client DATA:\n");
-    printClientData(clientData);
-    printf("\n");
+    // printClientData(clientData);
+    // printf("\n");
     return clientData;
 }
 
@@ -162,8 +146,8 @@ void Engine::connectToServer()
 {
     ClientData clientData;
 
-    clientData.directionsX = 0;
-    clientData.directionsY = 0;
+    clientData.xVelocity = 0;
+    clientData.yVelocity = 0;
     clientData.entity = -1;
     clientData.hasShot = 0;
     clientData.posX = 0;

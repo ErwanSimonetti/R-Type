@@ -56,16 +56,16 @@ void printServerData(const ServerData &data)
     }
     std::cout << "]" << std::endl;
 
-    std::cout << "directionsX: [";
+    std::cout << "xVelocity: [";
     for (int i = 0; i < 4; i++) {
-        std::cout << data.directionsX[i];
+        std::cout << data.xVelocity[i];
         if (i < 3) std::cout << ", ";
     }
     std::cout << "]" << std::endl;
 
-    std::cout << "directionsY: [";
+    std::cout << "yVelocity: [";
     for (int i = 0; i < 4; i++) {
-        std::cout << data.directionsY[i];
+        std::cout << data.yVelocity[i];
         if (i < 3) std::cout << ", ";
     }
     std::cout << "]" << std::endl;
@@ -81,8 +81,8 @@ void printServerData(const ServerData &data)
 void printClientData(const ClientData &data) 
 {
     std::cout << "entity: " << data.entity << std::endl;
-    std::cout << "directionsX: " << data.directionsX << std::endl;
-    std::cout << "directionsY: " << data.directionsY << std::endl;
+    std::cout << "xVelocity: " << data.xVelocity << std::endl;
+    std::cout << "yVelocity: " << data.yVelocity << std::endl;
     std::cout << "shoot: " << data.hasShot << std::endl;
     std::cout << "posX: " << data.posX << std::endl;
     std::cout << "posY: " << data.posY << std::endl;
