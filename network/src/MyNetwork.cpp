@@ -18,7 +18,7 @@ MyNetwork::MyNetwork(boost::asio::io_service &io_service, const std::string& hos
 
 // server
 MyNetwork::MyNetwork(boost::asio::io_service& io_service, const std::string &port)
-    : _io_services(io_service), _socket(io_service, boost::asio::ip::udp::endpoint(boost::asio::ip::udp::v4(), std::stoi(port)))
+    : _io_services(io_service), _socket(io_service, boost::asio::ip::udp::endpoint(boost::asio::ip::udp::v4(), 1234))
 {
     _shouldCallback = false;
 }

@@ -1,11 +1,6 @@
 FROM ubuntu:latest
 
-EXPOSE 1234/udp
-EXPOSE 1234/tcp
 
-COPY server/ /app/server
-COPY ECS/ /app/ECS
-COPY network/ /app/network
 
 RUN apt-get update && apt-get install -y \
     build-essential \
@@ -31,4 +26,8 @@ RUN apt-get update && apt-get install -y \
     udev \
     libboost-all-dev
 
-CMD cd app/server && ./make_server && ./../r-type_server
+COPY server/ /app/server
+COPY ECS/ /app/ECS
+COPY network/ /app/network
+
+CMD cd app/server && ./make_server && cd ../ && ./r-type_server

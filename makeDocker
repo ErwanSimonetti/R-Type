@@ -1,0 +1,33 @@
+#!/bin/bash
+
+# check if the script is executed with a parameter
+if [ -z "$1" ]; then
+  echo "Please provide a parameter to launch a specific command."
+  exit 1
+fi
+
+# define commands to be launched based on the parameter value
+case $1 in
+  "buildClient")
+    docker build -t rtype_client -f client/Dockerfile .
+    ;;
+  "buildServer")
+    docker build -t rtype_server -f server/Dockerfile .
+    ;;
+    "runClient")
+    docker run -it --rm --name client --device /dev/dri -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix rtype_client
+    ;;
+    "runServer")
+    docker run -it --rm --device /dev/dri --name server -p 1234:1234/udp -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix rtype_server
+    ;;
+    "server")
+    docker build -t rtype_server -f server/Dockerfile . && docker run -it --rm --device /dev/dri --name server -p 1234:1234/udp -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix rtype_server
+    ;;
+    "client")
+    docker build -t rtype_client -f client/Dockerfile . && docker run -it --rm --name client --device /dev/dri -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix rtype_client
+    ;;
+  *)
+    echo "Invalid parameter. Please try again with a valid parameter."
+    exit 1
+    ;;
+esac
