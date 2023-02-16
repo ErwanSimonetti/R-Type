@@ -10,19 +10,21 @@
 #ifndef ENGINE_HPP_
 #define ENGINE_HPP_
 
-#include "RenderGame.hpp"
-#include "MyNetwork.hpp"
 #include <boost/asio.hpp>
 #include <boost/array.hpp>
-#include "Engine_utils.hpp"
 
-/// @brief Engine class used to handle everything related to the game engine
+#include "MyNetwork.hpp"
+#include "Engine_utils.hpp"
+#include "registry.hpp"
+#include "System.hpp"
+#include "Engine_utils.hpp"
 
 struct Player {
     entity id;
     bool hasShot;
 };
 
+/// @brief Engine class used to handle everything related to the game engine
 class Engine {
     public:
         /// @brief Create a new instance of object Engine, with a game window size of width and height 

@@ -153,8 +153,8 @@ void Engine::run()
     create_entity(_reg.spawn_entity(), 0, 0, 100, 100);
     create_entity(_reg.spawn_entity(), 0, 0, 100, 100);
     create_entity(_reg.spawn_entity(), 0, 0, 100, 100);
-    std::thread gameThread(&Engine::runGame, this);
 
+    std::thread gameThread(&Engine::runGame, this);
     std::thread networkThread(&Engine::runNetwork, this);
 
     gameThread.join();

@@ -8,6 +8,9 @@
 #ifndef ENIGNE_UTILS_HPP_
 #define ENIGNE_UTILS_HPP_
 
+#include <stdint.h>
+#include <vector>
+
 enum GAME_EVENT {
     LEFT,
     RIGHT,

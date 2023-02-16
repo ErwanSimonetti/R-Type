@@ -8,6 +8,7 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
+
 #include "FollowPath.hpp"
 
 void FollowPath::parse_follow_path_file(const std::string &fileFollowPath)

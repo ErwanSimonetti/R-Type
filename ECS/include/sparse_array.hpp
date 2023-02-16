@@ -17,20 +17,20 @@ template <typename Component>
 class sparse_array
     {
     public:
-        using value_type = std::optional<Component>; // optional component type
+        using value_type = std::optional<Component>;
         using reference_type = value_type &;
         using const_reference_type = value_type const &;
-        using container_t = std::vector<value_type>; // optionally add your allocator template here.
+        using container_t = std::vector<value_type>;
         using size_type = typename container_t::size_type;
         using iterator = typename container_t::iterator;
         using const_iterator = typename container_t::const_iterator;
 
     public:
-        sparse_array() = default; // You can add more constructors .
+        sparse_array() = default;
         sparse_array(sparse_array const &other)
         {
             this->_data = other._data;
-        }; // copy constructorn
+        };
 
         sparse_array(sparse_array &&other) noexcept
         {
@@ -44,7 +44,8 @@ class sparse_array
         {
             this->_data = other._data;
             return *this;
-        }; // copy assignment operator
+        };
+        
         sparse_array &operator=(sparse_array &&other) noexcept
         {
             this->_data = other._data;

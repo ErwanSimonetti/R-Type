@@ -15,7 +15,26 @@ Protocol::~Protocol()
 {
 }
 
-void printServerData(const ServerData &data) {
+ClientData Protocol::readClient(char *buffer) 
+{
+    // Header header;
+    // std::memcpy(&header, buffer, sizeof(Header));
+    ClientData clientData;
+    std::memcpy(&clientData, buffer, sizeof(ClientData));
+    return clientData;
+};
+
+ServerData Protocol::readServer(char *buffer) 
+{
+    // Header header;
+    // std::memcpy(&header, buffer, sizeof(Header));
+    ServerData serverData;
+    std::memcpy(&serverData, buffer, sizeof(ServerData));
+    return serverData;
+};
+
+void printServerData(const ServerData &data) 
+{
     std::cout << "entities: [";
     for (int i = 0; i < 4; i++) {
         std::cout << data.entities[i];
@@ -59,7 +78,8 @@ void printServerData(const ServerData &data) {
     std::cout << "]" << std::endl;
 }
 
-void printClientData(const ClientData &data) {
+void printClientData(const ClientData &data) 
+{
     std::cout << "entity: " << data.entity << std::endl;
     std::cout << "directionsX: " << data.directionsX << std::endl;
     std::cout << "directionsY: " << data.directionsY << std::endl;
