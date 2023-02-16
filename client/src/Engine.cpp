@@ -37,7 +37,6 @@ registry &Engine::get_registry() {
     return _reg;
 }
 
-
 void Engine::create_entity(entity newEntity, const int16_t velX, const int16_t velY, const uint16_t posX, const uint16_t posY)
 {
     _reg.emplace_component<Position>(newEntity, posX, posY);
@@ -70,7 +69,7 @@ void Engine::create_enemy_entity(entity newEntity, const int16_t velX, const int
     
     _reg.emplace_component<Drawable>(newEntity, ENEMYSHIP);
     _reg.emplace_component<Hitbox>(newEntity, posX+45, posY+45, ENEMYSHIP);
-
+    _reg.emplace_component<Animatable>(newEntity, 90);
     _reg.emplace_component<FollowPath>(newEntity, "middle_diagonal");
     // can shoot component
 }
