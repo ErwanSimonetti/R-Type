@@ -24,10 +24,7 @@ struct Player {
     bool hasShot;
 };
 
-/**
- * @brief A class used to handle everything related to the game engine
- * 
- */
+/// @brief Engine class used to handle everything related to the game engine
 class Engine {
     public:
 
