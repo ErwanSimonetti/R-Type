@@ -21,19 +21,19 @@ void followPathSystem(registry &r, const sparse_array<Position> &positions, spar
         auto &path = paths[i];
 
         if (pos && vel && path) {
-            xToReach = path.value()._checkpoints[path.value()._current_checkpoint][0];
-            yToReach = path.value()._checkpoints[path.value()._current_checkpoint][1];
+            xToReach = path.value()._checkpoints[path.value()._currentCheckPoints][0];
+            yToReach = path.value()._checkpoints[path.value()._currentCheckPoints][1];
             if (pos.value()._x < xToReach)
                 newXVelocity = 1 * vel.value()._speedX;
-            if (pos.value()._y < yToReach)
-                newYVelocity = 1 * vel.value()._speedY;
             if (pos.value()._x > xToReach)
                 newXVelocity = -1 * vel.value()._speedX;
+            if (pos.value()._y < yToReach)
+                newYVelocity = 1 * vel.value()._speedY;
             if (pos.value()._y > yToReach)
                 newYVelocity = -1 * vel.value()._speedY;
             if (std::abs(pos.value()._x - xToReach) <= 10 && std::abs(pos.value()._y - yToReach) <= 10)
-                path.value()._current_checkpoint += 1;
-            vel.value().set_component(newXVelocity, newYVelocity, vel.value()._speedX, vel.value()._speedY);
+                path.value()._currentCheckPoints += 1;
+            vel.value().set_component(newXVelocity, newYVelocity);
         }
     }
 }
@@ -138,7 +138,7 @@ EntityEvent control_system(registry &r, std::vector<int> &directions, sparse_arr
             for(std::size_t j = 0; j < directions.size(); ++j) {
                 entityEvent.entity = i;
                 current_direction = directions[j];
-                contr.value()._current_action = current_direction;
+                contr.value()._currentAction = current_direction;
                 switch (current_direction) {
                     case KEYBOARD::ARROW_UP:
                         yDirection = -1;
@@ -172,7 +172,7 @@ EntityEvent control_system(registry &r, std::vector<int> &directions, sparse_arr
                 xDirection = 0;
                 yDirection = 0;
             }
-            vel.value().set_component(xDirection * vel.value()._speedX, yDirection * vel.value()._speedY, vel.value()._speedX, vel.value()._speedY);
+            vel.value().set_component(xDirection * vel.value()._speedX, yDirection * vel.value()._speedY);
         }
     }
     return entityEvent;
@@ -185,8 +185,8 @@ bool isCollision(Position& a, Hitbox& aHitbox, Position& b, Hitbox& bHitbox)
 
 void collision_system(registry &r, sparse_array<Position> &positions, sparse_array<Hitbox> &hitboxes)
 {
-    for (int i = 0; i < positions.size(); ++i) {;
-        for (int j = i + 1; j < positions.size(); ++j) {
+    for (int i = 0; i < positions.size() && i < hitboxes.size(); ++i) {;
+        for (int j = i + 1; j < positions.size() && i < hitboxes.size(); ++j) {
             auto &hbxI = hitboxes[i];
             auto &hbxJ = hitboxes[j];
             if (positions[i] && hbxI && positions[j] && hbxJ 

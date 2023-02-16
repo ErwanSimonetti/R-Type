@@ -8,6 +8,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR})
 set(SOURCE_FILES 
   src/main.cpp
   src/Engine.cpp
+  ../ECS/src/registry.cpp
   ../ECS/src/FollowPath.cpp
   ../ECS/src/System.cpp
   ../network/src/MyNetwork.cpp
@@ -69,6 +70,7 @@ add_executable(
   clients_tests
   tests/ecs_tests.cpp
   ../ECS/src/FollowPath.cpp
+  ../ECS/src/registry.cpp
   tests/sparse_array_tests.cpp
   tests/entity_tests.cpp
   tests/registry_tests.cpp

@@ -7,7 +7,8 @@
 
 
 #pragma once
-#include <SFML/Graphics.hpp>
+
+#include <cstring>
 
 struct Parallax {
     Parallax() = default;

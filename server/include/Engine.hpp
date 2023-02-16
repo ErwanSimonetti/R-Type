@@ -43,9 +43,9 @@ class Engine {
         /// @param velY uint_16_t corresponding to the horizontal velocity
         /// @param posX uint_16_t corresponding to the vertical position
         /// @param posY uint_16_t corresponding to the horizontal position
-        void create_player(entity newEntity, const uint16_t velX, const uint16_t velY, const uint16_t posX, const uint16_t posY);
+        void create_player(entity newEntity, const int16_t velX, const int16_t velY, const uint16_t posX, const uint16_t posY);
 
-        void create_entity(entity newEntity, const uint16_t velX, const uint16_t velY, const uint16_t posX, const uint16_t posY);
+        void create_entity(entity newEntity, const int16_t velX, const int16_t velY, const uint16_t posX, const uint16_t posY);
         
         /// @brief Function used to create an enemy "character" entity, giving it an id, and various parameters 
         /// @param id Entity ID, has to be unused
@@ -54,7 +54,7 @@ class Engine {
         /// @param velY uint_16_t corresponding to the horizontal velocity
         /// @param posX uint_16_t corresponding to the vertical position
         /// @param posY uint_16_t corresponding to the horizontal position
-        void create_enemy_entity(entity newEntity, const uint16_t velX, const uint16_t velY, const uint16_t posX, uint16_t posY);
+        void create_enemy_entity(entity newEntity, const int16_t velX, const int16_t velY, const uint16_t posX, uint16_t posY);
         
         /// @brief function used to launch the whole game, systems and all
         void run();

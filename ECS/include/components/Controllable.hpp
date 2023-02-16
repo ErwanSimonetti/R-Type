@@ -11,11 +11,11 @@
 struct Controllable {
     Controllable() = default;
     void set_component() {
-        _current_action = KEYBOARD::NONE;
+        _currentAction = KEYBOARD::NONE;
     }
     friend std::ostream &operator<<(std::ostream &output, const Controllable &D) {
-        output << " current action = " << D._current_action << std::endl;
+        output << " current action = " << D._currentAction << std::endl;
         return output;
     }
-    int _current_action;
+    int _currentAction;
 };

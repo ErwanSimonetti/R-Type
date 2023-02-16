@@ -23,10 +23,10 @@ struct FollowPath {
             }
             output << std::endl;
         }
-        output << "Current checkpoint : " << component._current_checkpoint;
+        output << "Current checkpoint : " << component._currentCheckPoints;
         return output;
     }
 
     std::vector<std::vector<int16_t>> _checkpoints;
-    uint16_t _current_checkpoint;
+    uint16_t _currentCheckPoints;
 };
