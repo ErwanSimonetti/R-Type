@@ -1,0 +1,166 @@
+/*
+** EPITECH PROJECT, 2023
+** R-Type
+** File description:
+** SFML
+*/
+
+#include "SFML.hpp"
+
+extern "C" std::shared_ptr<IGraphic> createLibrary()
+{
+  return std::make_shared<SFML>();
+}
+
+SFML::SFML()
+{
+    _window = new sf::RenderWindow(sf::VideoMode(1920, 1080), "R-TYPE");
+    _window->setFramerateLimit(30);
+    set_sprite();
+}
+
+SFML::~SFML()
+{
+}
+
+void SFML::set_sprite() {
+    for (auto &it: _assets) {
+        sf::Texture texture;
+        if (!texture.loadFromFile(it.second._texture))
+            std::cerr << "Failed to load texture" << std::endl;
+        it.second._sprite.setTexture(texture);
+        it.second._sprite.setTextureRect(it.second._bounds);
+    }
+}
+
+void SFML::initialize_rect(Drawable &draw){
+    draw._rect.height = _assets.at(draw._type)._bounds.height;
+    draw._rect.left = _assets.at(draw._type)._bounds.left;
+    draw._rect.width = _assets.at(draw._type)._bounds.width;
+    draw._rect.height = _assets.at(draw._type)._bounds.height;
+}
+
+
+void SFML::draw_system(sparse_array<Position> const & positions, sparse_array<Drawable> &drawables) {
+    for (size_t i = 0; i < drawables.size() && i < positions.size(); ++ i) {
+        auto &draw = drawables[i];
+        auto &pos = positions[i];
+        if (draw && pos) {
+            std::cout << draw.value()._type << std::endl;
+            // _assets.at(draw.value()._type)._sprite.setPosition(pos.value()._x, pos.value()._y);
+            // sf::IntRect newRect = {draw.value()._rect.top, draw.value()._rect.left, draw.value()._rect.width, draw.value()._rect.height};
+            // _assets.at(draw.value()._type)._sprite.setTextureRect(newRect);
+            // // draw.value()._sprite.setPosition(pos.value()._x, pos.value()._y);
+            // // _window->draw(draw.value()._sprite);
+            // _window->draw(_assets.at(draw.value()._type)._sprite);
+        }
+    }
+}
+
+void SFML::animation_system(registry &r, sparse_array<Animatable> &animatable, sparse_array<Drawable> &drawable) 
+{
+    for (size_t i = 0; i < animatable.size() && i < drawable.size(); ++ i) {
+        auto &anim = animatable[i];
+        auto &draw = drawable[i];
+        if (anim && draw) {
+            if (draw.value()._rect.height == -1)
+                initialize_rect(draw.value());
+            if (anim.value()._clock.getElapsedTime().asMilliseconds() >= anim.value()._speed) {
+                // sf::IntRect newRect = _assets.at(draw.value()._type)._sprite.getTextureRect();
+                draw.value()._rect.left += _assets.at(draw.value()._type)._textureRect;
+                // _assets.at(draw.value()._type)._sprite.setTextureRect(newRect);
+                anim.value()._clock.restart();
+            }
+            if ( _assets.at(draw.value()._type)._sprite.getTextureRect().left >= _assets.at(draw.value()._type)._textureSize) {
+                // sf::IntRect newRect =   _assets.at(draw.value()._type)._sprite.getTextureRect();
+                draw.value()._rect.left = 0;
+                // _assets.at(draw.value()._type)._sprite.setTextureRect(newRect);
+
+            }
+        }
+    }
+}
+
+
+EntityEvent SFML::event_system(registry &reg) {
+    std::vector<int> inputs;
+    sf::Event event;
+    EntityEvent entityEvent;
+    entityEvent.entity = -1;
+    while (_window->pollEvent(event)) {
+        if (event.type == sf::Event::Closed)
+            _window->close();
+        for (std::map<sf::Keyboard::Key, KEYBOARD>::iterator it = KeyboardMap.begin(); it != KeyboardMap.end(); it++)
+            if (sf::Keyboard::isKeyPressed(it->first))
+                inputs.emplace_back(it->second);
+        return get_event(reg, inputs, reg.get_components<Position>(), reg.get_components<Controllable>(), reg.get_components<Velocity>(), reg.get_components<Shootable>());
+    }
+    return entityEvent;
+}
+
+EntityEvent SFML::get_event(registry &r, std::vector<int> &directions, sparse_array<Position> &positions, sparse_array<Controllable> &controllables, sparse_array<Velocity> &velocities, sparse_array<Shootable> &shootable) {
+
+    EntityEvent entityEvent;
+    entityEvent.entity = -1;
+    int current_direction = 0;
+    int16_t xDirection = 0;
+    int16_t yDirection = 0;
+    for (size_t i = 0; i < velocities.size() && i < controllables.size() && i < positions.size() && i < shootable.size(); ++ i) {
+        auto &vel = velocities[i];
+        auto &pos = positions[i];
+        auto &contr = controllables[i];
+        auto &shoot = shootable[i];
+        if (vel && contr && pos && shoot) {
+            for(std::size_t j = 0; j < directions.size(); ++j) {
+                entityEvent.entity = i;
+                current_direction = directions[j];
+                contr.value()._current_action = current_direction;
+                switch (current_direction) {
+                    case KEYBOARD::ARROW_UP:
+                        yDirection = -1;
+                        entityEvent.events.emplace_back(GAME_EVENT::UP);
+                        break;
+                    case KEYBOARD::ARROW_DOWN:
+                        yDirection = 1;
+                        entityEvent.events.emplace_back(GAME_EVENT::DOWN);
+                        break;
+                    case KEYBOARD::ARROW_LEFT:
+                        xDirection = -1;
+                        entityEvent.events.emplace_back(GAME_EVENT::LEFT);
+                        break;
+                    case KEYBOARD::ARROW_RIGHT:
+                        xDirection = 1;
+                        entityEvent.events.emplace_back(GAME_EVENT::RIGHT);
+                        break;
+                    case KEYBOARD::SPACE:
+                        if (shoot.value()._canShoot == true) {
+                            entityEvent.events.emplace_back(GAME_EVENT::SHOOT);
+                            shoot.value()._clock.restart();
+                        }
+                        break;
+                    default:
+                        xDirection = 0;
+                        yDirection = 0;
+                        break;
+                }
+            }
+            if (directions.empty()) {
+                xDirection = 0;
+                yDirection = 0;
+            }
+            vel.value().set_component(xDirection * vel.value()._speedX, yDirection * vel.value()._speedY, vel.value()._speedX, vel.value()._speedY);
+        }
+    }
+    return entityEvent;
+}
+
+void SFML:: hello()
+{
+    std::cout << "hello" << std::endl;
+}
+
+EntityEvent SFML::run_graphic(registry &reg) {
+    _window->display();
+    _window->clear();
+    return event_system(reg);
+}

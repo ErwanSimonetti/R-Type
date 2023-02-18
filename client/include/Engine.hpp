@@ -15,6 +15,10 @@
 #include <boost/asio.hpp>
 #include <boost/array.hpp>
 #include "Engine_utils.hpp"
+#include "IGraphic.hpp"
+#include "LoadLibrary.hpp"
+
+using create_d = std::shared_ptr<IGraphic> (*)();
 
 /**
  * @brief A class used to handle everything related to the game engine
@@ -31,7 +35,7 @@ class Engine {
          * @param host listening IP
          * @param port listening port
          */
-        Engine(uint16_t width, uint16_t height, boost::asio::io_service &io_service, const std::string &host, const std::string &port);
+        Engine(boost::asio::io_service &io_service, const std::string &host, const std::string &port);
         ~Engine();
         
         /**
@@ -115,6 +119,8 @@ class Engine {
          * 
          */
         void run();
+        void loadLib(std::string libName);
+
 
     protected:
     private:
@@ -128,8 +134,9 @@ class Engine {
         /**
          * @brief SFML encapsulation 
          **/
-        RenderGame _game;
+        // RenderGame _game;
         entity _player;
+        std::shared_ptr<IGraphic> _graphic;
 };
 
 #endif /* !ENGINE_HPP_ */

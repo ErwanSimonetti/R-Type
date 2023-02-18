@@ -13,9 +13,10 @@ set(SOURCE_FILES
   ../ECS/src/System.cpp
   ../network/src/MyNetwork.cpp
   ../network/src/Protocol.cpp
+  ../graphic/src/LoadLibrary.cpp
 )
 
-set(INCLUDE_DIRECTORY include/ include/utils ../network/include ../ECS/include ../ECS/include/components)
+set(INCLUDE_DIRECTORY include/ include/utils ../network/include ../ECS/include ../ECS/include/components ../graphic/include ../utils)
 
 include_directories(${INCLUDE_DIRECTORY})
 add_executable(r-type_client ${SOURCE_FILES})
@@ -28,13 +29,13 @@ endif()
 set(Boost_USE_STATIC_LIBS OFF) 
 set(Boost_USE_MULTITHREADED ON)  
 set(Boost_USE_STATIC_RUNTIME OFF) 
-find_package(Boost 1.45.0 COMPONENTS system asio array) 
+# find_package(Boost 1.45.0 COMPONENTS system asio array) 
 
-if(Boost_FOUND)
-    include_directories(${Boost_INCLUDE_DIRS})
-    add_executable(r-type_client src/asio.cpp)
-    target_link_libraries(r-type_client ${Boost_ASIO_LIBRARY} ${Boost_ARRAY_LIBRARY})
-endif()
+# if(Boost_FOUND)
+#     include_directories(${Boost_INCLUDE_DIRS})
+#     add_executable(r-type_client src/asio.cpp)
+#     target_link_libraries(r-type_client ${Boost_ASIO_LIBRARY} ${Boost_ARRAY_LIBRARY})
+# endif()
 
 set(CMAKE_CXX_STANDARD 17)
 set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)

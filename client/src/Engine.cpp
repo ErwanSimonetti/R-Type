@@ -7,7 +7,7 @@
 
 #include "Engine.hpp"
 
-Engine::Engine(uint16_t width, uint16_t height, boost::asio::io_service &io_service, const std::string &host, const std::string &port) : _reg(), _game(width, height), _network(io_service, host, port), _player(0)
+Engine::Engine(boost::asio::io_service &io_service, const std::string &host, const std::string &port) : _reg(), _network(io_service, host, port), _player(0)
 {
     _reg.register_component<Position>();
     _reg.register_component<Velocity>();
@@ -24,8 +24,10 @@ Engine::Engine(uint16_t width, uint16_t height, boost::asio::io_service &io_serv
     _reg.add_system<Position, Velocity, Controllable>(position_system);
     _reg.add_system<Shootable>(shoot_system);
     _reg.add_system<Animatable, Position, Parallax>(parallax_system);
-    _reg.add_system<Animatable, Drawable>(animation_system);
-    _reg.add_system<Position, Drawable>(std::bind(&RenderGame::draw_system, &_game, std::placeholders::_1, std::placeholders::_2));
+    loadLib("./sfml.so");
+    // _reg.add_system<Animatable, Drawable>(std::bind(&IGraphic::animation_system, &_graphic, );
+    // _reg.add_system<Position, Drawable>(std::bind(&RenderGame::draw_system, &_game, std::placeholders::_1, std::placeholders::_2));
+    _reg.add_system<Position, Drawable>(std::bind(&IGraphic::draw_system, _graphic, std::placeholders::_1, std::placeholders::_2));
     // _reg.add_system<Position, Velocity, FollowPath>(followPathSystem);
 }
 
@@ -189,7 +191,9 @@ void Engine::runGame()
 {
     EntityEvent evt;
     while (1) {
-        evt = _game.gameLoop(_reg);
+        _reg.run_systems();
+        _graphic->run_graphic(_reg);
+        // evt = _game.gameLoop(_reg);
         if (std::find(evt.events.begin(), evt.events.end(), GAME_EVENT::SHOOT) != evt.events.end()) {
             create_projectile(_reg.spawn_entity(), evt.entity, 15, 0);
         }
@@ -239,4 +243,16 @@ void Engine::run()
 
     gameThread.join();
     networkThread.join();
+}
+
+void Engine::loadLib(std::string libName)
+{
+    // _libName = libName;
+    LoadLibrary library(libName);
+
+    void *lib = library.loadLibrary();
+    // _previousDisplay = lib;
+    create_d newLibrary = (create_d)library.getFunction(lib, "createLibrary");
+    _graphic = newLibrary();
+    _graphic->hello();
 }
