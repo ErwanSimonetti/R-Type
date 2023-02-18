@@ -80,7 +80,6 @@ EntityEvent SFML::event_system(registry &reg) {
     sf::Event event;
     EntityEvent entityEvent;
     entityEvent.entity = -1;
-    // printf("event\n");
     while (_window->pollEvent(event)) {
         if (event.type == sf::Event::Closed)
             _window->close();
