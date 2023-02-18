@@ -16,7 +16,7 @@ void salut()
 int main(void)
 {   
     boost::asio::io_service io_service;
-    Engine eng(1920, 1080, io_service, "127.0.0.1", "1234");
+    Engine eng(io_service, "127.0.0.1", "1234");
     printf("client\n");
 
     eng.run();
