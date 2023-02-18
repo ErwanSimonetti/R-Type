@@ -44,30 +44,30 @@ class Engine {
         /** 
          * @brief Function used to create a friendly "character" entity, giving it an id, and various parameters 
          * @param newEntity Entity ID
-         * @param velX int_16_t corresponding to the vertical velocity
-         * @param velY int_16_t corresponding to the horizontal velocity
-         * @param posX uint_16_t corresponding to the vertical position
-         * @param posY uint_16_t corresponding to the horizontal position
+         * @param velX int16_t corresponding to the vertical velocity
+         * @param velY int16_t corresponding to the horizontal velocity
+         * @param posX uint16_t corresponding to the vertical position
+         * @param posY uint16_t corresponding to the horizontal position
          **/
         void create_player(entity newEntity, const int16_t velX, const int16_t velY, const uint16_t posX, const uint16_t posY);
         
         /**
          * @brief Function used to create an enemy "character" entity, giving it an id, and various parameters 
          * @param newEntity Entity ID, has to be unused
-         * @param velX int_16_t corresponding to the vertical velocity
-         * @param velY int_16_t corresponding to the horizontal velocity
-         * @param posX uint_16_t corresponding to the vertical position
-         * @param posY uint_16_t corresponding to the horizontal position
+         * @param velX int16_t corresponding to the vertical velocity
+         * @param velY int16_t corresponding to the horizontal velocity
+         * @param posX uint16_t corresponding to the vertical position
+         * @param posY uint16_t corresponding to the horizontal position
          **/
         void create_enemy_entity(entity newEntity, const int16_t velX, const int16_t velY, const uint16_t posX, uint16_t posY);
 
         /** 
          * @brief Function used to create an entity, giving it an id, and various parameters.
          * @param newEntity Entity ID, has to be unused
-         * @param velX int_16_t corresponding to the vertical velocity
-         * @param velY int_16_t corresponding to the horizontal velocity
-         * @param posX uint_16_t corresponding to the vertical position
-         * @param posY uint_16_t corresponding to the horizontal position
+         * @param velX int16_t corresponding to the vertical velocity
+         * @param velY int16_t corresponding to the horizontal velocity
+         * @param posX uint16_t corresponding to the vertical position
+         * @param posY uint16_t corresponding to the horizontal position
          */
         void create_entity(entity newEntity, const int16_t velX, const int16_t velY, const uint16_t posX, const uint16_t posY);
 
