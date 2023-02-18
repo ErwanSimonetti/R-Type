@@ -24,8 +24,8 @@ struct Velocity {
         _vX = velocityX;
         _vY = velocityY;
 
-        int16_t avVX = 0;
-        int16_t avVY = 0;
+        int16_t avVX = velocityX;
+        int16_t avVY = velocityY;
 
         if (velocityX < 0)
             avVX = velocityX * -1;
