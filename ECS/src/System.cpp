@@ -81,11 +81,16 @@ void position_system(registry &r, sparse_array<Position> &positions, sparse_arra
             std::cout << "vel x = " << vel.value()._vX << std::endl;
             std::cout << "vel y = " << vel.value()._vY << std::endl;
         }
-        std::cout << "pos x = " << pos.value()._x << std::endl;
-        std::cout << "pos y = " << pos.value()._y << std::endl;
+        // std::cout << "pos x = " << pos.value()._x << std::endl;
+        // std::cout << "pos y = " << pos.value()._y << std::endl;
         if (pos && vel) {
             pos.value()._x += vel.value()._vX;
             pos.value()._y += vel.value()._vY;
+
+            if (i < controllables.size() && controllables[i]) {
+                vel.value()._vX = 0;
+                vel.value()._vY = 0;
+            }
         }
     }
 }
