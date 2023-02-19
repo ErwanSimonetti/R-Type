@@ -133,7 +133,6 @@ class Engine {
         /**
          * @brief SFML encapsulation 
          **/
-        // RenderGame _game;
         entity _player;
         std::shared_ptr<IGraphic> _graphic;
 };
