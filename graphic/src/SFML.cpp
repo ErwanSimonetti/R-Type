@@ -25,10 +25,10 @@ SFML::~SFML()
 
 void SFML::set_sprite() {
     for (auto &it: _assets) {
-        sf::Texture texture;
-        if (!texture.loadFromFile(it.second._texture))
+        it.second._newtexture = std::make_shared<sf::Texture>();
+        if (!it.second._newtexture->loadFromFile(it.second._texture))
             std::cerr << "Failed to load texture" << std::endl;
-        it.second._sprite.setTexture(texture);
+        it.second._sprite.setTexture(*it.second._newtexture);
         it.second._sprite.setTextureRect(it.second._bounds);
     }
 }
@@ -41,23 +41,20 @@ void SFML::initialize_rect(Drawable &draw){
 }
 
 
-void SFML::draw_system(sparse_array<Position> const & positions, sparse_array<Drawable> &drawables) {
+void SFML::draw_system(sparse_array<Position> const &positions, sparse_array<Drawable> &drawables) {
     for (size_t i = 0; i < drawables.size() && i < positions.size(); ++ i) {
         auto &draw = drawables[i];
         auto &pos = positions[i];
         if (draw && pos) {
-            std::cout << draw.value()._type << std::endl;
-            // _assets.at(draw.value()._type)._sprite.setPosition(pos.value()._x, pos.value()._y);
-            // sf::IntRect newRect = {draw.value()._rect.top, draw.value()._rect.left, draw.value()._rect.width, draw.value()._rect.height};
-            // _assets.at(draw.value()._type)._sprite.setTextureRect(newRect);
-            // // draw.value()._sprite.setPosition(pos.value()._x, pos.value()._y);
-            // // _window->draw(draw.value()._sprite);
-            // _window->draw(_assets.at(draw.value()._type)._sprite);
+            _assets.find(draw.value()._type)->second._sprite.setPosition(pos.value()._x, pos.value()._y);
+            sf::IntRect newRect = {draw.value()._rect.left, draw.value()._rect.top, draw.value()._rect.width, draw.value()._rect.height};
+            _assets.find(draw.value()._type)->second._sprite.setTextureRect(newRect);
+            _window->draw(_assets.find(draw.value()._type)->second._sprite);
         }
     }
 }
 
-void SFML::animation_system(registry &r, sparse_array<Animatable> &animatable, sparse_array<Drawable> &drawable) 
+void SFML::animation_system(sparse_array<Animatable> &animatable, sparse_array<Drawable> &drawable) 
 {
     for (size_t i = 0; i < animatable.size() && i < drawable.size(); ++ i) {
         auto &anim = animatable[i];
@@ -66,16 +63,12 @@ void SFML::animation_system(registry &r, sparse_array<Animatable> &animatable, s
             if (draw.value()._rect.height == -1)
                 initialize_rect(draw.value());
             if (anim.value()._clock.getElapsedTime().asMilliseconds() >= anim.value()._speed) {
-                // sf::IntRect newRect = _assets.at(draw.value()._type)._sprite.getTextureRect();
-                draw.value()._rect.left += _assets.at(draw.value()._type)._textureRect;
-                // _assets.at(draw.value()._type)._sprite.setTextureRect(newRect);
+                draw.value()._rect.left += _assets.find(draw.value()._type)->second._textureRect;
                 anim.value()._clock.restart();
             }
-            if ( _assets.at(draw.value()._type)._sprite.getTextureRect().left >= _assets.at(draw.value()._type)._textureSize) {
-                // sf::IntRect newRect =   _assets.at(draw.value()._type)._sprite.getTextureRect();
+            if ( draw.value()._rect.left >= _assets.find(draw.value()._type)->second._textureSize) {
+                std::cout << "left";
                 draw.value()._rect.left = 0;
-                // _assets.at(draw.value()._type)._sprite.setTextureRect(newRect);
-
             }
         }
     }
@@ -87,12 +80,15 @@ EntityEvent SFML::event_system(registry &reg) {
     sf::Event event;
     EntityEvent entityEvent;
     entityEvent.entity = -1;
+    // printf("event\n");
     while (_window->pollEvent(event)) {
         if (event.type == sf::Event::Closed)
             _window->close();
-        for (std::map<sf::Keyboard::Key, KEYBOARD>::iterator it = KeyboardMap.begin(); it != KeyboardMap.end(); it++)
-            if (sf::Keyboard::isKeyPressed(it->first))
+        for (std::map<sf::Keyboard::Key, KEYBOARD>::iterator it = KeyboardMap.begin(); it != KeyboardMap.end(); it++) {
+            if (sf::Keyboard::isKeyPressed(it->first)) {
                 inputs.emplace_back(it->second);
+            }
+        }
         return get_event(reg, inputs, reg.get_components<Position>(), reg.get_components<Controllable>(), reg.get_components<Velocity>(), reg.get_components<Shootable>());
     }
     return entityEvent;
@@ -152,11 +148,6 @@ EntityEvent SFML::get_event(registry &r, std::vector<int> &directions, sparse_ar
         }
     }
     return entityEvent;
-}
-
-void SFML:: hello()
-{
-    std::cout << "hello" << std::endl;
 }
 
 EntityEvent SFML::run_graphic(registry &reg) {

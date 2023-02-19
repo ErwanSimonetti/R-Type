@@ -9,6 +9,9 @@
 
 Engine::Engine(boost::asio::io_service &io_service, const std::string &host, const std::string &port) : _reg(), _network(io_service, host, port), _player(0)
 {
+    loadLib("./sfml.so");
+
+
     _reg.register_component<Position>();
     _reg.register_component<Velocity>();
     _reg.register_component<Drawable>();
@@ -24,9 +27,7 @@ Engine::Engine(boost::asio::io_service &io_service, const std::string &host, con
     _reg.add_system<Position, Velocity, Controllable>(position_system);
     _reg.add_system<Shootable>(shoot_system);
     _reg.add_system<Animatable, Position, Parallax>(parallax_system);
-    loadLib("./sfml.so");
-    // _reg.add_system<Animatable, Drawable>(std::bind(&IGraphic::animation_system, &_graphic, );
-    // _reg.add_system<Position, Drawable>(std::bind(&RenderGame::draw_system, &_game, std::placeholders::_1, std::placeholders::_2));
+    _reg.add_system<Animatable, Drawable>(std::bind(&IGraphic::animation_system, _graphic, std::placeholders::_1, std::placeholders::_2));
     _reg.add_system<Position, Drawable>(std::bind(&IGraphic::draw_system, _graphic, std::placeholders::_1, std::placeholders::_2));
     // _reg.add_system<Position, Velocity, FollowPath>(followPathSystem);
 }
@@ -46,6 +47,7 @@ void Engine::create_entity(entity newEntity, const int16_t velX, const int16_t v
     _reg.emplace_component<Hitbox>(newEntity, posX+45, posY+45, SHIP);
     _reg.emplace_component<Drawable>(newEntity, SHIP);
     _reg.emplace_component<Animatable>(newEntity, 90);
+    
 }
 
 void Engine::create_player(entity newEntity, const int16_t velX, const int16_t velY, const uint16_t posX, const uint16_t posY)
@@ -192,8 +194,7 @@ void Engine::runGame()
     EntityEvent evt;
     while (1) {
         _reg.run_systems();
-        _graphic->run_graphic(_reg);
-        // evt = _game.gameLoop(_reg);
+        evt = _graphic->run_graphic(_reg);
         if (std::find(evt.events.begin(), evt.events.end(), GAME_EVENT::SHOOT) != evt.events.end()) {
             create_projectile(_reg.spawn_entity(), evt.entity, 15, 0);
         }
@@ -230,6 +231,7 @@ void Engine::run()
     create_parallax(_reg.spawn_entity(), 0, 0, 9, PARA_3);
     create_parallax(_reg.spawn_entity(), 1920, 346, 12, PARA_4);
     create_parallax(_reg.spawn_entity(), 0, 346, 12, PARA_4);
+    create_player(_reg.spawn_entity(), 10, 10, 100, 100);
     create_enemy_entity(_reg.spawn_entity(), -10, 0, 1900, 200);
 
 
@@ -247,12 +249,9 @@ void Engine::run()
 
 void Engine::loadLib(std::string libName)
 {
-    // _libName = libName;
     LoadLibrary library(libName);
 
     void *lib = library.loadLibrary();
-    // _previousDisplay = lib;
     create_d newLibrary = (create_d)library.getFunction(lib, "createLibrary");
     _graphic = newLibrary();
-    _graphic->hello();
 }
