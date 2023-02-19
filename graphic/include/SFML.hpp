@@ -47,45 +47,6 @@ class SFML : public IGraphic {
         };
 };
 
-// std::unordered_map<OBJECT, std::string> textureMap = {
-//     { SHIP, "ressources/ship.png" },
-//     { ENEMYSHIP, "ressources/enemyship.png" },
-//     { BULLET, "ressources/shoot.png" },
-//     { PARA_1, "ressources/para_1.png" },
-//     { PARA_2, "ressources/para_2.png" },
-//     { PARA_3, "ressources/para_3.png" },
-//     { PARA_4, "ressources/para_4.png" }
-// };
-
-// std::unordered_map<OBJECT, sf::IntRect> boundsMap = {
-//     { SHIP, sf::IntRect(0, 0, 101, 41) },
-//     { ENEMYSHIP, sf::IntRect(0, 0, 101, 41) },
-//     { BULLET, sf::IntRect(0, 0, 43, 41) },
-//     { PARA_1, sf::IntRect(0, 0, 1920, 1129) },
-//     { PARA_2, sf::IntRect(0, 0, 1920, 1059) },
-//     { PARA_3, sf::IntRect(0, 0, 1920, 1280) },
-//     { PARA_4, sf::IntRect(0, 0, 1920, 734)  }
-// };
-
-// std::unordered_map<OBJECT, uint16_t> textureSize = {
-//     { SHIP,  808},
-//     { ENEMYSHIP,  808},
-//     { BULLET, 174 },
-//     { PARA_1, 1920 },
-//     { PARA_2, 1920 },
-//     { PARA_3, 1920 },
-//     { PARA_4, 1920 }
-// };
-
-// std::unordered_map<OBJECT, uint16_t> textureRect = {
-//     { SHIP,  101},
-//     { ENEMYSHIP,  101},
-//     { BULLET, 43 },
-//     { PARA_1, 1920 },
-//     { PARA_2, 1920 },
-//     { PARA_3, 1920 },
-//     { PARA_4, 1920 }
-
 extern "C" std::shared_ptr<IGraphic> createLibrary();
 
 #endif /* !SFML_HPP_ */
