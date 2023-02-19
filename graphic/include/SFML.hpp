@@ -25,7 +25,7 @@ class SFML : public IGraphic {
         SFML();
         ~SFML();
         EntityEvent get_event(registry &r, std::vector<int> &directions, sparse_array<Position> &positions, sparse_array<Controllable> &controllables, sparse_array<Velocity> &velocities, sparse_array<Shootable> &shootable);
-        void animation_system(sparse_array<Animatable> &animatable, sparse_array<Drawable> &drawable);
+        void animation_system(sparse_array<Animatable> &animatables, sparse_array<Drawable> &drawables);
         void draw_system(sparse_array<Position> const &positions, sparse_array<Drawable> &drawables);
         EntityEvent event_system(registry &reg);
         void initialize_rect(Drawable &draw);
