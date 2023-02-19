@@ -13,10 +13,10 @@
 #pragma once
 
 struct spriteRect {
-    int16_t left;
-    int16_t top;
-    int16_t width;
-    int16_t height;
+    int left;
+    int top;
+    int width;
+    int height;
 };
 
 struct Drawable {
@@ -24,9 +24,9 @@ struct Drawable {
     Drawable() = default;
     void set_component(const OBJECT &obj) {
         _type = obj;
-        _rect = {-1, -1, -1, -1};
+        _rect = nullptr;
     }
 
     OBJECT _type;
-    spriteRect _rect;
+    std::shared_ptr<spriteRect> _rect;
 };

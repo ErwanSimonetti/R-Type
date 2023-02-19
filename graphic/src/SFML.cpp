@@ -14,7 +14,7 @@ extern "C" std::shared_ptr<IGraphic> createLibrary()
 
 SFML::SFML()
 {
-    _window = new sf::RenderWindow(sf::VideoMode(1920, 1080), "R-TYPE");
+    _window = std::make_shared<sf::RenderWindow>(sf::VideoMode(1920, 1080), "R-TYPE");
     _window->setFramerateLimit(30);
     set_sprite();
 }
@@ -34,10 +34,7 @@ void SFML::set_sprite() {
 }
 
 void SFML::initialize_rect(Drawable &draw){
-    draw._rect.height = _assets.at(draw._type)._bounds.height;
-    draw._rect.left = _assets.at(draw._type)._bounds.left;
-    draw._rect.width = _assets.at(draw._type)._bounds.width;
-    draw._rect.height = _assets.at(draw._type)._bounds.height;
+    draw._rect = std::make_shared<spriteRect>(spriteRect{_assets.at(draw._type)._bounds.left, _assets.at(draw._type)._bounds.top, _assets.at(draw._type)._bounds.width, _assets.at(draw._type)._bounds.height});
 }
 
 
@@ -47,7 +44,7 @@ void SFML::draw_system(sparse_array<Position> const &positions, sparse_array<Dra
         auto &pos = positions[i];
         if (draw && pos) {
             _assets.find(draw.value()._type)->second._sprite.setPosition(pos.value()._x, pos.value()._y);
-            sf::IntRect newRect = {draw.value()._rect.left, draw.value()._rect.top, draw.value()._rect.width, draw.value()._rect.height};
+            sf::IntRect newRect = {draw.value()._rect->left, draw.value()._rect->top, draw.value()._rect->width, draw.value()._rect->height};
             _assets.find(draw.value()._type)->second._sprite.setTextureRect(newRect);
             _window->draw(_assets.find(draw.value()._type)->second._sprite);
         }
@@ -56,19 +53,20 @@ void SFML::draw_system(sparse_array<Position> const &positions, sparse_array<Dra
 
 void SFML::animation_system(sparse_array<Animatable> &animatables, sparse_array<Drawable> &drawables) 
 {
-    for (size_t i = 0; i < animatable.size() && i < drawable.size(); ++ i) {
-        auto &anim = animatable[i];
-        auto &draw = drawable[i];
+    for (size_t i = 0; i < animatables.size() && i < drawables.size(); ++ i) {
+        auto &anim = animatables[i];
+        auto &draw = drawables[i];
         if (anim && draw) {
-            if (draw.value()._rect.height == -1)
+            if (!draw.value()._rect)
                 initialize_rect(draw.value());
-            if (anim.value()._clock.getElapsedTime().asMilliseconds() >= anim.value()._speed) {
-                draw.value()._rect.left += _assets.find(draw.value()._type)->second._textureRect;
-                anim.value()._clock.restart();
+            auto currentTime = std::chrono::high_resolution_clock::now();
+            auto elapsedTime = std::chrono::duration_cast<std::chrono::milliseconds>(currentTime - anim.value()._clock);
+            if (elapsedTime.count() >= anim.value()._speed) {
+                draw.value()._rect->left += _assets.find(draw.value()._type)->second._textureRect;
+                anim.value()._clock = currentTime;
             }
-            if ( draw.value()._rect.left >= _assets.find(draw.value()._type)->second._textureSize) {
-                std::cout << "left";
-                draw.value()._rect.left = 0;
+            if ( draw.value()._rect->left >= _assets.find(draw.value()._type)->second._textureSize) {
+                draw.value()._rect->left = 0;
             }
         }
     }
@@ -80,7 +78,6 @@ EntityEvent SFML::event_system(registry &reg) {
     sf::Event event;
     EntityEvent entityEvent;
     entityEvent.entity = -1;
-    // printf("event\n");
     while (_window->pollEvent(event)) {
         if (event.type == sf::Event::Closed)
             _window->close();
@@ -110,7 +107,7 @@ EntityEvent SFML::get_event(registry &r, std::vector<int> &directions, sparse_ar
             for(std::size_t j = 0; j < directions.size(); ++j) {
                 entityEvent.entity = i;
                 current_direction = directions[j];
-                contr.value()._current_action = current_direction;
+                contr.value()._currentAction = current_direction;
                 switch (current_direction) {
                     case KEYBOARD::ARROW_UP:
                         yDirection = -1;
@@ -144,7 +141,7 @@ EntityEvent SFML::get_event(registry &r, std::vector<int> &directions, sparse_ar
                 xDirection = 0;
                 yDirection = 0;
             }
-            vel.value().set_component(xDirection * vel.value()._speedX, yDirection * vel.value()._speedY, vel.value()._speedX, vel.value()._speedY);
+            vel.value().set_component(xDirection * vel.value()._speedX, yDirection * vel.value()._speedY);
         }
     }
     return entityEvent;

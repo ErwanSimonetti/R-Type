@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include <chrono>
 #include <SFML/Graphics.hpp>
 
 struct Animatable {
@@ -16,9 +17,11 @@ struct Animatable {
 
     void set_component(const uint16_t &speed) {
         _speed = speed;
-        _clock.restart();
+        _clock = std::chrono::high_resolution_clock::now();
+        
     }
 
     uint16_t _speed;
-    sf::Clock _clock;
+    // sf::Clock _clock;
+    std::chrono::time_point<std::chrono::high_resolution_clock> _clock;
 };

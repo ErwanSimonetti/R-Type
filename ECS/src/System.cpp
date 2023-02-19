@@ -45,9 +45,11 @@ void parallax_system(registry &r, sparse_array<Animatable> &animatable, sparse_a
         auto &anim = animatable[i];
         auto &para = parallax[i];
         if(pos && anim && para) {
-            if (anim.value()._clock.getElapsedTime().asMilliseconds() >= 10) {
+            auto currentTime = std::chrono::high_resolution_clock::now();
+            auto elapsedTime = std::chrono::duration_cast<std::chrono::milliseconds>(currentTime - anim.value()._clock);
+            if (elapsedTime.count() >= 10) {
                 pos.value()._x -= anim.value()._speed;
-                anim.value()._clock.restart();
+                anim.value()._clock = currentTime;
             }
             if (pos.value()._x <= para.value()._endPos) {
                 pos.value()._x = para.value()._startPos;

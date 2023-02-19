@@ -34,7 +34,7 @@ class SFML : public IGraphic {
 
     protected:
     private:
-        sf::RenderWindow *_window;
+        std::shared_ptr<sf::RenderWindow> _window;
 
         std::unordered_map<OBJECT, Asset> _assets = {
             { SHIP, { "ressources/ship.png", sf::IntRect(0, 0, 101, 41), 808, 101 }},
