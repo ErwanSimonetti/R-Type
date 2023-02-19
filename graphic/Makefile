@@ -23,10 +23,6 @@ LDFLAGS_SFML	=	-fPIC -shared -lsfml-graphics -lsfml-system -lsfml-window -lsfml-
 
 all:		$(NAME_SFML)
 
-# $(NAME):		$(OBJ)
-# 		$(CXX) -o $(NAME) $(OBJ) $(INC) $(LDFLAGS) -g3
-
-
 # LIBS
 
 $(NAME_SFML): 

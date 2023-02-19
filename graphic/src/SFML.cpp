@@ -54,7 +54,7 @@ void SFML::draw_system(sparse_array<Position> const &positions, sparse_array<Dra
     }
 }
 
-void SFML::animation_system(sparse_array<Animatable> &animatable, sparse_array<Drawable> &drawable) 
+void SFML::animation_system(sparse_array<Animatable> &animatables, sparse_array<Drawable> &drawables) 
 {
     for (size_t i = 0; i < animatable.size() && i < drawable.size(); ++ i) {
         auto &anim = animatable[i];
