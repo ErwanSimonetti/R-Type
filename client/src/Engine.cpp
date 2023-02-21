@@ -22,6 +22,7 @@ Engine::Engine(boost::asio::io_service &io_service, const std::string &host, con
     _reg.register_component<Parallax>();
     _reg.register_component<FollowPath>();
     _reg.register_component<Shootable>();
+    _reg.register_component<Stats>();
 
     _reg.add_system<Position, Hitbox>(collision_system);
     _reg.add_system<Position, Velocity, Controllable>(position_system);
@@ -30,6 +31,7 @@ Engine::Engine(boost::asio::io_service &io_service, const std::string &host, con
     _reg.add_system<Animatable, Drawable>(std::bind(&IGraphic::animation_system, _graphic, std::placeholders::_1, std::placeholders::_2));
     _reg.add_system<Position, Drawable>(std::bind(&IGraphic::draw_system, _graphic, std::placeholders::_1, std::placeholders::_2));
     // _reg.add_system<Position, Velocity, FollowPath>(followPathSystem);
+    _reg.add_system<Stats, Position>(entity_killing_system);
 }
 
 Engine::~Engine()
@@ -47,7 +49,6 @@ void Engine::create_entity(entity newEntity, const int16_t velX, const int16_t v
     _reg.emplace_component<Hitbox>(newEntity, posX+45, posY+45, SHIP);
     _reg.emplace_component<Drawable>(newEntity, SHIP);
     _reg.emplace_component<Animatable>(newEntity, 90);
-    
 }
 
 void Engine::create_player(entity newEntity, const int16_t velX, const int16_t velY, const uint16_t posX, const uint16_t posY)
@@ -61,6 +62,8 @@ void Engine::create_player(entity newEntity, const int16_t velX, const int16_t v
     // _player = newEntity;
     // can shoot component
     _reg.emplace_component<Hitbox>(newEntity, posX+45, posY+45, SHIP);
+    _reg.emplace_component<Hitbox>(newEntity, posX+45, posY+45, SHIP);
+    _reg.emplace_component<Stats>(newEntity, 50, 0);
 }
 
 void Engine::create_enemy_entity(entity newEntity, const int16_t velX, const int16_t velY, const uint16_t posX, const uint16_t posY)
@@ -70,11 +73,11 @@ void Engine::create_enemy_entity(entity newEntity, const int16_t velX, const int
 
     _reg.emplace_component<Drawable>(newEntity, SHIP);
     _reg.emplace_component<Hitbox>(newEntity, posX+45, posY+45, SHIP);
-    
     _reg.emplace_component<Drawable>(newEntity, ENEMYSHIP);
     _reg.emplace_component<Hitbox>(newEntity, posX+45, posY+45, ENEMYSHIP);
     _reg.emplace_component<Animatable>(newEntity, 90);
     _reg.emplace_component<FollowPath>(newEntity, "middle_diagonal");
+    _reg.emplace_component<Stats>(newEntity, 5, 0);
     // can shoot component
 }
 
@@ -97,6 +100,7 @@ void Engine::create_projectile(entity newEntity, int16_t parentId, const uint16_
     _reg.emplace_component<Drawable>(newEntity, BULLET);
     _reg.emplace_component<Pet>(newEntity, entity(parentId));
     _reg.emplace_component<Animatable>(newEntity, 10);
+    _reg.emplace_component<Stats>(newEntity, 1, 0);
 }  
 
 ClientData Engine::buildClientData(EntityEvent entityEvent) 
@@ -189,6 +193,21 @@ void Engine::runNetwork()
     _network.getIOService().run();
 }
 
+void Engine::checkStats(sparse_array<Hitbox> &hbxs, sparse_array<Stats> &sts, sparse_array<Pet> &pets) {
+    for (size_t i = 0; i < hbxs.size() && i < sts.size() && i < pets.size(); ++i) {
+        auto &hbx = hbxs[i];
+        auto &stat = sts[i];
+        auto &pet = pets[i];
+        if (stat.has_value() && hbx.has_value() && hbx.value()._type == ENEMYSHIP && hbx.value()._obstacle == BULLET) {
+            stat.value().set_component(stat.value()._health - 55, 0);
+            if (pet.has_value() && sts[pet.value()._ent].has_value()) {
+                entity ent = pet.value()._ent;
+                sts[ent].value().set_component(sts[ent].value()._score+5, sts[ent].value()._score);
+            }
+        }
+    }
+}
+
 void Engine::runGame() 
 {
     EntityEvent evt;
@@ -198,6 +217,7 @@ void Engine::runGame()
         if (std::find(evt.events.begin(), evt.events.end(), GAME_EVENT::SHOOT) != evt.events.end()) {
             create_projectile(_reg.spawn_entity(), evt.entity, 15, 0);
         }
+        checkStats(_reg.get_components<Hitbox>(), _reg.get_components<Stats>(), _reg.get_components<Pet>());
         ClientData clientData = buildClientData(evt);
         if(clientData.entity == -1)
             continue;

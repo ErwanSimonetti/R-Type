@@ -17,7 +17,8 @@ enum OBJECT {
     PARA_1,
     PARA_2,
     PARA_3,
-    PARA_4
+    PARA_4,
+    EMPTY
 };
 
 #endif /* !ECS_UTILS_HPP_ */

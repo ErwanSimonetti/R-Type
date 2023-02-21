@@ -119,12 +119,19 @@ void collision_system(registry &r, sparse_array<Position> &positions, sparse_arr
                     if ((hbxI.value()._type == ENEMYSHIP || hbxI.value()._type == BULLET)
                      && (hbxJ.value()._type == ENEMYSHIP || hbxJ.value()._type == BULLET) 
                      && hbxI.value()._active && hbxJ.value()._active ) {
-                        hbxI.value()._active = false;
-                        hbxJ.value()._active = false;
-                        r.kill_entity(entity(i));
-                        r.kill_entity(entity(j));
+                    hbxI.value()._obstacle = hbxJ.value()._type;
+                    hbxJ.value()._obstacle = hbxI.value()._type;
                 }
             }
         }
+    }
+}
+
+void entity_killing_system(registry &r, sparse_array<Stats> &stats, sparse_array<Position> &positions) {
+    for (int i = 0; i < stats.size() && i < positions.size(); ++i) {
+        auto &sts = stats[i];
+        auto &pos = positions[i];
+        if (sts.has_value() && sts.value()._health <= 0)
+            r.kill_entity(entity(i));
     }
 }

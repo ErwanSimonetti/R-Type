@@ -20,10 +20,12 @@ struct Hitbox {
         _height = height;
         _type = type;
         _active = true;
+        _obstacle = EMPTY;
     }
 
     uint16_t _width;
     uint16_t _height;
     OBJECT _type;
+    OBJECT _obstacle;
     bool _active;
 };

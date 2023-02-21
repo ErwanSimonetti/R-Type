@@ -119,7 +119,7 @@ class Engine {
          */
         void run();
         void loadLib(std::string libName);
-
+        void checkStats(sparse_array<Hitbox> &hbxs, sparse_array<Stats> &sts, sparse_array<Pet> &pets);
 
     protected:
     private:
