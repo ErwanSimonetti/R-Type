@@ -16,11 +16,11 @@
 #include <iostream>
 #include <vector>
 
-#include "Protocol.hpp"
+#include "IProtocol.hpp"
 
 class MyNetwork {
     public:
-        MyNetwork(boost::asio::io_service &io_service, const std::string& host, const std::string& port);
+        MyNetwork(std::shared_ptr<Protocol::IProtocol> protocol, boost::asio::io_service &io_service, const std::string& host, const std::string& port);
         MyNetwork(boost::asio::io_service& io_service, const std::string &port);
         ~MyNetwork();
         
@@ -32,20 +32,20 @@ class MyNetwork {
             });
         }
 
-        void UDPReceiveClient(std::function<void(ServerData)> func, bool shouldCallback);
-        void UDPReceiveServer(std::function<void(ClientData)> func);
+        void UDPReceiveClient(std::function<void(char *)> func, bool shouldCallback);
+        void UDPReceiveServer(std::function<void(char *)> func);
 
         void addEndpoint(boost::asio::ip::udp::endpoint endpoint);
         boost::asio::ip::udp::endpoint getServerEndpoint();
         boost::asio::io_service &getIOService();
-        Protocol &getProtocol();
+        // Protocol &getProtocol();
         std::vector<boost::asio::ip::udp::endpoint> &getEndpoints();
 
     protected:
     private:
         std::vector<boost::asio::ip::udp::endpoint> _endpoints;
         boost::asio::ip::udp::endpoint _endpoint;
-        Protocol _protocol;
+        std::shared_ptr<Protocol::IProtocol> _protocol;
         boost::asio::ip::udp::socket _socket;
         boost::asio::io_service &_io_services;
         char _recvBuffer[1024];

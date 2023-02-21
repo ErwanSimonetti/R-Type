@@ -16,9 +16,14 @@
 #include "MyNetwork.hpp"
 #include "registry.hpp"
 #include "System.hpp"
+<<<<<<< HEAD
 #include "GameEvents.hpp"
 #include "IGame.hpp"
 #include "LoadLibrary.hpp"
+=======
+#include "Engine_utils.hpp"
+#include "IProtocol.hpp"
+>>>>>>> c7b8feb (feat(new network implementation) with basic protocol)
 
 using create_d_game = std::shared_ptr<IGame> (*)();
 
@@ -41,17 +46,6 @@ class Engine {
          */
         Engine(boost::asio::io_service &io_service, const std::string &host, const std::string &port, const std::string &graphicModulePath);
         ~Engine();
-
-
-        /**
-         * @brief Create a new instance of object Engine, with a game window size of width and height 
-         * 
-         * @param width width of the game window
-         * @param height height of the game window
-         * @param io_service core I/O functionality for users of the asynchronous I/O objects
-         * @param host listening IP
-         * @param port listening port
-         */
         
         /**
          * @brief Get the registry object
@@ -103,7 +97,6 @@ class Engine {
          * @brief runs the Interactive Command Line
          */
         void runServerCommandLine();
-
 
     protected:
     private:

@@ -29,6 +29,7 @@ struct ServerData {
     uint16_t inputs[4][10];
 };
 
+
 class Protocol {
     public:
         Protocol();

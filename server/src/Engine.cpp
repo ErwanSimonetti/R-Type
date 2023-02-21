@@ -8,7 +8,9 @@
 #include "Engine.hpp"
 #include "CLI.hpp"
 
-Engine::Engine(boost::asio::io_service &io_service, const std::string &host, const std::string &port, const std::string &gameModulePath) : _reg(), _network(io_service, port)
+Engine::Engine(boost::asio::io_service &io_service, const std::string &host, const std::string &port, const std::string &gameModulePath) :
+    _reg(),
+    _network(io_service, port)
 {
     loadModules("./modules/rtype.so", MODULE_TYPE::GAME);
 
@@ -109,7 +111,7 @@ void Engine::updateRegistry(ClientData data)
 
 void Engine::runNetwork() 
 {
-    _network.UDPReceiveServer(std::bind(&Engine::updateRegistry, this, std::placeholders::_1));
+    _network.UDPReceiveServer(std::bind(&Protocol::IProtocol::read, _proto, std::placeholders::_1));
     _network.getIOService().run();
 }
 
