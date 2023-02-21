@@ -21,7 +21,7 @@
 class MyNetwork {
     public:
         MyNetwork(std::shared_ptr<Protocol::IProtocol> protocol, boost::asio::io_service &io_service, const std::string& host, const std::string& port);
-        MyNetwork(boost::asio::io_service& io_service, const std::string &port);
+        MyNetwork(std::shared_ptr<Protocol::IProtocol> protocol, boost::asio::io_service& io_service, const std::string &port);
         ~MyNetwork();
         
         template <typename Data>

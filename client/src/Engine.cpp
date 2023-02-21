@@ -87,7 +87,7 @@ ClientData Engine::buildClientData(Events events)
 
 void Engine::sendData(ClientData data) 
 {
-    char *buffer = _network.getProtocol().serialiseData<ClientData>(data);
+    char *buffer = Protocol::serialiseData<ClientData>(data);
     _network.udpSend<ClientData>(buffer, _network.getServerEndpoint());
 }
 
@@ -132,7 +132,7 @@ void Engine::connectToServer()
         clientData.inputs[i] = 0;
     }
 
-    _network.UDPReceiveClient(std::bind(&Engine::updateRegistry, this, std::placeholders::_1), false);
+    _network.UDPReceiveClient(std::bind(&Protocol::IProtocol::read, _proto, std::placeholders::_1), false);
     sendData(clientData);
 }
 

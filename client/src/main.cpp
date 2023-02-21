@@ -6,7 +6,10 @@
 */
 
 #include <functional>
+#include <memory>
+
 #include "Engine.hpp"
+#include "ProtocolClient.hpp"
 
 int main(int ac, char **av)
 {   
