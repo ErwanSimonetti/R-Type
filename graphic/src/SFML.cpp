@@ -43,6 +43,8 @@ void SFML::draw_system(sparse_array<Position> const &positions, sparse_array<Dra
         auto &draw = drawables[i];
         auto &pos = positions[i];
         if (draw && pos) {
+            if (!draw.value()._rect)
+                initialize_rect(draw.value());
             _assets.find(draw.value()._type)->second._sprite.setPosition(pos.value()._x, pos.value()._y);
             sf::IntRect newRect = {draw.value()._rect->left, draw.value()._rect->top, draw.value()._rect->width, draw.value()._rect->height};
             _assets.find(draw.value()._type)->second._sprite.setTextureRect(newRect);
@@ -74,7 +76,7 @@ void SFML::animation_system(sparse_array<Animatable> &animatables, sparse_array<
 
 
 EntityEvent SFML::event_system(registry &reg) {
-    std::vector<int> inputs;
+    // std::vector<int> inputs;
     sf::Event event;
     EntityEvent entityEvent;
     entityEvent.entity = -1;
@@ -83,10 +85,11 @@ EntityEvent SFML::event_system(registry &reg) {
             _window->close();
         for (std::map<sf::Keyboard::Key, KEYBOARD>::iterator it = KeyboardMap.begin(); it != KeyboardMap.end(); it++) {
             if (sf::Keyboard::isKeyPressed(it->first)) {
-                inputs.emplace_back(it->second);
+                // inputs.emplace_back(it->second);
+                entityEvent.events.emplace_back(it->second);
             }
         }
-        return get_event(reg, inputs, reg.get_components<Position>(), reg.get_components<Controllable>(), reg.get_components<Velocity>(), reg.get_components<Shootable>());
+        // return get_event(reg, inputs, reg.get_components<Position>(), reg.get_components<Controllable>(), reg.get_components<Velocity>(), reg.get_components<Shootable>());
     }
     return entityEvent;
 }
@@ -111,24 +114,24 @@ EntityEvent SFML::get_event(registry &r, std::vector<int> &directions, sparse_ar
                 switch (current_direction) {
                     case KEYBOARD::ARROW_UP:
                         yDirection = -1;
-                        entityEvent.events.emplace_back(GAME_EVENT::UP);
+                        // entityEvent.events.emplace_back(GAME_EVENT::UP);
                         break;
                     case KEYBOARD::ARROW_DOWN:
                         yDirection = 1;
-                        entityEvent.events.emplace_back(GAME_EVENT::DOWN);
+                        // entityEvent.events.emplace_back(GAME_EVENT::DOWN);
                         break;
                     case KEYBOARD::ARROW_LEFT:
                         xDirection = -1;
-                        entityEvent.events.emplace_back(GAME_EVENT::LEFT);
+                        // entityEvent.events.emplace_back(GAME_EVENT::LEFT);
                         break;
                     case KEYBOARD::ARROW_RIGHT:
                         xDirection = 1;
-                        entityEvent.events.emplace_back(GAME_EVENT::RIGHT);
+                        // entityEvent.events.emplace_back(GAME_EVENT::RIGHT);
                         break;
                     case KEYBOARD::SPACE:
                         if (shoot.value()._canShoot == true) {
-                            entityEvent.events.emplace_back(GAME_EVENT::SHOOT);
-                            shoot.value()._clock.restart();
+                            // entityEvent.events.emplace_back(GAME_EVENT::SHOOT);
+                            shoot.value()._clock = std::chrono::high_resolution_clock::now();
                         }
                         break;
                     default:

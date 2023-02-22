@@ -7,7 +7,9 @@
 
 CXX		=	g++ -std=c++17
 
-INC		=	-I include/ -I ../ECS/include -I ../ECS/include/components -I ../utils/
+INC_SFML		=	-I include/SFML -I ../ECS/include -I ../ECS/include/components -I ../utils/ -I include
+
+INC_RAYLIB		=	-I include/Raylib -I ../ECS/include -I ../ECS/include/components -I ../utils/ -I include
 
 # SFML
 
@@ -20,10 +22,33 @@ OBJ_SFML	=	$(SRC_SFML:.cpp=.o)
 LDFLAGS_SFML	=	-fPIC -shared -lsfml-graphics -lsfml-system -lsfml-window -lsfml-audio
 
 
+# RAYLIB
 
-all:		$(NAME_SFML)
+NAME_RAYLIB	=	raylib.so
+
+SRC_RAYLIB	=	src/Raylib.cpp src/RaylibWindow.cpp
+
+OBJ_RAYLIB	=	$(SRC_RAYLIB:.cpp=.o)
+
+LDFLAGS_RAYLIB	=	-fPIC -shared -lraylib -lGL -lm -lpthread -ldl -lrt -lX11
+
+
+
+all:		$(NAME_SFML) $(NAME_RAYLIB)
 
 # LIBS
 
+sfml:	$(NAME_SFML)
+
+raylib:	$(NAME_RAYLIB)
+
+clean:
+	rm *.so
+
+re: clean all
+
 $(NAME_SFML): 
-	$(CXX) $(SRC_SFML) -o $(NAME_SFML) $(INC) $(LDFLAGS_SFML)
+	$(CXX) $(SRC_SFML) -o $(NAME_SFML) $(INC_SFML) $(LDFLAGS_SFML)
+
+$(NAME_RAYLIB): 
+	$(CXX) $(SRC_RAYLIB) -o $(NAME_RAYLIB) $(INC_RAYLIB) $(LDFLAGS_RAYLIB)

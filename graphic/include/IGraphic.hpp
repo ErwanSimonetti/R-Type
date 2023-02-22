@@ -8,11 +8,8 @@
 #ifndef IGRAPHIC_HPP_
 #define IGRAPHIC_HPP_
 
-#include <SFML/Graphics.hpp>
-
 #include "registry.hpp"
 #include "System.hpp"
-#include "SFML_utils.hpp"
 #include "Engine_utils.hpp"
 
 class IGraphic {

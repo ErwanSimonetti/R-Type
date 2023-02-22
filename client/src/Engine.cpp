@@ -9,7 +9,7 @@
 
 Engine::Engine(boost::asio::io_service &io_service, const std::string &host, const std::string &port) : _reg(), _network(io_service, host, port), _player(0)
 {
-    loadLib("./sfml.so");
+    loadLib("./graphic/raylib.so");
 
 
     _reg.register_component<Position>();
@@ -27,7 +27,7 @@ Engine::Engine(boost::asio::io_service &io_service, const std::string &host, con
     _reg.add_system<Position, Velocity, Controllable>(position_system);
     _reg.add_system<Shootable>(shoot_system);
     _reg.add_system<Animatable, Position, Parallax>(parallax_system);
-    _reg.add_system<Animatable, Drawable>(std::bind(&IGraphic::animation_system, _graphic, std::placeholders::_1, std::placeholders::_2));
+    // _reg.add_system<Animatable, Drawable>(std::bind(&IGraphic::animation_system, _graphic, std::placeholders::_1, std::placeholders::_2));
     _reg.add_system<Position, Drawable>(std::bind(&IGraphic::draw_system, _graphic, std::placeholders::_1, std::placeholders::_2));
     // _reg.add_system<Position, Velocity, FollowPath>(followPathSystem);
 }
@@ -223,15 +223,15 @@ void Engine::connectToServer()
 void Engine::run() 
 {
     create_entity(_reg.spawn_entity_by_id(0), 0, 0, 100, 100);
-    create_parallax(_reg.spawn_entity(), 1920, 0, 3, PARA_1);
-    create_parallax(_reg.spawn_entity(), 0, 0, 3, PARA_1);
-    create_parallax(_reg.spawn_entity(), 1920, 0, 6, PARA_2);
-    create_parallax(_reg.spawn_entity(), 0, 0, 6, PARA_2);
-    create_parallax(_reg.spawn_entity(), 1920, 0, 9, PARA_3);
-    create_parallax(_reg.spawn_entity(), 0, 0, 9, PARA_3);
-    create_parallax(_reg.spawn_entity(), 1920, 346, 12, PARA_4);
-    create_parallax(_reg.spawn_entity(), 0, 346, 12, PARA_4);
-    create_player(_reg.spawn_entity(), 10, 10, 100, 100);
+    // create_parallax(_reg.spawn_entity(), 1920, 0, 3, PARA_1);
+    // create_parallax(_reg.spawn_entity(), 0, 0, 3, PARA_1);
+    // create_parallax(_reg.spawn_entity(), 1920, 0, 6, PARA_2);
+    // create_parallax(_reg.spawn_entity(), 0, 0, 6, PARA_2);
+    // create_parallax(_reg.spawn_entity(), 1920, 0, 9, PARA_3);
+    // create_parallax(_reg.spawn_entity(), 0, 0, 9, PARA_3);
+    // create_parallax(_reg.spawn_entity(), 1920, 346, 12, PARA_4);
+    // create_parallax(_reg.spawn_entity(), 0, 346, 12, PARA_4);
+    // create_player(_reg.spawn_entity(), 10, 10, 100, 100);
     create_enemy_entity(_reg.spawn_entity(), -10, 0, 1900, 200);
 
 

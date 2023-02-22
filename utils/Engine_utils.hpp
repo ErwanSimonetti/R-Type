@@ -10,6 +10,7 @@
 
 #include <stdint.h>
 #include <vector>
+#include "Graphic_utils.hpp"
 
 enum GAME_EVENT {
     LEFT,
@@ -22,7 +23,7 @@ enum GAME_EVENT {
 
 struct EntityEvent {
     int16_t entity;
-    std::vector<GAME_EVENT> events;
+    std::vector<KEYBOARD> events;
 };
 
 

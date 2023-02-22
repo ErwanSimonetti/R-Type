@@ -6,7 +6,7 @@
 */
 
 #include <ostream>
-#include "SFML_utils.hpp"
+#include "Graphic_utils.hpp"
 
 /**
  * @brief components for the ECS, set the entity's Controllable
