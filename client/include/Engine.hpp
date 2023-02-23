@@ -10,14 +10,23 @@
 #ifndef ENGINE_HPP_
 #define ENGINE_HPP_
 
-#include "MyNetwork.hpp"
 #include <boost/asio.hpp>
 #include <boost/array.hpp>
+
+#include "MyNetwork.hpp"
 #include "Engine_utils.hpp"
 #include "IGraphic.hpp"
+#include "IGame.hpp"
 #include "LoadLibrary.hpp"
 
-using create_d = std::shared_ptr<IGraphic> (*)();
+using create_d_graphic = std::shared_ptr<IGraphic> (*)();
+using create_d_game = std::shared_ptr<IGame> (*)();
+
+
+enum MODULE_TYPE {
+    GAME,
+    GRAPHIC
+};
 
 /**
  * @brief A class used to handle everything related to the game engine
@@ -44,46 +53,6 @@ class Engine {
          */
         registry &get_registry();
 
-        /** 
-         * @brief Function used to create a friendly "character" entity, giving it an id, and various parameters 
-         * @param newEntity Entity ID
-         * @param velX int16_t corresponding to the vertical velocity
-         * @param velY int16_t corresponding to the horizontal velocity
-         * @param posX uint16_t corresponding to the vertical position
-         * @param posY uint16_t corresponding to the horizontal position
-         **/
-        void create_player(entity newEntity, const int16_t velX, const int16_t velY, const uint16_t posX, const uint16_t posY);
-        
-        /**
-         * @brief Function used to create an enemy "character" entity, giving it an id, and various parameters 
-         * @param newEntity Entity ID, has to be unused
-         * @param velX int16_t corresponding to the vertical velocity
-         * @param velY int16_t corresponding to the horizontal velocity
-         * @param posX uint16_t corresponding to the vertical position
-         * @param posY uint16_t corresponding to the horizontal position
-         **/
-        void create_enemy_entity(entity newEntity, const int16_t velX, const int16_t velY, const uint16_t posX, uint16_t posY);
-
-        /** 
-         * @brief Function used to create an entity, giving it an id, and various parameters.
-         * @param newEntity Entity ID, has to be unused
-         * @param velX int16_t corresponding to the vertical velocity
-         * @param velY int16_t corresponding to the horizontal velocity
-         * @param posX uint16_t corresponding to the vertical position
-         * @param posY uint16_t corresponding to the horizontal position
-         */
-        void create_entity(entity newEntity, const int16_t velX, const int16_t velY, const uint16_t posX, const uint16_t posY);
-
-        /// @brief Generate a projectile using the id of a previously generated ship entity
-        /// @param parentId id of the parent ship
-        /// @param col color
-        /// @param velX x velocity
-        /// @param velY y velocity
-        /// @return a projectile entity 
-        void create_projectile(entity newEntity, int16_t parentId, const uint16_t velX, const uint16_t velY);
-
-        void create_parallax(entity newEntity, const uint16_t posX, const uint16_t posY, const uint16_t speed, const OBJECT obj);
-
         void connectToServer();
         ClientData buildClientData(EntityEvent entityEvent);
 
@@ -100,7 +69,7 @@ class Engine {
          * @param data struct corresponding to every player's data
          */
         void updateRegistry(ServerData data);
-
+    
         /**
          * @brief Runs network threads
          * 
@@ -118,7 +87,8 @@ class Engine {
          * 
          */
         void run();
-        void loadLib(std::string libName);
+
+        void loadModules(std::string libName, MODULE_TYPE type);
 
 
     protected:
@@ -127,14 +97,14 @@ class Engine {
          * @brief registry object 
          **/
         registry _reg;
-
         MyNetwork _network;
+        entity _player;
 
         /**
-         * @brief SFML encapsulation 
+         * @brief modules 
          **/
-        entity _player;
         std::shared_ptr<IGraphic> _graphic;
+        std::shared_ptr<IGame> _game;
 };
 
 #endif /* !ENGINE_HPP_ */

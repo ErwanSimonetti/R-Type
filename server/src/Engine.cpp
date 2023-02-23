@@ -141,7 +141,7 @@ void Engine::runGame()
 
 void Engine::run() 
 {
-    // create_entity(_reg.spawn_entity_by_id(0), 0, 0, 100, 100);
+    create_entity(_reg.spawn_entity_by_id(0), 0, 0, 100, 100);
     create_entity(_reg.spawn_entity(), 0, 0, 100, 100);
     create_entity(_reg.spawn_entity(), 0, 0, 100, 100);
     create_entity(_reg.spawn_entity(), 0, 0, 100, 100);
