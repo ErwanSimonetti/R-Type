@@ -17,14 +17,29 @@
 
 namespace Protocol
 {
-    class ProtocolClient : public AProtocol {
+    class ProtocolClient : public IProtocol {
         public:
-            ProtocolClient() : AProtocol()
+            ProtocolClient()
             {
 
             };
 
             ~ProtocolClient() = default;
+
+            void read(char *buffer)
+            {
+                std::cout << "Receive buffer of size == " << strlen(buffer) << std::endl;
+                Header* ptr1 = reinterpret_cast<Header*>(buffer);
+                std::cout << "Header ==  [" << ptr1->_id << "]" << std::endl;
+
+                std::cout << "Size of the map == " << _idToType.size() << std::endl;
+                if (_idToType.count(ptr1->_id)) {
+                    _idToType[ptr1->_id](buffer, sizeof(Header));
+                } else {
+                    std::cout << "Error: Invalid header id : "  << ptr1->_id << " not found." << std::endl;
+                }
+            };
+
 
         protected:
         private:

@@ -12,7 +12,7 @@
 
 struct Header
 {
-    int8_t _id;
+    int _id;
 };
 
 

@@ -36,6 +36,7 @@ enum MODULE_TYPE {
  */
 class Engine {
     public:
+        void madeDataTest();
          /**
          * @brief Create a new instance of object Engine, with a game window size of width and height 
          * 
@@ -81,7 +82,7 @@ class Engine {
          * 
          * @param data struct corresponding to each player's data
          */
-        void sendData(ClientData data);
+        void sendData();
 
         /**
          * @brief Function used to update the registery with data received from the server

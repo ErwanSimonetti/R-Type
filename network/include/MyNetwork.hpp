@@ -24,9 +24,9 @@ class MyNetwork {
         MyNetwork(std::shared_ptr<Protocol::IProtocol> protocol, boost::asio::io_service& io_service, const std::string &port);
         ~MyNetwork();
         
-        template <typename Data>
-        void udpSend(char *buffer, boost::asio::ip::udp::endpoint endpoint) {
-            _socket.async_send_to(boost::asio::buffer(buffer, sizeof(Data)), endpoint,
+        void udpSend(char *buffer, boost::asio::ip::udp::endpoint endpoint, std::size_t const& sizeOfBuffer) {
+            _protocol->read(buffer);
+            _socket.async_send_to(boost::asio::buffer(buffer, 1024), endpoint,
                 [this, buffer, endpoint](boost::system::error_code ec, std::size_t bytes_sent) 
             {
             });

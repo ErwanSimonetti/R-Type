@@ -16,14 +16,9 @@
 #include "MyNetwork.hpp"
 #include "registry.hpp"
 #include "System.hpp"
-<<<<<<< HEAD
 #include "GameEvents.hpp"
 #include "IGame.hpp"
 #include "LoadLibrary.hpp"
-=======
-#include "Engine_utils.hpp"
-#include "IProtocol.hpp"
->>>>>>> c7b8feb (feat(new network implementation) with basic protocol)
 
 using create_d_game = std::shared_ptr<IGame> (*)();
 
@@ -35,7 +30,6 @@ enum MODULE_TYPE {
 /// @brief Engine class used to handle everything related to the game engine
 class Engine {
     public:
-
         /**
          * @brief Create a new instance of object Engine, with a game window size of width and height 
          * 

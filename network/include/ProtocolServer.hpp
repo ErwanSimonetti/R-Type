@@ -18,15 +18,29 @@
 
 namespace Protocol
 {
-    class ProtocolServer : public AProtocol {
+    class ProtocolServer : public IProtocol {
         public:
-            ProtocolServer() : AProtocol()
+            ProtocolServer()
             {
                 std::cout << "Hey, I build a new Protocol Server." << std::endl;
                 _idToType.emplace(1, std::bind(&ProtocolServer::receivePlayer, this, std::placeholders::_1, std::placeholders::_2));
             };
 
             ~ProtocolServer() = default;
+
+            void read(char *buffer)
+            {
+                std::cout << "Receive buffer of size == " << strlen(buffer) << std::endl;
+                Header* ptr1 = reinterpret_cast<Header*>(buffer);
+                std::cout << "Header ==  [" << ptr1->_id << "]" << std::endl;
+
+                std::cout << "Size of the map == " << _idToType.size() << std::endl;
+                if (_idToType.count(ptr1->_id)) {
+                    _idToType[ptr1->_id](buffer, sizeof(Header));
+                } else {
+                    std::cout << "Error: Invalid header id : "  << ptr1->_id << " not found." << std::endl;
+                }
+            };
 
         protected:
         private:
