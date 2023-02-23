@@ -14,7 +14,6 @@ Window::Window(const int &screenWidth, const int &screenHeight, const std::strin
 {
     InitWindow(screenWidth, screenHeight, name.c_str());
     if (!IsWindowReady()) {
-        
     }
     InitAudioDevice();
     if (!IsAudioDeviceReady()) {

@@ -10,7 +10,7 @@
 Engine::Engine(boost::asio::io_service &io_service, const std::string &host, const std::string &port) : _reg(), _network(io_service, host, port), _player(0)
 {
     loadLib("./graphic/raylib.so");
-
+    // _graphic->createWindow(300, 300);
 
     _reg.register_component<Position>();
     _reg.register_component<Velocity>();

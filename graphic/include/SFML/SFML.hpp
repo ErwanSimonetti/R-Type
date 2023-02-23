@@ -34,6 +34,7 @@ class SFML : public IGraphic {
         void initialize_rect(Drawable &draw);
         EntityEvent run_graphic(registry &r);
         void set_sprite();
+        void createWindow(uint16_t const &width, uint16_t const &height);
 
     protected:
     private:

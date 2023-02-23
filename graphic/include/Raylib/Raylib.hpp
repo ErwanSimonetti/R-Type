@@ -30,15 +30,16 @@ class Raylib : public IGraphic {
         void animation_system(sparse_array<Animatable> &animatables, sparse_array<Drawable> &drawables);
         void createModel(OBJECT type, std::string texture, std::string model, std::string animation);
         EntityEvent run_graphic(registry &r);
-        void createWindow();
+        // void createWindow();
         void createCamera();
+        void createWindow(uint16_t const &width, uint16_t const &height);
 
     protected:
     private:
     Camera3D _camera;
     std::map<OBJECT, Asset> _models;
     Window _window;
-    bool _initWindow;
+    // bool _initWindow;
 };
 
 extern "C" std::shared_ptr<IGraphic> createLibrary();

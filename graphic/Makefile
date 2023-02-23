@@ -30,7 +30,7 @@ SRC_RAYLIB	=	src/Raylib.cpp src/RaylibWindow.cpp
 
 OBJ_RAYLIB	=	$(SRC_RAYLIB:.cpp=.o)
 
-LDFLAGS_RAYLIB	=	-fPIC -shared -lraylib -lGL -lm -lpthread -ldl -lrt -lX11
+LDFLAGS_RAYLIB	=	-fPIC -shared -lraylib
 
 
 

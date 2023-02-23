@@ -12,11 +12,9 @@ extern "C" std::shared_ptr<IGraphic> createLibrary()
   return std::make_shared<Raylib>();
 }
 
-Raylib::Raylib() : _window(1920, 1080, "R-TYPE")
+Raylib::Raylib() : _window(1920, 1080, "hello")
 {
-    // createCamera();
-
-    // createModel(SHIP, "ressources/Raylib/BombermanBlue.png", "ressources/Raylib/Bomberman.iqm", "ressources/Raylib/BombermanAnim.iqm");
+    // createWindow(1920, 1080);
 }
 
 Raylib::~Raylib()
@@ -24,11 +22,11 @@ Raylib::~Raylib()
 
 }
 
-void Raylib::createWindow()
+void Raylib::createWindow(uint16_t const &width, uint16_t const &height)
 {
-    const int screenWidth = 800;
-    const int screenHeight = 450;
-    InitWindow(screenWidth, screenHeight, "raylib [core] example - basic window");  
+    // _window = std::make_shared<Window>(1920, 1080, "hello");
+    // std::cout << "first" << std::endl;
+    InitWindow(width, height, "raylib [core] example - basic window");  
     SetTargetFPS(60);
 }
 
@@ -70,36 +68,18 @@ EntityEvent get_event() {
     return newEvent;
 }
 
- void Raylib::draw_system(sparse_array<Position> const &positions, sparse_array<Drawable> &drawables) {
- 
-    SetTargetFPS(60);
-    // Main game loop
-    // if (IsWindowReady()) {
-    // while (!WindowShouldClose())    // Detect window close button or ESC key
-    // {
-        // Update
-        //----------------------------------------------------------------------------------
-        // TODO: Update your variables here
-        //----------------------------------------------------------------------------------
-
-        // Draw
-        //----------------------------------------------------------------------------------
-        BeginDrawing();
-        // _window.startDrawing();
-
-            _window.clearWindow();
-            std::cout << "REFRESH" << std::endl;
-            DrawText("Congrats! You created your first window!", 190, 200, 20, LIGHTGRAY);
-
-        // _window.endDrawing();
-        EndDrawing();
-        //----------------------------------------------------------------------------------
-    // }
-    // }
-
-    // De-Initialization
-    //--------------------------------------------------------------------------------------
-    // CloseWindow();  
+ void Raylib::draw_system(sparse_array<Position> const &positions, sparse_array<Drawable> &drawables) 
+ {
+    // createWindow(1920, 1080);
+    // while (_window->windowIsClose() ) {
+        // BeginDrawing();
+        _window.startDrawing();
+        _window.clearWindow();
+        // std::cout << _window.getScreenWidth() << std::endl;
+        std::cout << "REFRESH" << std::endl;
+        DrawText("Congrats! You created your first window!", 190, 200, 20, LIGHTGRAY);
+        _window.endDrawing();
+        // EndDrawing();
  }
 
 

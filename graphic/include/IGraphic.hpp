@@ -19,6 +19,7 @@ class IGraphic {
         virtual void draw_system(sparse_array<Position> const &positions, sparse_array<Drawable> &drawables) = 0;
         virtual void animation_system(sparse_array<Animatable> &animatables, sparse_array<Drawable> &drawables) = 0;
         virtual EntityEvent run_graphic(registry &r) = 0;
+        virtual void createWindow(uint16_t const &width, uint16_t const &height) = 0;
 
     protected:
     private:

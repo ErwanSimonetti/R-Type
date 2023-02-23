@@ -14,13 +14,18 @@ extern "C" std::shared_ptr<IGraphic> createLibrary()
 
 SFML::SFML()
 {
-    _window = std::make_shared<sf::RenderWindow>(sf::VideoMode(1920, 1080), "R-TYPE");
-    _window->setFramerateLimit(30);
-    set_sprite();
+
 }
 
 SFML::~SFML()
 {
+}
+
+void SFML::createWindow(uint16_t const &width, uint16_t const &height)
+{
+    _window = std::make_shared<sf::RenderWindow>(sf::VideoMode(1920, 1080), "R-TYPE");
+    _window->setFramerateLimit(30);
+    set_sprite();
 }
 
 void SFML::set_sprite() {
