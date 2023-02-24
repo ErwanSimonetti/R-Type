@@ -5,7 +5,10 @@
 ** Engine
 */
 
+#include <unistd.h>
 #include "Engine.hpp"
+
+int TICK_DURATION = 50000;
 
 Engine::Engine(uint16_t width, uint16_t height, boost::asio::io_service &io_service, const std::string &port) : _reg(), _network(io_service, port)
 {
@@ -14,8 +17,6 @@ Engine::Engine(uint16_t width, uint16_t height, boost::asio::io_service &io_serv
     _reg.register_component<Drawable>();
     _reg.register_component<Controllable>();
     _reg.register_component<Shootable>();
-
-    _reg.add_system<Position, Velocity, Controllable>(position_system);
 }
 
 Engine::~Engine()
@@ -97,6 +98,16 @@ void Engine::sendData(ServerData data)
     char *buffer = _network.getProtocol().serialiseData<ServerData>(data);
     ServerData serverData = _network.getProtocol().readServer(buffer);
 
+    std::cout << "sending data from server" << std::endl;
+    for (int i = 0; i < 4; i += 1) {
+        if (i == 0) {
+            std::cout << "player number " << i << " : " << std::endl;
+            std::cout << "pos x server = " << serverData.posX[i] << std::endl;
+            std::cout << "pos y server = " << serverData.posY[i] << std::endl;
+            std::cout << "velocity x server = " << serverData.xVelocity[i] << std::endl;
+            std::cout << "velocity y server = " << serverData.yVelocity[i] << std::endl;
+        }
+    }
     for (int it = 0; it < _network.getEndpoints().size(); it++) {
         // std::cout << _network.getEndpoints()[it].address().to_string() << std::endl;
         _network.udpSend<ServerData>(buffer, _network.getEndpoints().at(it));
@@ -136,6 +147,8 @@ void Engine::runGame()
 {
     while (1) {
         _reg.run_systems();
+        if (tickPosition())
+            position_system(_reg, _reg.get_components<Position>(), _reg.get_components<Velocity>(), _reg.get_components<Controllable>());
     }
 }
 
@@ -159,4 +172,16 @@ void Engine::run()
 
     gameThread.join();
     networkThread.join();
+}
+
+bool Engine::tickPosition()
+{
+    static clock_t tick_position = std::clock();
+    clock_t current_tick = std::clock();
+
+    if (current_tick - tick_position > TICK_DURATION) {
+        tick_position = std::clock();
+        return true;
+    }
+    return false;
 }
