@@ -14,19 +14,47 @@ extern "C" std::shared_ptr<IGraphic> createLibrary()
 
 SFML::SFML()
 {
+    _window = std::make_shared<sf::RenderWindow>(sf::VideoMode(1920, 1080), "R-TYPE");
+    _window->setFramerateLimit(30);
 
+    constructFromJson();
+    set_sprite();
 }
 
 SFML::~SFML()
 {
 }
 
-void SFML::createWindow(uint16_t const &width, uint16_t const &height)
+void SFML::createAsset(uint16_t type, std::string texture, uint16_t width, uint16_t height, uint16_t size)
 {
-    _window = std::make_shared<sf::RenderWindow>(sf::VideoMode(1920, 1080), "R-TYPE");
-    _window->setFramerateLimit(30);
-    set_sprite();
+    Asset newAsset;
+
+    sf::IntRect newRect;
+    newRect.left = 0;
+    newRect.top = 0;
+    newRect.width = width;
+    newRect.height = height;
+
+    newAsset._textureRect = width;
+    newAsset._textureSize = size;
+    newAsset._bounds = newRect;
+    newAsset._texture = texture;
+
+    _assets.insert(std::pair<OBJECT, Asset>(static_cast<OBJECT>(type), newAsset));
+    
 }
+
+void SFML::constructFromJson()
+{
+    ReadJson reader("ressources/SFML/sfml.json");
+    int nbAsset = reader.getNumberOfElement("asset");
+
+    for (int i = 0; i < nbAsset; i++) {
+        createAsset(reader.IntValueFromArray("asset", i, "type"), reader.readValueFromArray("asset", i, "texture"), \
+        reader.IntValueFromArray("asset", i, "width"), reader.IntValueFromArray("asset", i, "height"), reader.IntValueFromArray("asset", i, "size"));
+    }
+}
+
 
 void SFML::set_sprite() {
     for (auto &it: _assets) {
@@ -48,6 +76,8 @@ void SFML::draw_system(sparse_array<Position> const &positions, sparse_array<Dra
         auto &draw = drawables[i];
         auto &pos = positions[i];
         if (draw && pos) {
+            if (! _assets.count(draw.value()._type))
+                continue;
             if (!draw.value()._rect)
                 initialize_rect(draw.value());
             _assets.find(draw.value()._type)->second._sprite.setPosition(pos.value()._x, pos.value()._y);
@@ -64,6 +94,8 @@ void SFML::animation_system(sparse_array<Animatable> &animatables, sparse_array<
         auto &anim = animatables[i];
         auto &draw = drawables[i];
         if (anim && draw) {
+            if (! _assets.count(draw.value()._type))
+                continue;
             if (!draw.value()._rect)
                 initialize_rect(draw.value());
             auto currentTime = std::chrono::high_resolution_clock::now();
@@ -81,79 +113,20 @@ void SFML::animation_system(sparse_array<Animatable> &animatables, sparse_array<
 
 
 EntityEvent SFML::event_system(registry &reg) {
-    // std::vector<int> inputs;
     sf::Event event;
     EntityEvent entityEvent;
-    entityEvent.entity = -1;
     while (_window->pollEvent(event)) {
         if (event.type == sf::Event::Closed)
             _window->close();
         for (std::map<sf::Keyboard::Key, KEYBOARD>::iterator it = KeyboardMap.begin(); it != KeyboardMap.end(); it++) {
             if (sf::Keyboard::isKeyPressed(it->first)) {
-                // inputs.emplace_back(it->second);
                 entityEvent.events.emplace_back(it->second);
             }
         }
-        // return get_event(reg, inputs, reg.get_components<Position>(), reg.get_components<Controllable>(), reg.get_components<Velocity>(), reg.get_components<Shootable>());
     }
     return entityEvent;
 }
 
-EntityEvent SFML::get_event(registry &r, std::vector<int> &directions, sparse_array<Position> &positions, sparse_array<Controllable> &controllables, sparse_array<Velocity> &velocities, sparse_array<Shootable> &shootable) {
-
-    EntityEvent entityEvent;
-    entityEvent.entity = -1;
-    int current_direction = 0;
-    int16_t xDirection = 0;
-    int16_t yDirection = 0;
-    for (size_t i = 0; i < velocities.size() && i < controllables.size() && i < positions.size() && i < shootable.size(); ++ i) {
-        auto &vel = velocities[i];
-        auto &pos = positions[i];
-        auto &contr = controllables[i];
-        auto &shoot = shootable[i];
-        if (vel && contr && pos && shoot) {
-            for(std::size_t j = 0; j < directions.size(); ++j) {
-                entityEvent.entity = i;
-                current_direction = directions[j];
-                contr.value()._currentAction = current_direction;
-                switch (current_direction) {
-                    case KEYBOARD::ARROW_UP:
-                        yDirection = -1;
-                        // entityEvent.events.emplace_back(GAME_EVENT::UP);
-                        break;
-                    case KEYBOARD::ARROW_DOWN:
-                        yDirection = 1;
-                        // entityEvent.events.emplace_back(GAME_EVENT::DOWN);
-                        break;
-                    case KEYBOARD::ARROW_LEFT:
-                        xDirection = -1;
-                        // entityEvent.events.emplace_back(GAME_EVENT::LEFT);
-                        break;
-                    case KEYBOARD::ARROW_RIGHT:
-                        xDirection = 1;
-                        // entityEvent.events.emplace_back(GAME_EVENT::RIGHT);
-                        break;
-                    case KEYBOARD::SPACE:
-                        if (shoot.value()._canShoot == true) {
-                            // entityEvent.events.emplace_back(GAME_EVENT::SHOOT);
-                            shoot.value()._clock = std::chrono::high_resolution_clock::now();
-                        }
-                        break;
-                    default:
-                        xDirection = 0;
-                        yDirection = 0;
-                        break;
-                }
-            }
-            if (directions.empty()) {
-                xDirection = 0;
-                yDirection = 0;
-            }
-            vel.value().set_component(xDirection * vel.value()._speedX, yDirection * vel.value()._speedY);
-        }
-    }
-    return entityEvent;
-}
 
 EntityEvent SFML::run_graphic(registry &reg) {
     _window->display();

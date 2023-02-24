@@ -1,0 +1,53 @@
+{
+    "asset": [
+        {
+            "type": 0,
+            "texture" : "ressources/SFML/ship.png",
+            "width" : 101,
+            "height": 41,
+            "size": 808
+        },
+        {
+            "type": 1,
+            "texture" : "ressources/SFML/enemyship.png",
+            "width" : 101,
+            "height": 41,
+            "size": 808
+        },
+        {
+            "type": 2,
+            "texture" : "ressources/SFML/shoot.png",
+            "width" : 43,
+            "height": 41,
+            "size": 174
+        },
+        {
+            "type": 3,
+            "texture" : "ressources/SFML/para_1.png",
+            "width" : 1920,
+            "height": 1129,
+            "size": 1920
+        },
+        {
+            "type": 4,
+            "texture" : "ressources/SFML/para_2.png",
+            "width" : 1920,
+            "height": 1059,
+            "size": 1920
+        },
+        {
+            "type": 5,
+            "texture" : "ressources/SFML/para_3.png",
+            "width" : 1920,
+            "height": 1280,
+            "size": 1920
+        },
+        {
+            "type": 6,
+            "texture" : "ressources/SFML/para_4.png",
+            "width" : 1920,
+            "height": 734,
+            "size": 1920
+        },
+    ]
+}

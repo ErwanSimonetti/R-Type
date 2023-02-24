@@ -9,9 +9,6 @@
 
 Engine::Engine(boost::asio::io_service &io_service, const std::string &host, const std::string &port) : _reg(), _network(io_service, host, port), _player(0)
 {
-    loadLib("./graphic/raylib.so");
-    // _graphic->createWindow(300, 300);
-
     _reg.register_component<Position>();
     _reg.register_component<Velocity>();
     _reg.register_component<Drawable>();
@@ -28,7 +25,7 @@ Engine::Engine(boost::asio::io_service &io_service, const std::string &host, con
     _reg.add_system<Shootable>(shoot_system);
     _reg.add_system<Animatable, Position, Parallax>(parallax_system);
     // _reg.add_system<Animatable, Drawable>(std::bind(&IGraphic::animation_system, _graphic, std::placeholders::_1, std::placeholders::_2));
-    _reg.add_system<Position, Drawable>(std::bind(&IGraphic::draw_system, _graphic, std::placeholders::_1, std::placeholders::_2));
+    //  _reg.add_system<Position, Drawable>(std::bind(&IGraphic::draw_system, _graphic, std::placeholders::_1, std::placeholders::_2));
     // _reg.add_system<Position, Velocity, FollowPath>(followPathSystem);
 }
 
@@ -103,13 +100,13 @@ ClientData Engine::buildClientData(EntityEvent entityEvent)
 {
     ClientData clientData;
     
-    if (entityEvent.entity == -1) {
+    if (entityEvent.events.size() == 0) {
         clientData.entity = -1;
         return clientData;
     }
-    Position &pos = _reg.get_components<Position>()[entityEvent.entity].value();
+    Position &pos = _reg.get_components<Position>()[_player].value();
     int size = 0;
-    clientData.entity = entityEvent.entity;
+    clientData.entity = _player;
     clientData.posX = pos._x;
     clientData.posY = pos._y;
     clientData.directionsX = 0;
@@ -141,9 +138,9 @@ ClientData Engine::buildClientData(EntityEvent entityEvent)
             break;
         }
     }
-    printf("CREATE Client DATA:\n");
-    printClientData(clientData);
-    printf("\n");
+    // printf("CREATE Client DATA:\n");
+    // printClientData(clientData);
+    // printf("\n");
     return clientData;
 }
 
@@ -155,25 +152,25 @@ void Engine::sendData(ClientData data)
 
 void Engine::updateRegistry(ServerData data)
 {
-    printf("UPDATE Client REG:\n");
-    printServerData(data);
-    printf("\n");
+    // printf("UPDATE Client REG:\n");
+    // printServerData(data);
+    // printf("\n");
     for (int i = 0; i < 4; i++) {
         if (data.entities[i] == -1) {
             continue;
         }
         if (_player == 0 && (i == 3 || data.entities[i + 1] == -1)) {
-            printf("Our Player\n");
+            // printf("Our Player\n");
             entity newEntity = _reg.spawn_entity_by_id(data.entities[i]);
             create_player(newEntity, 10, 10, data.posX[i], data.posY[i]);
             _player = newEntity;
             continue;
         }
         if (!_reg.is_entity_alive(data.entities[i])) {
-            printf("New player\n");
+            // printf("New player\n");
             create_entity(_reg.spawn_entity_by_id(data.entities[i]), 0, 0, data.posX[i], data.posY[i]);
         } else {
-            printf("Simple Update\n");
+            // printf("Simple Update\n");
             _reg.get_components<Position>()[data.entities[i]].value().set_component(data.posX[i], data.posY[i]);
             _reg.get_components<Velocity>()[data.entities[i]].value().set_component(data.directionsX[i], data.directionsY[i]);
             if (data.hasShot[i] == 1 && data.entities[i] != _player) {
@@ -191,13 +188,15 @@ void Engine::runNetwork()
 
 void Engine::runGame() 
 {
+    loadGraphic("./graphic/raylib.so");
     EntityEvent evt;
     while (1) {
         _reg.run_systems();
         evt = _graphic->run_graphic(_reg);
-        if (std::find(evt.events.begin(), evt.events.end(), GAME_EVENT::SHOOT) != evt.events.end()) {
-            create_projectile(_reg.spawn_entity(), evt.entity, 15, 0);
-        }
+        for (auto &it: evt.events);
+        // if (std::find(evt.events.begin(), evt.events.end(), GAME_EVENT::SHOOT) != evt.events.end()) {
+        //     // create_projectile(_reg.spawn_entity(), evt.entity, 15, 0);
+        // }
         ClientData clientData = buildClientData(evt);
         if(clientData.entity == -1)
             continue;
@@ -220,31 +219,29 @@ void Engine::connectToServer()
     sendData(clientData);
 }
 
-void Engine::run() 
+void Engine::run()
 {
-    create_entity(_reg.spawn_entity_by_id(0), 0, 0, 100, 100);
-    // create_parallax(_reg.spawn_entity(), 1920, 0, 3, PARA_1);
-    // create_parallax(_reg.spawn_entity(), 0, 0, 3, PARA_1);
-    // create_parallax(_reg.spawn_entity(), 1920, 0, 6, PARA_2);
-    // create_parallax(_reg.spawn_entity(), 0, 0, 6, PARA_2);
-    // create_parallax(_reg.spawn_entity(), 1920, 0, 9, PARA_3);
-    // create_parallax(_reg.spawn_entity(), 0, 0, 9, PARA_3);
-    // create_parallax(_reg.spawn_entity(), 1920, 346, 12, PARA_4);
-    // create_parallax(_reg.spawn_entity(), 0, 346, 12, PARA_4);
-    // create_player(_reg.spawn_entity(), 10, 10, 100, 100);
+    create_entity(_reg.spawn_entity_by_id(0), 0, 0, 0, 0);
+    create_parallax(_reg.spawn_entity(), 1920, 0, 3, PARA_1);
+    create_parallax(_reg.spawn_entity(), 0, 0, 3, PARA_1);
+    create_parallax(_reg.spawn_entity(), 1920, 0, 6, PARA_2);
+    create_parallax(_reg.spawn_entity(), 0, 0, 6, PARA_2);
+    create_parallax(_reg.spawn_entity(), 1920, 0, 9, PARA_3);
+    create_parallax(_reg.spawn_entity(), 0, 0, 9, PARA_3);
+    create_parallax(_reg.spawn_entity(), 1920, 346, 12, PARA_4);
+    create_parallax(_reg.spawn_entity(), 0, 346, 12, PARA_4);
+    create_player(_reg.spawn_entity(), 10, 10, 100, 100);
     create_enemy_entity(_reg.spawn_entity(), -10, 0, 1900, 200);
 
-
-
-    connectToServer();
+    // connectToServer();
 
     std::thread gameThread(&Engine::runGame, this);
 
   // Start the network handler in a separate thread
-    std::thread networkThread(&Engine::runNetwork, this);
+    // std::thread networkThread(&Engine::runNetwork, this);
 
     gameThread.join();
-    networkThread.join();
+    // networkThread.join();
 }
 
 void Engine::loadLib(std::string libName)
@@ -254,4 +251,10 @@ void Engine::loadLib(std::string libName)
     void *lib = library.loadLibrary();
     create_d newLibrary = (create_d)library.getFunction(lib, "createLibrary");
     _graphic = newLibrary();
+}
+
+void Engine::loadGraphic(std::string libName) {
+    loadLib(libName);
+    _reg.add_system<Animatable, Drawable>(std::bind(&IGraphic::animation_system, _graphic, std::placeholders::_1, std::placeholders::_2));
+    _reg.add_system<Position, Drawable>(std::bind(&IGraphic::draw_system, _graphic, std::placeholders::_1, std::placeholders::_2));
 }

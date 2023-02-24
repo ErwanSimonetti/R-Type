@@ -16,7 +16,7 @@ set(SOURCE_FILES
   ../graphic/src/LoadLibrary.cpp
 )
 
-set(INCLUDE_DIRECTORY include/ include/utils ../network/include ../ECS/include ../ECS/include/components ../graphic/include ../utils)
+set(INCLUDE_DIRECTORY include/ include/utils ../network/include ../ECS/include ../ECS/include/components ../graphic/include ../utils ../utils/JSON)
 
 include_directories(${INCLUDE_DIRECTORY})
 add_executable(r-type_client ${SOURCE_FILES})

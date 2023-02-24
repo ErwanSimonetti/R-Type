@@ -7,30 +7,29 @@
 
 CXX		=	g++ -std=c++17
 
-INC_SFML		=	-I include/SFML -I ../ECS/include -I ../ECS/include/components -I ../utils/ -I include
+INC_SFML		=	-I include/SFML -I ../ECS/include -I ../ECS/include/components -I ../utils/ -I include -I ../utils/JSON
 
-INC_RAYLIB		=	-I include/Raylib -I ../ECS/include -I ../ECS/include/components -I ../utils/ -I include
+INC_RAYLIB		=	-I include/Raylib -I ../ECS/include -I ../ECS/include/components -I ../utils/ -I include -I ../utils/JSON
 
 # SFML
 
 NAME_SFML	=	sfml.so
 
-SRC_SFML	=	src/SFML.cpp
+SRC_SFML	=	src/SFML.cpp ../utils/JSON/ReadJson.cpp
 
 OBJ_SFML	=	$(SRC_SFML:.cpp=.o)
 
-LDFLAGS_SFML	=	-fPIC -shared -lsfml-graphics -lsfml-system -lsfml-window -lsfml-audio
-
+LDFLAGS_SFML	=	-fPIC -shared -lsfml-graphics -lsfml-system -lsfml-window -lsfml-audio -ljsoncpp
 
 # RAYLIB
 
 NAME_RAYLIB	=	raylib.so
 
-SRC_RAYLIB	=	src/Raylib.cpp src/RaylibWindow.cpp
+SRC_RAYLIB	=	src/Raylib.cpp src/RaylibWindow.cpp ../utils/JSON/ReadJson.cpp
 
 OBJ_RAYLIB	=	$(SRC_RAYLIB:.cpp=.o)
 
-LDFLAGS_RAYLIB	=	-fPIC -shared -lraylib
+LDFLAGS_RAYLIB	=	-fPIC -shared -lraylib -ljsoncpp
 
 
 

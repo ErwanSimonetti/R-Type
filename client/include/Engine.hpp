@@ -119,6 +119,7 @@ class Engine {
          */
         void run();
         void loadLib(std::string libName);
+        void loadGraphic(std::string libName);
 
 
     protected:

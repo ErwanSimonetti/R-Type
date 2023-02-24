@@ -1,0 +1,10 @@
+{
+    "asset": [
+        {
+            "type": 0,
+            "texture" : "ressources/Raylib/shipTexture.png",
+            "animation" : "ressources/Raylib/shipAnim.iqm",
+            "model": "ressources/Raylib/ship.iqm"
+        }
+    ]
+}

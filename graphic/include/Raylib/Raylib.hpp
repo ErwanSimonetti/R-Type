@@ -30,9 +30,8 @@ class Raylib : public IGraphic {
         void animation_system(sparse_array<Animatable> &animatables, sparse_array<Drawable> &drawables);
         void createModel(OBJECT type, std::string texture, std::string model, std::string animation);
         EntityEvent run_graphic(registry &r);
-        // void createWindow();
+        void constructFromJson();
         void createCamera();
-        void createWindow(uint16_t const &width, uint16_t const &height);
 
     protected:
     private:

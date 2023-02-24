@@ -22,7 +22,6 @@ enum GAME_EVENT {
 };
 
 struct EntityEvent {
-    int16_t entity;
     std::vector<KEYBOARD> events;
 };
 

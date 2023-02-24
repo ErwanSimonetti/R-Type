@@ -60,7 +60,8 @@ void const Window::endDrawing()
 
 void Window::clearWindow()
 {
-    ClearBackground(LIGHTGRAY);
+    Color color = {19, 25, 50};
+    ClearBackground(color);
 }
 
 void const Window::start3DMode(Camera3D &camera)
