@@ -82,8 +82,11 @@ EntityEvent SFML::event_system(registry &reg) {
     EntityEvent entityEvent;
     entityEvent.entity = -1;
     while (_window->pollEvent(event)) {
-        if (event.type == sf::Event::Closed)
+        if (event.type == sf::Event::Closed) {
+            entityEvent.events.emplace_back(GAME_EVENT::WINDOW_CLOSE);
             _window->close();
+            break;
+        }
         for (std::map<sf::Keyboard::Key, KEYBOARD>::iterator it = KeyboardMap.begin(); it != KeyboardMap.end(); it++) {
             if (sf::Keyboard::isKeyPressed(it->first)) {
                 inputs.emplace_back(it->second);

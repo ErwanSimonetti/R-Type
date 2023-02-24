@@ -147,6 +147,9 @@ void Engine::runGame()
     while (1) {
         _reg.run_systems();
         evt = _graphic->run_graphic(_reg);
+        if (std::find(evt.events.begin(), evt.events.end(), GAME_EVENT::WINDOW_CLOSE) != evt.events.end()) {
+            return;
+        }
         _game->run_gameLogic(_reg, evt);
         ClientData clientData = buildClientData(evt);
         if(clientData.entity == -1)
