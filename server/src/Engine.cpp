@@ -123,7 +123,7 @@ void Engine::updateRegistry(ClientData data)
         // printf("new PLayer\n");
         create_player(_reg.spawn_entity(), 10, 10, data.posX, data.posY);
     } else {
-        _reg.get_components<Velocity>()[data.entity].value().set_component(data.directionsX, data.directionsY);
+        _reg.get_components<Velocity>()[data.entity].value().set_component(data.xVelocity, data.yVelocity);
         for (int i = 0; i < _players.size(); i++) {
             if (_players.at(i).id == data.entity) {
                     if (data.hasShot) {

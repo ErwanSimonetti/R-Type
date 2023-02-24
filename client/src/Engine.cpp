@@ -96,33 +96,6 @@ void Engine::sendData(ClientData data)
 {
     char *buffer = _network.getProtocol().serialiseData<ClientData>(data);
     _network.udpSend<ClientData>(buffer, _network.getServerEndpoint());
-
-void Engine::updateRegistry(ServerData data)
-{
-    // printServerData(data);
-    // printf("\n");
-    for (int i = 0; i < 4; i++) {
-        if (data.entities[i] == -1) {
-            continue;
-        }
-        if (_player == 0 && (i == 3 || data.entities[i + 1] == -1)) {
-            entity newEntity = _reg.spawn_entity_by_id(data.entities[i]);
-            create_player(newEntity, 1, 1, data.posX[i], data.posY[i]);
-            _player = newEntity;
-            // printf("Our Player\n");
-            continue;
-        }
-        if (!_reg.is_entity_alive(data.entities[i])) {
-            // printf("New player\n");
-            create_entity(_reg.spawn_entity_by_id(data.entities[i]), 0, 0, data.posX[i], data.posY[i]);
-        } else {
-            _reg.get_components<Position>()[data.entities[i]].value().set_component(data.posX[i], data.posY[i]);
-            _reg.get_components<Velocity>()[data.entities[i]].value().set_component(data.xVelocity[i], data.yVelocity[i], 10, 10);
-            if (data.hasShot[i] == 1 && data.entities[i] != _player) {
-                create_projectile(_reg.spawn_entity(), data.entities[i], 15, 0);
-            }
-        }   
-    }
 }
 
 void Engine::runNetwork() 
@@ -143,8 +116,8 @@ void Engine::updateRegistry(ServerData data)
         gameData.entities[i] = data.entities[i];
         gameData.posX[i] = data.posX[i];
         gameData.posY[i] = data.posY[i];
-        gameData.directionsX[i] = data.directionsX[i];
-        gameData.directionsY[i] = data.directionsY[i];
+        gameData.xVelocity[i] = data.xVelocity[i];
+        gameData.yVelocity[i] = data.yVelocity[i];
         gameData.hasShot[i] = data.hasShot[i];
     }
 

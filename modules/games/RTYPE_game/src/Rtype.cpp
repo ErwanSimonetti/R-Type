@@ -108,7 +108,7 @@ void Rtype::updateRegistry(registry &r, GameData data)
         } else {
             printf("Simple Update\n");
             r.get_components<Position>()[data.entities[i]].value().set_component(data.posX[i], data.posY[i]);
-            r.get_components<Velocity>()[data.entities[i]].value().set_component(data.directionsX[i], data.directionsY[i]);
+            r.get_components<Velocity>()[data.entities[i]].value().set_component(data.xVelocity[i], data.yVelocity[i]);
             if (data.hasShot[i] == 1) {
                 create_projectile(r, r.spawn_entity(), data.entities[i], 15, 0);
             }
