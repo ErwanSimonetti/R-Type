@@ -30,11 +30,8 @@ namespace Protocol
 
             void read(char *buffer)
             {
-                std::cout << "Receive buffer of size == " << strlen(buffer) << std::endl;
                 Header* ptr1 = reinterpret_cast<Header*>(buffer);
-                std::cout << "Header ==  [" << ptr1->_id << "]" << std::endl;
 
-                std::cout << "Size of the map == " << _idToType.size() << std::endl;
                 if (_idToType.count(ptr1->_id)) {
                     _idToType[ptr1->_id](buffer, sizeof(Header));
                 } else {
