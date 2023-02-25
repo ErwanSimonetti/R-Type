@@ -78,11 +78,11 @@ ServerData Engine::buildServerData()
             data.posY[i] = pos.value()._y;
         }
 
-        auto const &vel = velocities[_players.at(i).id];
-        if (vel) {
-            data.xVelocity[i] = vel.value()._vX;
-            data.yVelocity[i] = vel.value()._vY;
-        }
+        // auto const &vel = velocities[_players.at(i).id];
+        // if (vel) {
+        //     data.xVelocity[i] = vel.value()._vX;
+        //     data.yVelocity[i] = vel.value()._vY;
+        // }
         if (_players.at(i).hasShot) {
             data.hasShot[i] = 1;
         }

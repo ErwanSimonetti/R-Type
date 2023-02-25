@@ -80,11 +80,11 @@ ClientData Engine::buildClientData(EntityEvent entityEvent)
 
     for (auto &it : entityEvent.events) {
         switch (it) {
-        case GAME_EVENT::SHOOT:
-            clientData.hasShot = 1;
-            break;
-        default:
-            break;
+            case GAME_EVENT::SHOOT:
+                clientData.hasShot = 1;
+                break;
+            default:
+                break;
         }
     }
     // printClientData(clientData);
