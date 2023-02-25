@@ -9,8 +9,8 @@
 
 Engine::Engine(boost::asio::io_service &io_service, const std::string &host, const std::string &port) : _reg(), _network(io_service, host, port), _player(0)
 {
-    loadModules("./modules/sfml.so", MODULE_TYPE::GRAPHIC);
-    loadModules("./modules/rtype.so", MODULE_TYPE::GAME);
+    loadModules("./modules/libsfml.so", MODULE_TYPE::GRAPHIC);
+    loadModules("./modules/librtype.so", MODULE_TYPE::GAME);
 
 
     _reg.register_component<Position>();
