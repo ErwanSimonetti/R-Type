@@ -66,18 +66,22 @@ ClientData Engine::buildClientData(EntityEvent entityEvent)
     ClientData clientData;
     
     if (entityEvent.entity == -1) {
+        clientData.xVelocity = 0;
+        clientData.yVelocity = 0;
         clientData.entity = -1;
         return clientData;
     }
     Position &pos = _reg.get_components<Position>()[entityEvent.entity].value();
     int size = 0;
     clientData.entity = entityEvent.entity;
-    clientData.posX = pos._x;
-    clientData.posY = pos._y;
+    // clientData.posX = pos._x;
+    // clientData.posY = pos._y;
     clientData.xVelocity = entityEvent.xVelocity;
     clientData.yVelocity = entityEvent.yVelocity;
     clientData.hasShot = 0;
-
+    
+    // std::cout << "x velocity client = " << clientData.xVelocity << std::endl;
+    // std::cout << "y velocity client = " << clientData.yVelocity << std::endl;
     for (auto &it : entityEvent.events) {
         switch (it) {
             case GAME_EVENT::SHOOT:
@@ -94,6 +98,10 @@ ClientData Engine::buildClientData(EntityEvent entityEvent)
 
 void Engine::sendData(ClientData data) 
 {
+    std::cout << "SENDING DATA !" << std::endl;
+    std::cout << "x velocity = " << data.xVelocity << std::endl;
+    std::cout << "y velocity = " << data.yVelocity << std::endl;
+
     char *buffer = _network.getProtocol().serialiseData<ClientData>(data);
     _network.udpSend<ClientData>(buffer, _network.getServerEndpoint());
 }
@@ -106,8 +114,8 @@ void Engine::runNetwork()
 
 void Engine::updateRegistry(ServerData data)
 {
-    printf("UPDATE Client REG:\n");
-    printServerData(data);
+    // printf("UPDATE Client REG:\n");
+    // printServerData(data);
     printf("\n");
 
     GameData gameData;
@@ -130,13 +138,13 @@ void Engine::runGame()
     while (1) {
         _reg.run_systems();
         evt = _graphic->run_graphic(_reg);
-        if (std::find(evt.events.begin(), evt.events.end(), GAME_EVENT::WINDOW_CLOSE) != evt.events.end()) {
-            return;
-        }
+        // if (std::find(evt.events.begin(), evt.events.end(), GAME_EVENT::WINDOW_CLOSE) != evt.events.end()) {
+        //     return;
+        // }
         _game->run_gameLogic(_reg, evt);
         ClientData clientData = buildClientData(evt);
-        if(clientData.entity == -1)
-            continue;
+        // if(clientData.entity == -1)
+        //     continue;
         sendData(clientData);
     }
 }

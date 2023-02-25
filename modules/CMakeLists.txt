@@ -36,6 +36,8 @@ FetchContent_MakeAvailable(SFML)
 # equivalent to -fPIC flag on Makefile
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ../)
+
 ADD_LIBRARY(sfml SHARED ${SFML_SOURCE_FILES})
 ADD_LIBRARY(rtype SHARED ${RTYPE_SOURCE_FILES})
 target_link_libraries(sfml PRIVATE sfml-graphics)

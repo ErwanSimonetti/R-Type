@@ -92,9 +92,8 @@ EntityEvent SFML::event_system(registry &reg) {
                 inputs.emplace_back(it->second);
             }
         }
-        return get_event(reg, inputs, reg.get_components<Position>(), reg.get_components<Controllable>(), reg.get_components<Velocity>(), reg.get_components<Shootable>());
     }
-    return entityEvent;
+    return get_event(reg, inputs, reg.get_components<Position>(), reg.get_components<Controllable>(), reg.get_components<Velocity>(), reg.get_components<Shootable>());
 }
 
 EntityEvent SFML::get_event(registry &r, std::vector<int> &directions, sparse_array<Position> &positions, sparse_array<Controllable> &controllables, sparse_array<Velocity> &velocities, sparse_array<Shootable> &shootable)
