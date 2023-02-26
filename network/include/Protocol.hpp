@@ -25,7 +25,8 @@ struct ClientData {
     int16_t directionsX;
     int16_t directionsY;
     uint16_t hasShot;
-    uint16_t input[10]; // replace has shot with list of input
+    uint16_t posX;
+    uint16_t posY;
 };
 
 struct ServerData {
@@ -34,7 +35,7 @@ struct ServerData {
     uint16_t posY[4];
     int16_t directionsX[4];
     int16_t directionsY[4];
-    uint16_t hasShot[4][10]; // list of input for 4 players
+    uint16_t hasShot[4];
 };
 
 struct ServerData {

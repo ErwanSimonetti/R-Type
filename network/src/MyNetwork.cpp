@@ -83,7 +83,7 @@ void MyNetwork::UDPReceiveServer(std::function<void(char *)> func)
         if (ec || recvd_bytes <= 0)
             UDPReceiveServer(func);
         addEndpoint(_endpoint);
-        func(_protocol.readClient(_recvBuffer));
+        func(_recvBuffer);
         UDPReceiveServer(func);
     });
 };

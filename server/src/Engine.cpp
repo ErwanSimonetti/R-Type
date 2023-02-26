@@ -84,14 +84,12 @@ ServerData Engine::buildServerData(size_t id, uint16_t inputs[10])
             }
         }
     }
-
     return data;
 }
 
 void Engine::sendData(ServerData data) 
 {
-    char *buffer = _network.getProtocol().serialiseData<ServerData>(data);
-    ServerData serverData = _network.getProtocol().readServer(buffer);
+    char *buffer = Protocol::serialiseData<ServerData>(data);
 
     for (int it = 0; it < _network.getEndpoints().size(); it++) {
         _network.udpSend<ServerData>(buffer, _network.getEndpoints().at(it));

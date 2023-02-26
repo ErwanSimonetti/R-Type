@@ -13,7 +13,9 @@
 #include <cstddef>
 
 #include "Header.hpp"
-#include "AProtocol.hpp"
+#include "Protocol.hpp"
+#include "IProtocol.hpp"
+#include "NewPlayer.hpp"
 
 namespace Protocol
 {
@@ -21,7 +23,6 @@ namespace Protocol
         public:
             ProtocolClient()
             {
-
             };
 
             ~ProtocolClient() = default;
@@ -40,10 +41,23 @@ namespace Protocol
                 }
             };
 
+            char *askConnection(char *buffer, int id)
+            {
+                std::memcpy(buffer, Protocol::serialiseData<Header>(Header{1}), sizeof(Header));
+                std::memcpy(buffer + sizeof(Header), Protocol::serialiseData<NewPlayer>(NewPlayer{id}), sizeof(NewPlayer));
+                return buffer;
+            }
+
+            void setNetwork(MyNetwork &net)
+            {
+                _network = std::make_shared<MyNetwork>(net);
+            }
 
         protected:
         private:
+
             std::unordered_map<int, std::function<void(char *, size_t)>> _idToType;
+            std::shared_ptr<MyNetwork> _network;
     };
 }
 

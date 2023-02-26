@@ -7,10 +7,6 @@
 
 #pragma once
 
-#ifndef MYNETWORK_HPP_
-#define MYNETWORK_HPP_
-
-
 #include <boost/asio.hpp>
 #include <boost/array.hpp>
 #include <iostream>
@@ -52,5 +48,3 @@ class MyNetwork {
         bool _shouldCallback;
 
 };
-
-#endif /* !MYNETWORK_HPP_ */

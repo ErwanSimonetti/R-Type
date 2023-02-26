@@ -5,12 +5,13 @@
 ** IProtocol
 */
 
-#ifndef IPROTOCOL_HPP_
-#define IPROTOCOL_HPP_
+#pragma once
 
 #include <iostream>
 #include <sstream>
 #include <cstring>
+
+// #include "MyNetwork.hpp"
 
 namespace Protocol
 {
@@ -19,6 +20,7 @@ namespace Protocol
             virtual ~IProtocol() = default;
 
             virtual void read(char *buffer) = 0;
+            virtual char *askConnection(char *buffer, int id) = 0;
 
         protected:
         private:
@@ -34,5 +36,3 @@ namespace Protocol
         return buffer;
     };
 }
-
-#endif /* !IPROTOCOL_HPP_ */

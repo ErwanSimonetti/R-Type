@@ -9,7 +9,9 @@
 #include "Header.hpp"
 #include "NewPlayer.hpp"
 
-Engine::Engine(boost::asio::io_service &io_service, const std::string &host, const std::string &port, const std::string &graphicModulePath, const std::string &gameModulePath) : _reg(), _network(io_service, host, port)
+Engine::Engine(boost::asio::io_service &io_service, const std::string &host, const std::string &port, const std::string &graphicModulePath, const std::string &gameModulePath) :
+    _reg(),
+    _network(io_service, host, port)
 {
     loadModules(gameModulePath, MODULE_TYPE::GAME);
     _graphicPath = graphicModulePath;
@@ -87,35 +89,19 @@ ClientData Engine::buildClientData(Events events)
     return clientData;
 }
 
-struct boub
+void Engine::sendData(ClientData data) 
 {
-    int i;
-};
-
-void Engine::madeDataTest()
-{
-    std::cout << "made Data test sendData" << std::endl;
-    char message[1024];
-    std::memcpy(message, Protocol::serialiseData<boub>(boub{1}), sizeof(boub));
-
-    std::cout << "Send  {" << strlen(message) << "}" << std::endl;
-    boub* ptr1 = reinterpret_cast<boub*>(message);
-    std::cout << "Header == " << ptr1->i << std::endl;
-    std::cout << "Finish read of buffer" << std::endl;
-    // std::cout << "send data before udp send" << std::endl;
-    // _network.udpSend(message, _network.getServerEndpoint(), strlen(message));
-}
-
-void Engine::sendData() 
-{
-
-    char *buffer;
-    std::memcpy(buffer, Protocol::serialiseData<Header>(Header{1}), sizeof(Header));
-    std::memcpy(buffer + sizeof(Header), Protocol::serialiseData<NewPlayer>(NewPlayer{4}), sizeof(NewPlayer));
-    std::cout << "send buffer with header" << std::endl;
-    std::cout << "send buffer of size {" << sizeof(Header) + sizeof(NewPlayer) << "}" << std::endl;
+    std::cout << "Data as been send" << std::endl;
+    std::cout << "directionsX == " << data.directionsX << std::endl;
+    std::cout << "directionsY == " << data.directionsY << std::endl;
+    std::cout << "Entity      == " << data.entity << std::endl;
+    std::cout << "hasshot     == " << data.hasShot << std::endl;
+    std::cout << "PosX        == " << data.posX << std::endl;
+    std::cout << "PosY        == " << data.posY << std::endl;
+    char buffer[1024];
+    std::memcpy(buffer, Protocol::serialiseData<Header>(Header{2}), sizeof(Header));
+    std::memcpy(buffer + sizeof(Header), Protocol::serialiseData<ClientData>(data), sizeof(ClientData));
     _network.udpSend(buffer, _network.getServerEndpoint(), sizeof(buffer));
-}
 
 void Engine::updateRegistry(ServerData data)
 {
@@ -145,7 +131,7 @@ void Engine::runGame()
         ClientData clientData = buildClientData(evt);
         if(clientData.entity == -1)
             continue;
-        sendData();
+        sendData(clientData);
     }
 }
 
@@ -159,7 +145,7 @@ void Engine::connectToServer()
     }
 
     _network.UDPReceiveClient(std::bind(&Protocol::IProtocol::read, _proto, std::placeholders::_1), false);
-    // sendData(clientData);
+    sendData(clientData);
 }
 
 void Engine::runNetwork() 
