@@ -106,7 +106,6 @@ void Rtype::updateRegistry(registry &r, GameData data)
             printf("New player\n");
             create_entity(r, r.spawn_entity_by_id(data.entities[i]), 0, 0, data.posX[i], data.posY[i]);
         } else {
-            // printf("Simple Update\n");
             r.get_components<Position>()[data.entities[i]].value().set_component(data.posX[i], data.posY[i]);
             r.get_components<Velocity>()[data.entities[i]].value().set_component(data.xVelocity[i], data.yVelocity[i]);
             if (data.hasShot[i] == 1) {

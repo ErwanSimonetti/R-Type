@@ -12,7 +12,6 @@ int main(void)
 {   
     boost::asio::io_service io_service;
     Engine eng(io_service, "127.0.0.1", "1234");
-    // printf("client\n");
 
     eng.run();
     return 0;
