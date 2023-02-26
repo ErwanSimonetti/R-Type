@@ -18,20 +18,15 @@ struct Header {
 
 struct ClientData {
     int16_t entity;
-    int16_t directionsX;
-    int16_t directionsY;
-    uint16_t hasShot;
-    uint16_t posX;
-    uint16_t posY;
+    uint16_t inputs[10];
+
 };
 
 struct ServerData {
     int16_t entities[4];
     uint16_t posX[4];
     uint16_t posY[4];
-    int16_t directionsX[4];
-    int16_t directionsY[4];
-    uint16_t hasShot[4];
+    uint16_t inputs[4][10];
 };
 
 class Protocol {

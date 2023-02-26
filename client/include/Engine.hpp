@@ -53,8 +53,26 @@ class Engine {
          */
         registry &get_registry();
 
+        /**
+         * @brief Get the registry object
+         * 
+         * @param libName std::string the path to the .so
+         * @param type MODULE_TYPE Enum representing the type of module is being loaded
+         */
+        void loadModules(std::string libName, MODULE_TYPE type);
+
+        /**
+         * @brief Do the first connection to the server to get the id of its player and all the starting data
+         */
         void connectToServer();
-        ClientData buildClientData(EntityEvent entityEvent);
+
+        /**
+         * @brief Fills a clientData struct that will be sent to the server
+         * 
+         * @param events Events all the events that happened in the game
+         * @return ClientData 
+         */
+        ClientData buildClientData(Events events);
 
         /**
          * @brief Function used to send each player's data to the server
@@ -88,8 +106,6 @@ class Engine {
          */
         void run();
 
-        void loadModules(std::string libName, MODULE_TYPE type);
-
 
     protected:
     private:
@@ -98,7 +114,6 @@ class Engine {
          **/
         registry _reg;
         MyNetwork _network;
-        entity _player;
 
         /**
          * @brief modules 
