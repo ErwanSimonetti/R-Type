@@ -14,7 +14,6 @@
 #include <boost/array.hpp>
 
 #include "MyNetwork.hpp"
-#include "GameEvents.hpp"
 #include "registry.hpp"
 #include "System.hpp"
 #include "GameEvents.hpp"
@@ -100,6 +99,12 @@ class Engine {
          */
         void runGame();
 
+        /**
+         * @brief runs the Interactive Command Line
+         */
+        void runServerCommandLine();
+
+        MyNetwork _network;
 
     protected:
     private:
