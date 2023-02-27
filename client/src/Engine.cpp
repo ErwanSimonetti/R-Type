@@ -90,10 +90,6 @@ ClientData Engine::buildClientData(EntityEvent entityEvent)
 
 void Engine::sendData(ClientData data) 
 {
-    std::cout << "SENDING DATA !" << std::endl;
-    std::cout << "x velocity = " << data.xVelocity << std::endl;
-    std::cout << "y velocity = " << data.yVelocity << std::endl;
-
     char *buffer = _network.getProtocol().serialiseData<ClientData>(data);
     _network.udpSend<ClientData>(buffer, _network.getServerEndpoint());
 }
@@ -106,8 +102,6 @@ void Engine::runNetwork()
 
 void Engine::updateRegistry(ServerData data)
 {
-    printf("\n");
-
     GameData gameData;
 
     for (int i = 0; i < 4; i++) {
