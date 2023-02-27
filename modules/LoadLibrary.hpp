@@ -1,6 +1,6 @@
 /*
-** EPITECH PROJECT, 2022
-** B-OOP-400-PAR-4-1-arcade-timothee.de-boynes
+** EPITECH PROJECT, 2023
+** R-Type
 ** File description:
 ** LoadLibrary
 */

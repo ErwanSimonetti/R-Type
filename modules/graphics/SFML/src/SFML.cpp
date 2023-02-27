@@ -9,7 +9,7 @@
 
 extern "C" std::shared_ptr<IGraphic> createLibrary()
 {
-  return std::make_shared<SFML>();
+    return std::make_shared<SFML>();
 }
 
 SFML::SFML()
@@ -43,12 +43,15 @@ void SFML::draw_system(sparse_array<Position> const &positions, sparse_array<Dra
         auto &draw = drawables[i];
         auto &pos = positions[i];
         if (draw && pos) {
+            if (!draw.value()._rect)
+                initialize_rect(draw.value());
             _assets.find(draw.value()._type)->second._sprite.setPosition(pos.value()._x, pos.value()._y);
             sf::IntRect newRect = {draw.value()._rect->left, draw.value()._rect->top, draw.value()._rect->width, draw.value()._rect->height};
             _assets.find(draw.value()._type)->second._sprite.setTextureRect(newRect);
             _window->draw(_assets.find(draw.value()._type)->second._sprite);
         }
     }
+
 }
 
 void SFML::animation_system(sparse_array<Animatable> &animatables, sparse_array<Drawable> &drawables) 
@@ -79,8 +82,11 @@ EntityEvent SFML::event_system(registry &reg) {
     EntityEvent entityEvent;
     entityEvent.entity = -1;
     while (_window->pollEvent(event)) {
-        if (event.type == sf::Event::Closed)
+        if (event.type == sf::Event::Closed) {
+            entityEvent.events.emplace_back(GAME_EVENT::WINDOW_CLOSE);
             _window->close();
+            break;
+        }
         for (std::map<sf::Keyboard::Key, KEYBOARD>::iterator it = KeyboardMap.begin(); it != KeyboardMap.end(); it++) {
             if (sf::Keyboard::isKeyPressed(it->first)) {
                 inputs.emplace_back(it->second);

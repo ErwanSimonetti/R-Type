@@ -9,6 +9,8 @@
 #define SFML_HPP_
 
 #include "IGraphic.hpp"
+#include "SFML_utils.hpp"
+
 
 struct Asset {
     std::string _texture;
