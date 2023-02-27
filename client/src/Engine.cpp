@@ -25,12 +25,10 @@ Engine::Engine(boost::asio::io_service &io_service, const std::string &host, con
     _reg.register_component<Shootable>();
 
     _reg.add_system<Position, Hitbox>(collision_system);
-    // _reg.add_system<Position, Velocity, Controllable>(position_system);
     _reg.add_system<Shootable>(shoot_system);
     _reg.add_system<Animatable, Position, Parallax>(parallax_system);
     _reg.add_system<Animatable, Drawable>(std::bind(&IGraphic::animation_system, _graphic, std::placeholders::_1, std::placeholders::_2));
     _reg.add_system<Position, Drawable>(std::bind(&IGraphic::draw_system, _graphic, std::placeholders::_1, std::placeholders::_2));
-    // _reg.add_system<Position, Velocity, FollowPath>(followPathSystem);
 }
 
 Engine::~Engine()
@@ -74,14 +72,10 @@ ClientData Engine::buildClientData(EntityEvent entityEvent)
     Position &pos = _reg.get_components<Position>()[entityEvent.entity].value();
     int size = 0;
     clientData.entity = entityEvent.entity;
-    // clientData.posX = pos._x;
-    // clientData.posY = pos._y;
     clientData.xVelocity = entityEvent.xVelocity;
     clientData.yVelocity = entityEvent.yVelocity;
     clientData.hasShot = 0;
     
-    // std::cout << "x velocity client = " << clientData.xVelocity << std::endl;
-    // std::cout << "y velocity client = " << clientData.yVelocity << std::endl;
     for (auto &it : entityEvent.events) {
         switch (it) {
             case GAME_EVENT::SHOOT:
@@ -91,8 +85,6 @@ ClientData Engine::buildClientData(EntityEvent entityEvent)
                 break;
         }
     }
-    // printClientData(clientData);
-    // printf("\n");
     return clientData;
 }
 
@@ -114,8 +106,6 @@ void Engine::runNetwork()
 
 void Engine::updateRegistry(ServerData data)
 {
-    // printf("UPDATE Client REG:\n");
-    // printServerData(data);
     printf("\n");
 
     GameData gameData;
@@ -138,13 +128,8 @@ void Engine::runGame()
     while (1) {
         _reg.run_systems();
         evt = _graphic->run_graphic(_reg);
-        // if (std::find(evt.events.begin(), evt.events.end(), GAME_EVENT::WINDOW_CLOSE) != evt.events.end()) {
-        //     return;
-        // }
         _game->run_gameLogic(_reg, evt);
         ClientData clientData = buildClientData(evt);
-        // if(clientData.entity == -1)
-        //     continue;
         sendData(clientData);
     }
 }
@@ -167,8 +152,6 @@ void Engine::connectToServer()
 void Engine::run() 
 {
     _game->initGame(_reg);
-    // create_player(_reg.spawn_entity(), 10, 10, 100, 100);
-    // _game->create_enemy_entity(_reg, _reg.spawn_entity(), -10, 0, 1900, 200);
 
     connectToServer();
     std::thread gameThread(&Engine::runGame, this);

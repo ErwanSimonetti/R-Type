@@ -18,7 +18,6 @@ struct GameData {
     uint16_t posY[4];
     int16_t xVelocity[4];
     int16_t yVelocity[4];
-    // uint16_t inputs[4][10];
     uint16_t hasShot[4];
 };
 

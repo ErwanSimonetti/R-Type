@@ -37,7 +37,6 @@ void Rtype::create_player(registry &r, entity newEntity, const int16_t velX, con
     r.emplace_component<Animatable>(newEntity, 90);
     r.emplace_component<Position>(newEntity, posX, posY);
     r.emplace_component<Velocity>(newEntity, velX, velY);
-    // _player = newEntity;
     // can shoot component
     r.emplace_component<Hitbox>(newEntity, posX+45, posY+45, SHIP);
 }
@@ -47,7 +46,6 @@ void Rtype::create_enemy_entity(registry &r, entity newEntity, const int16_t vel
     r.emplace_component<Position>(newEntity, posX, posY);
     r.emplace_component<Velocity>(newEntity, velX, velY);
     r.emplace_component<Drawable>(newEntity, SHIP);
-    // r.emplace_component<Hitbox>(newEntity, posX+45, posY+45, SHIP);
     r.emplace_component<Drawable>(newEntity, ENEMYSHIP);
     r.emplace_component<Hitbox>(newEntity, posX+45, posY+45, ENEMYSHIP);
     r.emplace_component<Animatable>(newEntity, 90);

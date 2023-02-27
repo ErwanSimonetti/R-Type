@@ -42,12 +42,6 @@ class Protocol {
         template <class Data>
         char *serialiseData(Data data) {
             char *buffer = new char[sizeof(Data)];
-            // Header header;
-
-            // header.dataType = type;
-            // header.dataSize = sizeof(Data);
-
-            // std::memcpy(buffer, &header, sizeof(Header));
             std::memcpy(buffer, &data, sizeof(Data));
 
             return buffer;

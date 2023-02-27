@@ -63,7 +63,6 @@ EntityEvent control_system(registry &r, std::vector<int> &directions, sparse_arr
  * @param velocities sparseArray containing entity velocities
  * @param paths paths to follow
  */
-// void followPathSystem(const sparse_array<Position> &positions, sparse_array<Velocity> &velocities, sparse_array<FollowPath> &paths);
 
 void collision_system(registry &r, sparse_array<Position> &positions, sparse_array<Hitbox> &hitboxes);
 void parallax_system(registry &r, sparse_array<Animatable> &animatable, sparse_array<Position> &positions, sparse_array<Parallax> &parallax);
