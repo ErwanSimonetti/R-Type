@@ -8,9 +8,10 @@
 #ifndef Raylib_utils_HPP_
 #define Raylib_utils_HPP_
 
-#include "raylib.h"
 #include <map>
-#include "Graphic_utils.hpp"
+
+#include "raylib.h"
+#include "keyboard.hpp"
 
 static std::map<KeyboardKey, KEYBOARD> KeyboardMap = {
     {KeyboardKey::KEY_UP, KEYBOARD::ARROW_UP},

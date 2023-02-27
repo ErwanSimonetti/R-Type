@@ -10,7 +10,8 @@
 
 #include <SFML/Graphics.hpp>
 #include <map>
-#include "Graphic_utils.hpp"
+
+#include "keyboard.hpp"
 
 static std::map<sf::Keyboard::Key, KEYBOARD> KeyboardMap = {
     {sf::Keyboard::Up, KEYBOARD::ARROW_UP},

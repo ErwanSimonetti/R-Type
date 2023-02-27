@@ -15,7 +15,7 @@ set(SOURCE_FILES
   ../network/src/Protocol.cpp
 )
 
-set(INCLUDE_DIRECTORY include/ include/utils ../network/include ../ECS/include/components ../ECS/include)
+set(INCLUDE_DIRECTORY include/ ../utils ../network/include ../ECS/include/components ../ECS/include)
 
 include_directories(${INCLUDE_DIRECTORY})
 add_executable(r-type_server ${SOURCE_FILES})

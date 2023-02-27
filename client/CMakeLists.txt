@@ -13,10 +13,10 @@ set(SOURCE_FILES
   ../ECS/src/System.cpp
   ../network/src/MyNetwork.cpp
   ../network/src/Protocol.cpp
-  ../graphic/src/LoadLibrary.cpp
+  ../modules/LoadLibrary.cpp
 )
 
-set(INCLUDE_DIRECTORY include/ include/utils ../network/include ../ECS/include ../ECS/include/components ../graphic/include ../utils ../utils/JSON)
+set(INCLUDE_DIRECTORY include/ ../modules ../modules/graphics ../modules/games ../network/include ../ECS/include ../ECS/include/components ../utils ../utils/JSON)
 
 include_directories(${INCLUDE_DIRECTORY})
 add_executable(r-type_client ${SOURCE_FILES})

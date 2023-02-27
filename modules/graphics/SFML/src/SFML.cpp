@@ -9,7 +9,7 @@
 
 extern "C" std::shared_ptr<IGraphic> createLibrary()
 {
-  return std::make_shared<SFML>();
+    return std::make_shared<SFML>();
 }
 
 SFML::SFML()
@@ -86,6 +86,7 @@ void SFML::draw_system(sparse_array<Position> const &positions, sparse_array<Dra
             _window->draw(_assets.find(draw.value()._type)->second._sprite);
         }
     }
+
 }
 
 void SFML::animation_system(sparse_array<Animatable> &animatables, sparse_array<Drawable> &drawables) 
@@ -116,8 +117,11 @@ EntityEvent SFML::event_system(registry &reg) {
     sf::Event event;
     EntityEvent entityEvent;
     while (_window->pollEvent(event)) {
-        if (event.type == sf::Event::Closed)
-            _window->close();
+        // if (event.type == sf::Event::Closed) {
+        //     entityEvent.events.emplace_back(GAME_EVENT::WINDOW_CLOSE);
+        //     _window->close();
+        //     break;
+        // } // need to add it back when the 117 is merged
         for (std::map<sf::Keyboard::Key, KEYBOARD>::iterator it = KeyboardMap.begin(); it != KeyboardMap.end(); it++) {
             if (sf::Keyboard::isKeyPressed(it->first)) {
                 entityEvent.events.emplace_back(it->second);

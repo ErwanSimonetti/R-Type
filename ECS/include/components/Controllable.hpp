@@ -6,7 +6,7 @@
 */
 
 #include <ostream>
-#include "Graphic_utils.hpp"
+#include "keyboard.hpp"
 
 /**
  * @brief components for the ECS, set the entity's Controllable

@@ -2,11 +2,11 @@
 ** EPITECH PROJECT, 2023
 ** R-Type
 ** File description:
-** Graphic_utils
+** keyboard
 */
 
-#ifndef GRAPHIC_UTILS_HPP_
-#define GRAPHIC_UTILS_HPP_
+#ifndef KEYBOARD_HPP_
+#define KEYBOARD_HPP_
 
 enum KEYBOARD {
     NONE = 0,
@@ -67,4 +67,4 @@ enum KEYBOARD {
     BACKSPACE = 55,
 };
 
-#endif /* !GRAPHIC_UTILS_HPP_ */
+#endif /* !KEYBOARD_HPP_ */

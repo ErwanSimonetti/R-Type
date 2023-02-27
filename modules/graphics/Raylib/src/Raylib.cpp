@@ -9,7 +9,7 @@
 
 extern "C" std::shared_ptr<IGraphic> createLibrary()
 {
-  return std::make_shared<Raylib>();
+    return std::make_shared<Raylib>();
 }
 
 Raylib::Raylib() : _window(1920, 1080, "R-TYPE")
@@ -26,7 +26,7 @@ Raylib::~Raylib()
 
 void Raylib::constructFromJson()
 {
-     ReadJson reader("ressources/Raylib/raylib.json");
+    ReadJson reader("ressources/Raylib/raylib.json");
     int nbAsset = reader.getNumberOfElement("asset");
 
     for (int i = 0; i < nbAsset; i++)

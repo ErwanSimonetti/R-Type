@@ -10,7 +10,8 @@
 
 #include <stdint.h>
 #include <vector>
-#include "Graphic_utils.hpp"
+
+#include "keyboard.hpp"
 
 enum GAME_EVENT {
     LEFT,

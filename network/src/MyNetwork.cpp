@@ -78,12 +78,10 @@ void MyNetwork::UDPReceiveServer(std::function<void(ClientData)> func)
     boost::asio::ip::udp::endpoint endpoint;
     _socket.async_receive_from(boost::asio::buffer(_recvBuffer), _endpoint,
     [this, func] (boost::system::error_code ec, std::size_t recvd_bytes) {
-        std::cout << "receive stg" << std::endl;
         if (ec || recvd_bytes <= 0)
             UDPReceiveServer(func);
         addEndpoint(_endpoint);
         func(_protocol.readClient(_recvBuffer));
-        std::cout << "finish receive stg" << std::endl;
         UDPReceiveServer(func);
     });
 };

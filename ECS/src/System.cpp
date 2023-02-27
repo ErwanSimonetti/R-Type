@@ -113,7 +113,7 @@ bool isCollision(Position& a, Hitbox& aHitbox, Position& b, Hitbox& bHitbox)
 void collision_system(registry &r, sparse_array<Position> &positions, sparse_array<Hitbox> &hitboxes)
 {
     for (int i = 0; i < positions.size() && i < hitboxes.size(); ++i) {;
-        for (int j = i + 1; j < positions.size() && i < hitboxes.size(); ++j) {
+        for (int j = i + 1; j < positions.size() && j < hitboxes.size(); ++j) {
             auto &hbxI = hitboxes[i];
             auto &hbxJ = hitboxes[j];
             if (positions[i] && hbxI && positions[j] && hbxJ 
