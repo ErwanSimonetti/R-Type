@@ -7,9 +7,9 @@
 
 #include "Engine.hpp"
 
-Engine::Engine(boost::asio::io_service &io_service, const std::string &host, const std::string &port) : _reg(), _network(io_service, host, port), _player(0)
+Engine::Engine(boost::asio::io_service &io_service, const std::string &host, const std::string &port, const std::string &graphicLibrary) : _reg(), _network(io_service, host, port), _player(0)
 {
-    loadLib("./sfml.so");
+    loadLib(graphicLibrary);
 
 
     _reg.register_component<Position>();
