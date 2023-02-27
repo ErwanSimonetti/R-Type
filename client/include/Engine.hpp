@@ -10,11 +10,14 @@
 #ifndef ENGINE_HPP_
 #define ENGINE_HPP_
 
-#include "RenderGame.hpp"
 #include "MyNetwork.hpp"
 #include <boost/asio.hpp>
 #include <boost/array.hpp>
 #include "Engine_utils.hpp"
+#include "IGraphic.hpp"
+#include "LoadLibrary.hpp"
+
+using create_d = std::shared_ptr<IGraphic> (*)();
 
 /**
  * @brief A class used to handle everything related to the game engine
@@ -31,7 +34,7 @@ class Engine {
          * @param host listening IP
          * @param port listening port
          */
-        Engine(uint16_t width, uint16_t height, boost::asio::io_service &io_service, const std::string &host, const std::string &port);
+        Engine(boost::asio::io_service &io_service, const std::string &host, const std::string &port);
         ~Engine();
         
         /**
@@ -43,39 +46,34 @@ class Engine {
 
         /** 
          * @brief Function used to create a friendly "character" entity, giving it an id, and various parameters 
-         * @param id Entity ID
-         * @param col sf::Color object, until we use actual sprites
-         * @param velX uint_16_t corresponding to the vertical velocity
-         * @param velY uint_16_t corresponding to the horizontal velocity
-         * @param posX uint_16_t corresponding to the vertical position
-         * @param posY uint_16_t corresponding to the horizontal position
-         * @return a friendly entity, that is controllable
+         * @param newEntity Entity ID
+         * @param velX int16_t corresponding to the vertical velocity
+         * @param velY int16_t corresponding to the horizontal velocity
+         * @param posX uint16_t corresponding to the vertical position
+         * @param posY uint16_t corresponding to the horizontal position
          **/
-        void create_player(entity newEntity, const uint16_t speedX, const uint16_t speedY, const uint16_t posX, const uint16_t posY);
+        void create_player(entity newEntity, const int16_t velX, const int16_t velY, const uint16_t posX, const uint16_t posY);
         
         /**
          * @brief Function used to create an enemy "character" entity, giving it an id, and various parameters 
-         * @param id Entity ID, has to be unused
-         * @param col sf::Color object, until we use actual sprites
-         * @param velX uint_16_t corresponding to the vertical velocity
-         * @param velY int_16_t corresponding to the horizontal velocity
-         * @param posX uint_16_t corresponding to the vertical position
-         * @param posY uint_16_t corresponding to the horizontal position
-         * @return an enemy enity, that might be controlled by the user
+         * @param newEntity Entity ID, has to be unused
+         * @param velX int16_t corresponding to the vertical velocity
+         * @param velY int16_t corresponding to the horizontal velocity
+         * @param posX uint16_t corresponding to the vertical position
+         * @param posY uint16_t corresponding to the horizontal position
          **/
-        void create_enemy_entity(entity newEntity, const uint16_t speedX, const uint16_t speedY, const uint16_t posX, uint16_t posY);
+        void create_enemy_entity(entity newEntity, const int16_t velX, const int16_t velY, const uint16_t posX, uint16_t posY);
 
         /** 
          * @brief Function used to create an entity, giving it an id, and various parameters.
-         * @param id Entity ID, has to be unused
-         * @param velX uint_16_t corresponding to the vertical velocity
-         * @param velY uint_16_t corresponding to the horizontal velocity
-         * @param posX uint_16_t corresponding to the vertical position
-         * @param posY uint_16_t corresponding to the horizontal position
-         * @return an enity, that might be controlled by the user
+         * @param newEntity Entity ID, has to be unused
+         * @param velX int16_t corresponding to the vertical velocity
+         * @param velY int16_t corresponding to the horizontal velocity
+         * @param posX uint16_t corresponding to the vertical position
+         * @param posY uint16_t corresponding to the horizontal position
          */
-        void create_entity(entity newEntity, const uint16_t speedX, const uint16_t speedY, const uint16_t posX, const uint16_t posY);
-
+        void create_entity(entity newEntity, const int16_t velX, const int16_t velY, const uint16_t posX, const uint16_t posY);
+        
         /// @brief Generate a projectile using the id of a previously generated ship entity
         /// @param parentId id of the parent ship
         /// @param col color
@@ -120,6 +118,8 @@ class Engine {
          * 
          */
         void run();
+        void loadLib(std::string libName);
+
 
     protected:
     private:
@@ -133,8 +133,8 @@ class Engine {
         /**
          * @brief SFML encapsulation 
          **/
-        RenderGame _game;
         entity _player;
+        std::shared_ptr<IGraphic> _graphic;
 };
 
 #endif /* !ENGINE_HPP_ */

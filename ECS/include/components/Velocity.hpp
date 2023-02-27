@@ -19,15 +19,22 @@ struct Velocity {
      * 
      * @param velocityX x axes
      * @param velocityY y axes
-     * @param speedX x axes
-     * @param speedY y axes
      */
-    void set_component(const uint16_t &velocityX, const uint16_t &velocityY, const uint16_t &speedX, const uint16_t &speedY) {
+    void set_component(const int16_t &velocityX, const int16_t &velocityY) {
         _vX = velocityX;
         _vY = velocityY;
-        _speedX = speedX;
-        _speedY = speedY;
+
+        int16_t avVX = velocityX;
+        int16_t avVY = velocityY;
+
+        if (velocityX < 0)
+            avVX = velocityX * -1;
+        if (velocityY < 0)
+            avVY = velocityY * -1;
+        _speedX = velocityX == 0 ? _speedX : velocityX;
+        _speedY = velocityY == 0 ? _speedY : velocityY;
     }
+
     uint16_t _vX;
     uint16_t _vY;
     uint16_t _speedX;

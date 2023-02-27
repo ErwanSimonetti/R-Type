@@ -8,7 +8,6 @@
 #pragma once
 
 #include "../entity.hpp"
-#include <SFML/Graphics.hpp>
 
 struct Pet {
     Pet() : _ent(0) {};

@@ -27,28 +27,28 @@ registry Engine::get_registry()
     return _reg;
 }
 
-void Engine::create_entity(entity newEntity, const uint16_t velX, const uint16_t velY, const uint16_t posX, const uint16_t posY)
+void Engine::create_entity(entity newEntity, const int16_t velX, const int16_t velY, const uint16_t posX, const uint16_t posY)
 {
     _reg.emplace_component<Position>(newEntity, posX, posY);
-    _reg.emplace_component<Velocity>(newEntity, velX, velY, 10, 10);
+    _reg.emplace_component<Velocity>(newEntity, velX, velY);
 }
 
-void Engine::create_player(entity newEntity, const uint16_t velX, const uint16_t velY, const uint16_t posX, const uint16_t posY)
+void Engine::create_player(entity newEntity, const int16_t velX, const int16_t velY, const uint16_t posX, const uint16_t posY)
 {
     Controllable contr;
 
     _reg.emplace_component<Position>(newEntity, posX, posY);
-    _reg.emplace_component<Velocity>(newEntity, 0, 0, velX, velX);
+    _reg.emplace_component<Velocity>(newEntity, velX, velX);
     _reg.add_component<Controllable>(newEntity, std::move(contr));
     // can shot component
     Player newPlayer{newEntity, false};
     _players.emplace_back(newPlayer);
 }
 
-void Engine::create_enemy_entity(entity newEntity, const uint16_t velX, const uint16_t velY, const uint16_t posX, const uint16_t posY)
+void Engine::create_enemy_entity(entity newEntity, const int16_t velX, const int16_t velY, const uint16_t posX, const uint16_t posY)
 {
     _reg.emplace_component<Position>(newEntity, posX, posY);
-    _reg.emplace_component<Velocity>(newEntity, velX, velY, 10, 10);
+    _reg.emplace_component<Velocity>(newEntity, velX, velY);
     // can shot component
 }
 
@@ -112,7 +112,7 @@ void Engine::updateRegistry(ClientData data)
         printf("new PLayer\n");
         create_player(_reg.spawn_entity(), 10, 10, data.posX, data.posY);
     } else {
-        _reg.get_components<Velocity>()[data.entity].value().set_component(data.directionsX, data.directionsY, 10, 10);
+        _reg.get_components<Velocity>()[data.entity].value().set_component(data.directionsX, data.directionsY);
         for (int i = 0; i < _players.size(); i++) {
             if (_players.at(i).id == data.entity) {
                     if (data.hasShot) {
@@ -153,8 +153,8 @@ void Engine::run()
     create_entity(_reg.spawn_entity(), 0, 0, 100, 100);
     create_entity(_reg.spawn_entity(), 0, 0, 100, 100);
     create_entity(_reg.spawn_entity(), 0, 0, 100, 100);
-    std::thread gameThread(&Engine::runGame, this);
 
+    std::thread gameThread(&Engine::runGame, this);
     std::thread networkThread(&Engine::runNetwork, this);
 
     gameThread.join();

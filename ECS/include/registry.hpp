@@ -67,73 +67,6 @@ class registry
         };
 
         /**
-         * @brief Add new entity in _entities array.
-         * 
-         * @return created entity
-         */
-        entity spawn_entity() {
-            size_t id_entity = 0;
-            if (!_entities.empty())
-                id_entity = _entities.at(_entities.size() - 1) + 1;
-            entity new_entity(id_entity);
-            _entities.emplace_back(new_entity);
-            return new_entity;
-        }
-
-        /**
-         * @brief create an entity with his id.
-         * 
-         * @param id of the entity.
-         * @return entity created.
-         */
-        entity spawn_entity_by_id(size_t id) {
-            size_t id_entity = id;
-            entity new_entity(id_entity);
-            _entities.emplace_back(new_entity);
-            return new_entity;
-        }
-
-        /**
-         * @brief check if an entity id exist in the entity vector.
-         * 
-         * @param id of the entity.
-         * @return return true if _it_ exist
-         * @return return false if _it_ doesn't exist
-         */
-        bool is_entity_alive(size_t id) {
-            auto it = std::find(_entities.begin(), _entities.end(), id);
-            if (it == _entities.end()) {
-                return false;
-            }
-            return true;
-        }
-
-        /**
-         * @brief return the entity with this indexin the array.
-         * 
-         * @param idx, pos in the array.
-         * @return entity at the position idx.
-         */
-        entity entity_from_index(std::size_t idx) {
-            if (idx > _entities.size() - 1)
-                throw NoEntityFound();
-            return (_entities.at(idx));
-        }
-
-        /**
-         * @brief delete all elements of an entity in each array.
-         * 
-         * @param e, entity to remove.
-         */
-        void kill_entity(entity const &e) {
-            for(auto &element : _function_stored) {
-                element(*this, e);
-            }
-            auto it = std::find(_entities.begin(), _entities.end(), e._id);
-            _entities.erase(it); 
-        };
-
-        /**
          * @brief add component in an entity
          * 
          * @tparam Component type of components
@@ -184,7 +117,7 @@ class registry
          * @param f the std::function to move in _systems array.
          */
         template <class ... Components, typename Function>
-        void add_system (Function && f) {
+        void add_system(Function && f) {
             auto system = [f](registry& reg) {
                  f(reg.get_components<Components>()...);
             };
@@ -207,17 +140,59 @@ class registry
         };
 
         /**
+         * @brief Add new entity in _entities array.
+         * 
+         * @return created entity
+         */
+        entity spawn_entity();
+
+        /**
+         * @brief create an entity with his id.
+         * 
+         * @param id of the entity.
+         * @return entity created.
+         */
+        entity spawn_entity_by_id(size_t id);
+
+        /**
+         * @brief gets the vector of entities
+         * 
+         * @return entities used.
+         */
+        std::vector<entity> &get_entities();
+
+        /**
+         * @brief check if an entity id exist in the entity vector.
+         * 
+         * @param id of the entity.
+         * @return return true if _it_ exist
+         * @return return false if _it_ doesn't exist
+         */
+        bool is_entity_alive(size_t id);
+
+        /**
+         * @brief return the entity with this indexin the array.
+         * 
+         * @param idx, pos in the array.
+         * @return entity at the position idx.
+         */
+        entity entity_from_index(std::size_t idx);
+
+        /**
+         * @brief delete all elements of an entity in each array.
+         * 
+         * @param e, entity to remove.
+         */
+        void kill_entity(entity const &e);
+
+        /**
          * @brief running all systems in _systems array.
          * 
          */
-        void run_systems() {
-            for(auto &element : _systems) {
-                element(*this);
-            };
-        };
+        void run_systems();
 
-        std::vector<entity> _entities;
     private:
+        std::vector<entity> _entities;
         std::unordered_map<std::type_index, std::any> _components_arrays;
         std::vector<std::function<void(registry &, entity const &)>> _function_stored;
         std::vector<std::function<void(registry&)>> _systems;

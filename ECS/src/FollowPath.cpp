@@ -8,6 +8,7 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
+
 #include "FollowPath.hpp"
 
 void FollowPath::parse_follow_path_file(const std::string &fileFollowPath)
@@ -38,6 +39,6 @@ void FollowPath::parse_follow_path_file(const std::string &fileFollowPath)
 
 void FollowPath::set_component(const std::string &fileFollowPath)
 {
-    _current_checkpoint = 0;
+    _currentCheckPoints = 0;
     parse_follow_path_file(fileFollowPath);
 }

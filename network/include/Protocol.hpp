@@ -53,21 +53,8 @@ class Protocol {
             return buffer;
         };
 
-        ClientData readClient(char *buffer) {
-            // Header header;
-            // std::memcpy(&header, buffer, sizeof(Header));
-            ClientData clientData;
-            std::memcpy(&clientData, buffer, sizeof(ClientData));
-            return clientData;
-        };
-
-        ServerData readServer(char *buffer) {
-            // Header header;
-            // std::memcpy(&header, buffer, sizeof(Header));
-            ServerData serverData;
-            std::memcpy(&serverData, buffer, sizeof(ServerData));
-            return serverData;
-        };
+        ClientData readClient(char *buffer);
+        ServerData readServer(char *buffer);
 
     protected:
     private:

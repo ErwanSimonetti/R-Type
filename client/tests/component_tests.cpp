@@ -18,7 +18,7 @@ TEST(FollowPath, checkingFileParsing) {
     testRegistry.register_component<FollowPath>();
     testRegistry.emplace_component<FollowPath>(testEntity, ".testing_file");
     testFollowPathComponent = testRegistry.get_components<FollowPath>()[testEntity].value();
-    EXPECT_EQ(testFollowPathComponent._current_checkpoint, 0);
+    EXPECT_EQ(testFollowPathComponent._currentCheckPoints, 0);
     EXPECT_EQ(testFollowPathComponent._checkpoints[0][0], 1);
     EXPECT_EQ(testFollowPathComponent._checkpoints[0][1], 2);
     EXPECT_EQ(testFollowPathComponent._checkpoints[1][0], 21);

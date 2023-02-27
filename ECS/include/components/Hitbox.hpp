@@ -7,9 +7,10 @@
 
 #pragma once
 
+#include <cstring>
+
 #include "ECS_Utils.hpp"
 #include "../entity.hpp"
-#include <SFML/Graphics.hpp>
 
 struct Hitbox {
     Hitbox() = default;

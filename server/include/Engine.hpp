@@ -10,25 +10,21 @@
 #ifndef ENGINE_HPP_
 #define ENGINE_HPP_
 
-#include "RenderGame.hpp"
-#include "MyNetwork.hpp"
 #include <boost/asio.hpp>
 #include <boost/array.hpp>
+
+#include "MyNetwork.hpp"
+#include "Engine_utils.hpp"
+#include "registry.hpp"
+#include "System.hpp"
 #include "Engine_utils.hpp"
 
-/**
- * @brief 
- * 
- */
 struct Player {
     entity id;
     bool hasShot;
 };
 
-/**
- * @brief A class used to handle everything related to the game engine
- * 
- */
+/// @brief Engine class used to handle everything related to the game engine
 class Engine {
     public:
 
@@ -62,36 +58,35 @@ class Engine {
         registry get_registry();
 
         /** @brief Function used to create a friendly "character" entity, giving it an id, and various parameters 
-         * @param id Entity ID
-         * @param velX uint_16_t corresponding to the vertical velocity
-         * @param velY uint_16_t corresponding to the horizontal velocity
-         * @param posX uint_16_t corresponding to the vertical position
-         * @param posY uint_16_t corresponding to the horizontal position
-         * @return a friendly entity, that is controllable
+         * @param newEntity Entity ID
+         * @param velX int16_t corresponding to the vertical velocity
+         * @param velY int16_t corresponding to the horizontal velocity
+         * @param posX uint16_t corresponding to the vertical position
+         * @param posY uint16_t corresponding to the horizontal position
          **/
-        void create_player(entity newEntity, const uint16_t velX, const uint16_t velY, const uint16_t posX, const uint16_t posY);
+        void create_player(entity newEntity, const int16_t velX, const int16_t velY, const uint16_t posX, const uint16_t posY);
 
         /** 
-         * @brief Function used to create an entity, giving it an id, and various parameters @brief Create a entity object
-         * @param id Entity ID, has to be unused
-         * @param velX uint_16_t corresponding to the vertical velocity
-         * @param velY uint_16_t corresponding to the horizontal velocity
-         * @param posX uint_16_t corresponding to the vertical position
-         * @param posY uint_16_t corresponding to the horizontal position
+         * @brief Function used to create an entity, giving it an id, and various parameters
+         * @param newEntity Entity ID, has to be unused
+         * @param velX int16_t corresponding to the vertical velocity
+         * @param velY int16_t corresponding to the horizontal velocity
+         * @param posX uint16_t corresponding to the vertical position
+         * @param posY uint16_t corresponding to the horizontal position
          * @return an enity, that might be controlled by the user
          */
-        void create_entity(entity newEntity, const uint16_t velX, const uint16_t velY, const uint16_t posX, const uint16_t posY);
+        void create_entity(entity newEntity, const int16_t velX, const int16_t velY, const uint16_t posX, const uint16_t posY);
         
         /**
          * @brief Function used to create an enemy "character" entity, giving it an id, and various parameters 
-         * @param id Entity ID, has to be unused
-         * @param velX uint_16_t corresponding to the vertical velocity
-         * @param velY int_16_t corresponding to the horizontal velocity
-         * @param posX uint_16_t corresponding to the vertical position
-         * @param posY uint_16_t corresponding to the horizontal position
+         * @param newEntity Entity ID, has to be unused
+         * @param velX int16_t corresponding to the vertical velocity
+         * @param velY int16_t corresponding to the horizontal velocity
+         * @param posX uint16_t corresponding to the vertical position
+         * @param posY uint16_t corresponding to the horizontal position
          * @return an enemy enity, that might be controlled by the user
          */
-        void create_enemy_entity(entity newEntity, const uint16_t velX, const uint16_t velY, const uint16_t posX, uint16_t posY);
+        void create_enemy_entity(entity newEntity, const int16_t velX, const int16_t velY, const uint16_t posX, uint16_t posY);
         
         /**
          * @brief function used to launch the whole game, systems and all 
