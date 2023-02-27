@@ -6,6 +6,7 @@
 */
 
 #include "Engine.hpp"
+#include "CLI.hpp"
 
 Engine::Engine(uint16_t width, uint16_t height, boost::asio::io_service &io_service, const std::string &port) : _reg(), _network(io_service, port)
 {
@@ -111,6 +112,20 @@ void Engine::runNetwork()
     _network.getIOService().run();
 }
 
+void Engine::runServerCommandLine()
+{
+    std::string line;
+
+    while (1) {
+        std::getline(std::cin, line);
+        if (line.empty()) {
+            std::cout << "line is empty." << std::endl;
+            continue;
+        }
+        cli::launchSearchedFunction(line);
+    }
+}
+
 void Engine::runGame() 
 {
     while (1) {
@@ -124,7 +139,9 @@ void Engine::run()
 
     std::thread gameThread(&Engine::runGame, this);
     std::thread networkThread(&Engine::runNetwork, this);
+    std::thread serverCliThread(&Engine::runServerCommandLine, this);
 
     gameThread.join();
     networkThread.join();
+    serverCliThread.join();
 }
