@@ -144,7 +144,7 @@ void Engine::connectToServer()
         clientData.inputs[i] = 0;
     }
 
-    _network.UDPReceiveClient(std::bind(&Protocol::IProtocol::read, _proto, std::placeholders::_1), false);
+    _network.UDPReceiveClient(std::bind(&Protocol::IProtocol::read, _proto, std::placeholders::_1, std::placeholders::_2), false);
     sendData(clientData);
 }
 

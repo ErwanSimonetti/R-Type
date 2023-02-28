@@ -20,7 +20,8 @@ struct ClientData {
     int16_t entity;
     uint16_t inputs[10];
 
-struct ClientData {
+struct ClientData
+{
     int16_t entity;
     int16_t directionsX;
     int16_t directionsY;
@@ -29,7 +30,8 @@ struct ClientData {
     uint16_t posY;
 };
 
-struct ServerData {
+struct ServerData
+{
     int16_t entities[4];
     uint16_t posX[4];
     uint16_t posY[4];
@@ -44,6 +46,11 @@ struct ServerData {
     uint16_t posY[4];
     uint16_t inputs[4][10];
 };
+struct ConnectionStatus
+{
+    bool isAccepted;
+    int nbPlayer;
+};
 
 
 class Protocol {
@@ -54,12 +61,6 @@ class Protocol {
         template <class Data>
         char *serialiseData(Data data) {
             char *buffer = new char[sizeof(Data)];
-            // Header header;
-
-            // header.dataType = type;
-            // header.dataSize = sizeof(Data);
-
-            // std::memcpy(buffer, &header, sizeof(Header));
             std::memcpy(buffer, &data, sizeof(Data));
 
             return buffer;

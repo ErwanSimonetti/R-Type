@@ -11,16 +11,14 @@
 #include <sstream>
 #include <cstring>
 
-// #include "MyNetwork.hpp"
-
 namespace Protocol
 {
     class IProtocol {
         public:
             virtual ~IProtocol() = default;
 
-            virtual void read(char *buffer) = 0;
-            virtual char *askConnection(char *buffer, int id) = 0;
+            virtual void read(char *buffer, boost::asio::ip::udp::endpoint endpoint) = 0;
+            virtual void askConnection() = 0;
 
         protected:
         private:

@@ -21,13 +21,16 @@ namespace Protocol
 {
     class ProtocolClient : public IProtocol {
         public:
-            ProtocolClient()
+            ProtocolClient(MyNetwork &net) :
+                _net(net)
             {
+                std::cout << "Hey, I build a new Protocol Client." << std::endl;
+                _idToType.emplace(1, std::bind(&ProtocolClient::receiveStatusOfConnection, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
             };
 
             ~ProtocolClient() = default;
 
-            void read(char *buffer)
+            void read(char *buffer, boost::asio::ip::udp::endpoint endpoint)
             {
                 std::cout << "Receive buffer of size == " << strlen(buffer) << std::endl;
                 Header* ptr1 = reinterpret_cast<Header*>(buffer);
@@ -35,29 +38,33 @@ namespace Protocol
 
                 std::cout << "Size of the map == " << _idToType.size() << std::endl;
                 if (_idToType.count(ptr1->_id)) {
-                    _idToType[ptr1->_id](buffer, sizeof(Header));
+                    _idToType[ptr1->_id](buffer, sizeof(Header), endpoint);
                 } else {
                     std::cout << "Error: Invalid header id : "  << ptr1->_id << " not found." << std::endl;
                 }
             };
 
-            char *askConnection(char *buffer, int id)
+            void askConnection()
             {
+                char buffer[1024];
                 std::memcpy(buffer, Protocol::serialiseData<Header>(Header{1}), sizeof(Header));
-                std::memcpy(buffer + sizeof(Header), Protocol::serialiseData<NewPlayer>(NewPlayer{id}), sizeof(NewPlayer));
-                return buffer;
-            }
-
-            void setNetwork(MyNetwork &net)
-            {
-                _network = std::make_shared<MyNetwork>(net);
+                std::memcpy(buffer + sizeof(Header), Protocol::serialiseData<NewPlayer>(NewPlayer{0}), sizeof(NewPlayer));
+                std::cout << "Send access ask connection to " << _net.getServerEndpoint() << std::endl;
+                _net.udpSend(buffer, _net.getServerEndpoint(), sizeof(buffer));
             }
 
         protected:
         private:
 
-            std::unordered_map<int, std::function<void(char *, size_t)>> _idToType;
-            std::shared_ptr<MyNetwork> _network;
+            void receiveStatusOfConnection(char *buffer, size_t lenghtValue, boost::asio::ip::udp::endpoint endpoint)
+            {
+                ConnectionStatus* ptr1 = reinterpret_cast<ConnectionStatus*>(buffer + lenghtValue);
+                std::cout << "nb player : " << ptr1->nbPlayer << std::endl;
+                std::cout << "is accepted" << ptr1->isAccepted << std::endl;
+            }
+
+            std::unordered_map<int, std::function<void(char *, size_t, boost::asio::ip::udp::endpoint)>> _idToType;
+            MyNetwork &_net;
     };
 }
 

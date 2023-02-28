@@ -109,7 +109,7 @@ void Engine::updateRegistry(ClientData data)
 
 void Engine::runNetwork() 
 {
-    _network.UDPReceiveServer(std::bind(&Protocol::IProtocol::read, _proto, std::placeholders::_1));
+    _network.UDPReceiveServer(std::bind(&Protocol::IProtocol::read, _proto, std::placeholders::_1, std::placeholders::_2));
     _network.getIOService().run();
 }
 
