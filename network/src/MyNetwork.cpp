@@ -30,9 +30,9 @@ MyNetwork::~MyNetwork()
 void MyNetwork::addEndpoint(boost::asio::ip::udp::endpoint endpoint)
 {
     if ((std::find(_endpoints.begin(), _endpoints.end(), endpoint) != _endpoints.end())) {
-        std::cout << "User: " << endpoint << "\n";
+        // std::cerr << "User: " << endpoint << "\n";
     } else {
-        std::cout << "New user:" << endpoint << " connected\n";
+        std::cerr << "New user:" << endpoint << "connected\n";
         _endpoints.emplace_back(endpoint);
     }
 }
