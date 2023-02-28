@@ -27,14 +27,11 @@ class SFML : public IGraphic {
     public:
         SFML();
         ~SFML();
-        EntityEvent get_event(registry &r, std::vector<int> &directions, sparse_array<Position> &positions, sparse_array<Controllable> &controllables, sparse_array<Velocity> &velocities, sparse_array<Shootable> &shootable);
-        void createAsset(uint16_t type, std::string texture, uint16_t width, uint16_t height, uint16_t size);
         void animation_system(sparse_array<Animatable> &animatables, sparse_array<Drawable> &drawables);
         void draw_system(sparse_array<Position> const &positions, sparse_array<Drawable> &drawables);
-        EntityEvent event_system(registry &reg);
+        Events event_system(registry &reg);
         void initialize_rect(Drawable &draw);
-        EntityEvent run_graphic(registry &r);
-        void constructFromJson();
+        Events run_graphic(registry &r);
         void set_sprite();
 
     protected:

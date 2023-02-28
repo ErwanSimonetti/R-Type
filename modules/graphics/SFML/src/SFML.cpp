@@ -55,7 +55,6 @@ void SFML::constructFromJson()
     }
 }
 
-
 void SFML::set_sprite() {
     for (auto &it: _assets) {
         it.second._newtexture = std::make_shared<sf::Texture>();
@@ -112,27 +111,29 @@ void SFML::animation_system(sparse_array<Animatable> &animatables, sparse_array<
     }
 }
 
-
-EntityEvent SFML::event_system(registry &reg) {
+Events SFML::event_system(registry &reg) {
+    std::vector<int> inputs;
     sf::Event event;
-    EntityEvent entityEvent;
-    while (_window->pollEvent(event)) {
-        // if (event.type == sf::Event::Closed) {
-        //     entityEvent.events.emplace_back(GAME_EVENT::WINDOW_CLOSE);
-        //     _window->close();
-        //     break;
-        // } // need to add it back when the 117 is merged
+    Events events;
+
+    while(_window->pollEvent(event)) {
+        if (event.type == sf::Event::Closed) {
+            events.gameEvents.emplace_back(GAME_EVENT::WINDOW_CLOSE);
+            _window->close();
+            break;
+        }
+        if (event.type ==  sf::Event::KeyReleased)
+            events.inputs.emplace_back(KEYBOARD::NONE);
         for (std::map<sf::Keyboard::Key, KEYBOARD>::iterator it = KeyboardMap.begin(); it != KeyboardMap.end(); it++) {
             if (sf::Keyboard::isKeyPressed(it->first)) {
-                entityEvent.events.emplace_back(it->second);
+                events.inputs.emplace_back(it->second);
             }
         }
     }
-    return entityEvent;
+    return events;
 }
 
-
-EntityEvent SFML::run_graphic(registry &reg) {
+Events SFML::run_graphic(registry &reg) {
     _window->display();
     _window->clear();
     return event_system(reg);

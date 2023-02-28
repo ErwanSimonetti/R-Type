@@ -14,16 +14,12 @@
 #include "keyboard.hpp"
 
 enum GAME_EVENT {
-    LEFT,
-    RIGHT,
-    UP,
-    DOWN,
-    SHOOT,
     WINDOW_CLOSE = -1
 };
 
-struct EntityEvent {
-    std::vector<KEYBOARD> events;
+struct Events {
+    std::vector<GAME_EVENT> gameEvents;
+    std::vector<KEYBOARD> inputs;
 };
 
 

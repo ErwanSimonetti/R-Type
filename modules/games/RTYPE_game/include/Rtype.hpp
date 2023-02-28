@@ -16,6 +16,8 @@ class Rtype : public IGame {
         Rtype();
         ~Rtype();
 
+        std::vector<entity> getPLayers() const;
+        
         /**
          * @brief Function used to create all starting assets needed fro the game
          * 
@@ -37,6 +39,8 @@ class Rtype : public IGame {
          */
         void updateRegistry(registry &r, GameData data);
 
+        void updateRegistry(registry &r, const GameData data[4]);
+        
         /** 
          * @brief Function used to create a friendly "character" entity, giving it an id, and various parameters 
          * @param r registry the registery to update
@@ -46,8 +50,8 @@ class Rtype : public IGame {
          * @param posX uint16_t corresponding to the vertical position
          * @param posY uint16_t corresponding to the horizontal position
          **/
-        void create_player(registry &r, entity newEntity, const int16_t velX, const int16_t velY, const uint16_t posX, const uint16_t posY);
-        
+        void create_player(registry &r, entity newEntity, bool isControllable, const int16_t velX, const int16_t velY, const uint16_t posX, const uint16_t posY);
+
         /**
          * @brief Function used to create an enemy "character" entity, giving it an id, and various parameters 
          * @param r registry the registery to update
@@ -85,8 +89,12 @@ class Rtype : public IGame {
         void create_parallax(registry &r, entity newEntity, const uint16_t posX, const uint16_t posY, const uint16_t speed, const OBJECT obj);
 
     protected:
+        void handleInputs(registry &r, size_t entity, const uint16_t inputs[10]);
     private:
-        entity _player;
+        /**
+         * @brief players vector 
+         **/ 
+        std::vector<entity> _players;
 
 };
 

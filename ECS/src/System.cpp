@@ -118,8 +118,8 @@ void collision_system(registry &r, sparse_array<Position> &positions, sparse_arr
             auto &hbxJ = hitboxes[j];
             if (positions[i] && hbxI && positions[j] && hbxJ 
                 && isCollision(positions[i].value(), hbxI.value(), positions[j].value(), hbxJ.value())) {
-                    if ((hbxI.value()._type == ENEMYSHIP || hbxI.value()._type == BULLET)
-                     && (hbxJ.value()._type == ENEMYSHIP || hbxJ.value()._type == BULLET) 
+                    if ((hbxI.value()._type == ENEMYSHIP && hbxI.value()._type == BULLET)
+                     || (hbxJ.value()._type == ENEMYSHIP && hbxJ.value()._type == BULLET) 
                      && hbxI.value()._active && hbxJ.value()._active ) {
                         hbxI.value()._active = false;
                         hbxJ.value()._active = false;

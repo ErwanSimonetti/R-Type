@@ -7,8 +7,9 @@
 
 #include "Engine.hpp"
 
-Engine::Engine(boost::asio::io_service &io_service, const std::string &host, const std::string &port) : _reg(), _network(io_service, host, port), _player(0)
+Engine::Engine(boost::asio::io_service &io_service, const std::string &host, const std::string &port) : _reg(), _network(io_service, host, port)
 {
+    //loadModules("./modules/sfml.so", MODULE_TYPE::GRAPHIC);
     loadModules("./modules/rtype.so", MODULE_TYPE::GAME);
 
     _reg.register_component<Position>();
@@ -35,7 +36,9 @@ Engine::~Engine()
 {
 }
 
-registry &Engine::get_registry() {
+
+registry &Engine::get_registry() 
+{
     return _reg;
 }
 
@@ -60,48 +63,29 @@ void Engine::loadModules(std::string libName, MODULE_TYPE type)
     }
 }
 
-ClientData Engine::buildClientData(EntityEvent entityEvent) 
+ClientData Engine::buildClientData(Events events)
 {
     ClientData clientData;
     
-    if (entityEvent.events.size() == 0) {
+    if (events.inputs.size() == 0) {
         clientData.entity = -1;
         return clientData;
     }
-    Position &pos = _reg.get_components<Position>()[_player].value();
-    int size = 0;
-    clientData.entity = _player;
-    clientData.posX = pos._x;
-    clientData.posY = pos._y;
-    clientData.directionsX = 0;
-    clientData.directionsY = 0;
-    clientData.hasShot = 0;
 
-    for (auto &it : entityEvent.events) {
-        switch (it) {
-        case GAME_EVENT::LEFT:
-            clientData.directionsX += -1;
-            size++;
-            break;
-        case GAME_EVENT::RIGHT:
-            clientData.directionsX += 1;
-            size++;
-            break;
-        case GAME_EVENT::UP:
-            clientData.directionsY += -1;
-            size++;
-            break;
-        case GAME_EVENT::DOWN:
-            clientData.directionsY += 1;
-            size++;
-            break;
-        case GAME_EVENT::SHOOT:
-            clientData.hasShot = 1;
-            break;
-        default:
-            break;
-        }
+    clientData.entity = _game->getPLayers().at(0);
+    for (int i = 0; i < 10; i++) {
+        clientData.inputs[i] = 0;
     }
+
+    int index = 0;
+    for (auto &it : events.inputs) {
+        if (index >= 10)
+            break;
+
+        clientData.inputs[index] = it;
+        index++;
+    }
+
     // printf("CREATE Client DATA:\n");
     // printClientData(clientData);
     // printf("\n");
@@ -115,27 +99,22 @@ void Engine::sendData(ClientData data)
 
 }
 
-void Engine::runNetwork() 
-{
-    _network.UDPReceiveClient(std::bind(&Engine::updateRegistry, this, std::placeholders::_1), true);
-    _network.getIOService().run();
+    _game->updateRegistry(_reg, gameData);
 }
 
 void Engine::updateRegistry(ServerData data)
 {
-    printf("UPDATE Client REG:\n");
-    printServerData(data);
-    printf("\n");
+    // printf("UPDATE Client REG:\n");
+    // printServerData(data);
+    // printf("\n");
 
-    GameData gameData;
+    GameData gameData[4];
 
     for (int i = 0; i < 4; i++) {
-        gameData.entities[i] = data.entities[i];
-        gameData.posX[i] = data.posX[i];
-        gameData.posY[i] = data.posY[i];
-        gameData.directionsX[i] = data.directionsX[i];
-        gameData.directionsY[i] = data.directionsY[i];
-        gameData.hasShot[i] = data.hasShot[i];
+        gameData[i].entity = data.entities[i];
+        gameData[i].posX = data.posX[i];
+        gameData[i].posY = data.posY[i];
+        memcpy(gameData[i].inputs, data.inputs[i], sizeof(uint16_t) * 10);
     }
 
     _game->updateRegistry(_reg, gameData);
@@ -144,12 +123,11 @@ void Engine::updateRegistry(ServerData data)
 void Engine::runGame() 
 {
     loadModules("./modules/sfml.so", MODULE_TYPE::GRAPHIC);
-    // loadModules("./modules/raylib.so", MODULE_TYPE::GRAPHIC);
-    EntityEvent evt;
+    Events evt;
     while (1) {
         _reg.run_systems();
         evt = _graphic->run_graphic(_reg);
-        if (std::find(evt.events.begin(), evt.events.end(), GAME_EVENT::WINDOW_CLOSE) != evt.events.end()) {
+        if (std::find(evt.gameEvents.begin(), evt.gameEvents.end(), GAME_EVENT::WINDOW_CLOSE) != evt.gameEvents.end()) {
             return;
         }
         _game->run_gameLogic(_reg, evt);
@@ -164,12 +142,10 @@ void Engine::connectToServer()
 {
     ClientData clientData;
 
-    clientData.directionsX = 0;
-    clientData.directionsY = 0;
     clientData.entity = -1;
-    clientData.hasShot = 0;
-    clientData.posX = 0;
-    clientData.posY = 0;
+    for (int i = 0; i < 10; i++) {
+        clientData.inputs[i] = 0;
+    }
 
     _network.UDPReceiveClient(std::bind(&Engine::updateRegistry, this, std::placeholders::_1), false);
     sendData(clientData);
@@ -178,9 +154,6 @@ void Engine::connectToServer()
 void Engine::run()
 {
     _game->initGame(_reg);
-    // create_player(_reg.spawn_entity(), 10, 10, 100, 100);
-    // _game->create_enemy_entity(_reg, _reg.spawn_entity(), -10, 0, 1900, 200);
-
     connectToServer();
     std::thread gameThread(&Engine::runGame, this);
 

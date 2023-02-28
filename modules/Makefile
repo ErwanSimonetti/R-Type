@@ -45,8 +45,6 @@ INC_RAYLIB		=	$(INC_GRAPHICS) -I graphics/Raylib/include
 LDFLAGS_RAYLIB	=	-fPIC -shared -lraylib -ljsoncpp
 
 
-
-
 #---------- GAMES ----------#
 
 # RTYPE
