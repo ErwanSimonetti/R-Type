@@ -45,6 +45,7 @@ registry &Engine::get_registry() {
 
 void Engine::create_score(entity newEntity, int16_t parentId, int16_t *score)
 {
+    std::cout << "create_score" << std::endl;
     _reg.emplace_component<DrawableScore>(newEntity, score);
     _reg.emplace_component<Pet>(newEntity, parentId);
 }
@@ -73,7 +74,8 @@ void Engine::create_player(entity newEntity, const int16_t velX, const int16_t v
     _reg.emplace_component<Stats>(newEntity, 50, 10);
     Stats *stat = _reg.get_component_at<Stats>(newEntity);
     _testStat = stat;
-    create_score(_reg.spawn_entity(), newEntity, &(stat->_score));
+    _testStat->_score = stat->_score;
+    create_score(_reg.spawn_entity(), newEntity, stat->_score);
 }
 
 void Engine::create_enemy_entity(entity newEntity, const int16_t velX, const int16_t velY, const uint16_t posX, const uint16_t posY)
@@ -204,6 +206,7 @@ void Engine::runNetwork()
 }
 
 void Engine::checkStats(sparse_array<Hitbox> &hbxs, sparse_array<Stats> &sts, sparse_array<Pet> &pets) {
+    std::cout << "AA" << std::endl;
     for (size_t i = 0; i < hbxs.size() && i < sts.size() && i < pets.size(); ++i) {
         auto &hbx = hbxs[i];
         auto &stat = sts[i];
@@ -213,8 +216,9 @@ void Engine::checkStats(sparse_array<Hitbox> &hbxs, sparse_array<Stats> &sts, sp
         if (hbx.has_value() && hbx.value()._type == BULLET && hbx.value()._obstacle == ENEMYSHIP) {
             if (pet.has_value() && sts[pet.value()._ent].has_value()) {
                 int16_t ent = pet.value()._ent;
-                sts[ent].value().set_component(sts[ent].value()._health, sts[ent].value()._score+5);
-                std::cout << "Dans le system : " << std::to_string(sts[ent].value()._score) << std::endl;
+                sts[ent].value().set_component(sts[ent].value()._health, *sts[ent].value()._score + 5);
+                std::cout << "LAAA " <<_testStat->_score << std::endl;
+                std::cout << "Dans le system : " << std::to_string(*sts[ent].value()._score) << std::endl;
                 pet.value().set_component(NULL);
             }
         }
@@ -267,8 +271,6 @@ void Engine::run()
     create_parallax(_reg.spawn_entity(), 0, 346, 12, PARA_4);
     create_player(_reg.spawn_entity(), 10, 10, 100, 100);
     create_enemy_entity(_reg.spawn_entity(), -10, 0, 1900, 200);
-
-
 
     connectToServer();
 

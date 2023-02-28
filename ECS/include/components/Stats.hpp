@@ -19,9 +19,9 @@ struct Stats {
      * @brief Set the component object, with his current health and score
      * 
      */
-    void set_component(int health, int score) {
+    void set_component(int health, int16_t score) {
         _health = health;
-        _score = score;
+        *_score = score;
     }
 
     /**
@@ -36,5 +36,5 @@ struct Stats {
         return output;
     }
     int16_t _health;
-    int16_t _score;
+    int16_t *_score = new int16_t(0);
 };
