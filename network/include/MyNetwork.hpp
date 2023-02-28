@@ -30,7 +30,6 @@ class MyNetwork {
                 [this, buffer, endpoint](boost::system::error_code ec, std::size_t bytes_sent) 
             {
             });
-            std::cout << "out of send" << std::endl;
         }
 
         void UDPReceiveClient(std::function<void(ServerData)> func, bool shouldCallback);

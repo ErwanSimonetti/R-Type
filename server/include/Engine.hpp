@@ -18,10 +18,14 @@
 #include "registry.hpp"
 #include "System.hpp"
 #include "Engine_utils.hpp"
+#include "IGame.hpp"
+#include "LoadLibrary.hpp"
 
-struct Player {
-    entity id;
-    bool hasShot;
+using create_d_game = std::shared_ptr<IGame> (*)();
+
+enum MODULE_TYPE {
+    GAME,
+    GRAPHIC
 };
 
 /// @brief Engine class used to handle everything related to the game engine
@@ -57,36 +61,13 @@ class Engine {
          */
         registry get_registry();
 
-        /** @brief Function used to create a friendly "character" entity, giving it an id, and various parameters 
-         * @param newEntity Entity ID
-         * @param velX int16_t corresponding to the vertical velocity
-         * @param velY int16_t corresponding to the horizontal velocity
-         * @param posX uint16_t corresponding to the vertical position
-         * @param posY uint16_t corresponding to the horizontal position
-         **/
-        void create_player(entity newEntity, const int16_t velX, const int16_t velY, const uint16_t posX, const uint16_t posY);
-
-        /** 
-         * @brief Function used to create an entity, giving it an id, and various parameters
-         * @param newEntity Entity ID, has to be unused
-         * @param velX int16_t corresponding to the vertical velocity
-         * @param velY int16_t corresponding to the horizontal velocity
-         * @param posX uint16_t corresponding to the vertical position
-         * @param posY uint16_t corresponding to the horizontal position
-         * @return an enity, that might be controlled by the user
-         */
-        void create_entity(entity newEntity, const int16_t velX, const int16_t velY, const uint16_t posX, const uint16_t posY);
-        
         /**
-         * @brief Function used to create an enemy "character" entity, giving it an id, and various parameters 
-         * @param newEntity Entity ID, has to be unused
-         * @param velX int16_t corresponding to the vertical velocity
-         * @param velY int16_t corresponding to the horizontal velocity
-         * @param posX uint16_t corresponding to the vertical position
-         * @param posY uint16_t corresponding to the horizontal position
-         * @return an enemy enity, that might be controlled by the user
+         * @brief Get the registry object
+         * 
+         * @param libName std::string the path to the .so
+         * @param type MODULE_TYPE Enum representing the type of module is being loaded
          */
-        void create_enemy_entity(entity newEntity, const int16_t velX, const int16_t velY, const uint16_t posX, uint16_t posY);
+        void loadModules(std::string libName, MODULE_TYPE type);
         
         /**
          * @brief function used to launch the whole game, systems and all 
@@ -107,7 +88,7 @@ class Engine {
          */
         void updateRegistry(ClientData data);
 
-        ServerData buildServerData();
+        ServerData buildServerData(size_t id, uint16_t inputs[10]);
 
         /**
          * @brief Runs network threads
@@ -119,7 +100,7 @@ class Engine {
          */
         void runGame();
 
-        MyNetwork _network;
+
     protected:
     private:
 
@@ -127,11 +108,12 @@ class Engine {
          * @brief registry object 
          **/
         registry _reg;
+        MyNetwork _network;
 
         /**
-         * @brief players vector 
-         **/ 
-        std::vector<Player> _players;
+         * @brief modules 
+         **/
+        std::shared_ptr<IGame> _game;
 };
 
 #endif /* !ENGINE_HPP_ */

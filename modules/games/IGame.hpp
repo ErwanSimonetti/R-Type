@@ -14,27 +14,54 @@
 #include "System.hpp"
 
 struct GameData {
-    int16_t entities[4];
-    uint16_t posX[4];
-    uint16_t posY[4];
-    int16_t directionsX[4];
-    int16_t directionsY[4];
-    // uint16_t inputs[4][10];
-    uint16_t hasShot[4];
+    int16_t entity;
+    uint16_t posX;
+    uint16_t posY;
+    uint16_t inputs[10];
 };
 
 class IGame {
     public:
         IGame() = default;
         ~IGame() = default;
-        virtual void initGame(registry &r) = 0;
-        virtual void run_gameLogic(registry &r, EntityEvent events) = 0;
-        virtual void updateRegistry(registry &r, GameData data) = 0;
 
-        virtual void create_player(registry &r, entity newEntity, const int16_t velX, const int16_t velY, const uint16_t posX, const uint16_t posY) = 0;
-        virtual void create_enemy_entity(registry &r, entity newEntity, const int16_t velX, const int16_t velY, const uint16_t posX, uint16_t posY) = 0;
-        virtual void create_entity(registry &r, entity newEntity, const int16_t velX, const int16_t velY, const uint16_t posX, const uint16_t posY) = 0;
-        virtual void create_projectile(registry &r, entity newEntity, int16_t parentId, const uint16_t velX, const uint16_t velY) = 0;
+        /**
+         * @brief Function used to return the players entities
+         * 
+         * @return std::vector<entity>
+         */
+        virtual std::vector<entity> getPLayers() const = 0;
+
+        /**
+         * @brief Function used to create all starting assets needed fro the game
+         * 
+         * @param r the registery comming from the Game Engine
+         */
+        virtual void initGame(registry &r) = 0;
+
+        /**
+         * @brief Function used to execute all the game logic (handling event or phases of the game)
+         * 
+         * @param r the registery comming from the Game Engine
+         * @param events the events that happened
+         */
+        virtual void run_gameLogic(registry &r, const Events &events) = 0;
+
+        /**
+         * @brief Function used to update the registery with data received from the server
+         * 
+         * @param r the registery comming from the Game Engine
+         * @param data struct corresponding to every player's data
+         */
+        virtual void updateRegistry(registry &r, const GameData &data) = 0;
+
+        /**
+         * @brief Function used to update the registery with data received from the server
+         * 
+         * @param r the registery comming from the Game Engine
+         * @param data struct corresponding to every players's datas
+         */
+        virtual void updateRegistry(registry &r, const GameData data[4]) = 0;
 
     protected:
     private:

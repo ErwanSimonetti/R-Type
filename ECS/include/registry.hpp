@@ -95,13 +95,6 @@ class registry
             get_components<Component>().insert_at(to, c);
         };
 
-        // template <typename Component, typename... Params>
-        // typename sparse_array<Component>::reference_type emplace_component(entity const &to, Params &&... p) {
-        //     Component c;
-        //     c.set_component(p...);
-        //     get_components<Component>().insert_at(to, c);
-        // };
-
         /**
          * @brief remove component in sparse array with the type of the component.
          * 

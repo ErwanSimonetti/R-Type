@@ -8,10 +8,6 @@
 #include <functional>
 #include "Engine.hpp"
 
-void salut()
-{
-    std::cout << "hello";
-}
 
 int main(int ac, char **av)
 { 
@@ -21,6 +17,7 @@ int main(int ac, char **av)
     boost::asio::io_service io_service;
     Engine eng(io_service, "127.0.0.1", "1234", av[1]);
     printf("client\n");
+
 
     eng.run();
     return 0;
