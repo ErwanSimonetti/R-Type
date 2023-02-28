@@ -101,9 +101,13 @@ void Rtype::handleInputs(registry &r, size_t entity, const uint16_t inputs[10])
     int up = 0;
     int down = 0;
 
+    bool stopLoop = false;
+
     auto &shootables = r.get_components<Shootable>();
 
     for (int i = 0; i < 10; i++) {
+        if (stopLoop)
+            break;
         switch (inputs[i]) {
         case KEYBOARD::ARROW_LEFT:
             left = -1;
@@ -129,14 +133,12 @@ void Rtype::handleInputs(registry &r, size_t entity, const uint16_t inputs[10])
             break;
         }
         case KEYBOARD::NONE:
-            goto endloop;
+            stopLoop = true;
             break;
         default:
             break;
         }
     }
-
-    endloop:
     
     auto &vel = r.get_components<Velocity>()[entity];
 
