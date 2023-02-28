@@ -6,7 +6,6 @@
 */
 
 #include <cstdlib>
-
 #include "System.hpp"
 #include "registry.hpp"
 
@@ -80,11 +79,6 @@ void position_system(registry &r, sparse_array<Position> &positions, sparse_arra
         if (pos && vel) {
             pos.value()._x += vel.value()._vX;
             pos.value()._y += vel.value()._vY;
-
-            if (i < controllables.size() && controllables[i]) {
-                vel.value()._vX = 0;
-                vel.value()._vY = 0;
-            }
         }
     }
 }

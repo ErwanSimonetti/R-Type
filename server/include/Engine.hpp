@@ -10,14 +10,14 @@
 #ifndef ENGINE_HPP_
 #define ENGINE_HPP_
 
+#include <ctime>
+#include "MyNetwork.hpp"
 #include <boost/asio.hpp>
 #include <boost/array.hpp>
-
+#include "GameEvents.hpp"
 #include "MyNetwork.hpp"
-#include "Engine_utils.hpp"
 #include "registry.hpp"
 #include "System.hpp"
-#include "Engine_utils.hpp"
 
 struct Player {
     entity id;
@@ -120,6 +120,8 @@ class Engine {
         void runGame();
 
         MyNetwork _network;
+
+        bool tickPosition();
     protected:
     private:
 

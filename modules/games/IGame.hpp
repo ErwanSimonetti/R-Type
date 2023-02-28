@@ -9,17 +9,15 @@
 #define IGAME_HPP_
 
 #include "registry.hpp"
-#include "Engine_utils.hpp"
-#include "registry.hpp"
+#include "GameEvents.hpp"
 #include "System.hpp"
 
 struct GameData {
     int16_t entities[4];
     uint16_t posX[4];
     uint16_t posY[4];
-    int16_t directionsX[4];
-    int16_t directionsY[4];
-    // uint16_t inputs[4][10];
+    int16_t xVelocity[4];
+    int16_t yVelocity[4];
     uint16_t hasShot[4];
 };
 

@@ -92,18 +92,18 @@ EntityEvent SFML::event_system(registry &reg) {
                 inputs.emplace_back(it->second);
             }
         }
-        return get_event(reg, inputs, reg.get_components<Position>(), reg.get_components<Controllable>(), reg.get_components<Velocity>(), reg.get_components<Shootable>());
     }
-    return entityEvent;
+    return get_event(reg, inputs, reg.get_components<Position>(), reg.get_components<Controllable>(), reg.get_components<Velocity>(), reg.get_components<Shootable>());
 }
 
-EntityEvent SFML::get_event(registry &r, std::vector<int> &directions, sparse_array<Position> &positions, sparse_array<Controllable> &controllables, sparse_array<Velocity> &velocities, sparse_array<Shootable> &shootable) {
-
+EntityEvent SFML::get_event(registry &r, std::vector<int> &directions, sparse_array<Position> &positions, sparse_array<Controllable> &controllables, sparse_array<Velocity> &velocities, sparse_array<Shootable> &shootable)
+{
     EntityEvent entityEvent;
-    entityEvent.entity = -1;
     int current_direction = 0;
-    int16_t xDirection = 0;
-    int16_t yDirection = 0;
+
+    entityEvent.entity = -1;
+    entityEvent.xVelocity = 0;
+    entityEvent.yVelocity = 0;
     for (size_t i = 0; i < velocities.size() && i < controllables.size() && i < positions.size() && i < shootable.size(); ++ i) {
         auto &vel = velocities[i];
         auto &pos = positions[i];
@@ -116,20 +116,16 @@ EntityEvent SFML::get_event(registry &r, std::vector<int> &directions, sparse_ar
                 contr.value()._currentAction = current_direction;
                 switch (current_direction) {
                     case KEYBOARD::ARROW_UP:
-                        yDirection = -1;
-                        entityEvent.events.emplace_back(GAME_EVENT::UP);
+                        entityEvent.yVelocity = -1 * vel.value()._speedY;
                         break;
                     case KEYBOARD::ARROW_DOWN:
-                        yDirection = 1;
-                        entityEvent.events.emplace_back(GAME_EVENT::DOWN);
+                        entityEvent.yVelocity = vel.value()._speedY;
                         break;
                     case KEYBOARD::ARROW_LEFT:
-                        xDirection = -1;
-                        entityEvent.events.emplace_back(GAME_EVENT::LEFT);
+                        entityEvent.xVelocity = -1 * vel.value()._speedX;
                         break;
                     case KEYBOARD::ARROW_RIGHT:
-                        xDirection = 1;
-                        entityEvent.events.emplace_back(GAME_EVENT::RIGHT);
+                        entityEvent.xVelocity = vel.value()._speedX;
                         break;
                     case KEYBOARD::SPACE:
                         if (shoot.value()._canShoot == true) {
@@ -138,16 +134,15 @@ EntityEvent SFML::get_event(registry &r, std::vector<int> &directions, sparse_ar
                         }
                         break;
                     default:
-                        xDirection = 0;
-                        yDirection = 0;
+                        entityEvent.xVelocity = 0;
+                        entityEvent.yVelocity = 0;
                         break;
                 }
             }
             if (directions.empty()) {
-                xDirection = 0;
-                yDirection = 0;
+                entityEvent.xVelocity = 0;
+                entityEvent.yVelocity = 0;
             }
-            vel.value().set_component(xDirection * vel.value()._speedX, yDirection * vel.value()._speedY);
         }
     }
     return entityEvent;

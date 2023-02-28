@@ -10,7 +10,7 @@
 
 #include "registry.hpp"
 #include "System.hpp"
-#include "Engine_utils.hpp"
+#include "GameEvents.hpp"
 
 class IGraphic {
     public:

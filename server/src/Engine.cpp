@@ -5,7 +5,10 @@
 ** Engine
 */
 
+#include <unistd.h>
 #include "Engine.hpp"
+
+int TICK_DURATION = 50000;
 
 Engine::Engine(uint16_t width, uint16_t height, boost::asio::io_service &io_service, const std::string &port) : _reg(), _network(io_service, port)
 {
@@ -14,8 +17,6 @@ Engine::Engine(uint16_t width, uint16_t height, boost::asio::io_service &io_serv
     _reg.register_component<Drawable>();
     _reg.register_component<Controllable>();
     _reg.register_component<Shootable>();
-
-    _reg.add_system<Position, Velocity, Controllable>(position_system);
 }
 
 Engine::~Engine()
@@ -61,8 +62,8 @@ ServerData Engine::buildServerData()
     for (int i = 0; i < 4; i++) {
         data.posX[i] = 0;
         data.posY[i] = 0;
-        data.directionsX[i] = 0;
-        data.directionsY[i] = 0;
+        data.xVelocity[i] = 0;
+        data.yVelocity[i] = 0;
         data.hasShot[i] = 0;
 
         if (i >= _players.size()) {
@@ -77,18 +78,10 @@ ServerData Engine::buildServerData()
             data.posY[i] = pos.value()._y;
         }
 
-        auto const &vel = velocities[_players.at(i).id];
-        if (vel) {
-            data.directionsX[i] = vel.value()._vX;
-            data.directionsY[i] = vel.value()._vY;
-        }
         if (_players.at(i).hasShot) {
             data.hasShot[i] = 1;
         }
     }
-    printf("CREATE SERVER DATA:\n");
-    printServerData(data);
-    printf("\n");
     return data;
 }
 
@@ -98,21 +91,18 @@ void Engine::sendData(ServerData data)
     ServerData serverData = _network.getProtocol().readServer(buffer);
 
     for (int it = 0; it < _network.getEndpoints().size(); it++) {
-        std::cout << _network.getEndpoints()[it].address().to_string() << std::endl;
         _network.udpSend<ServerData>(buffer, _network.getEndpoints().at(it));
     }
 }
 
 void Engine::updateRegistry(ClientData data)
 {
-    printf("UPDATE SERVER REG\n");
-    printClientData(data);
-    printf("\n");
     if (!_reg.is_entity_alive(data.entity)) {
-        printf("new PLayer\n");
-        create_player(_reg.spawn_entity(), 10, 10, data.posX, data.posY);
+        create_player(_reg.spawn_entity(), data.xVelocity, data.yVelocity, data.posX, data.posY);
     } else {
-        _reg.get_components<Velocity>()[data.entity].value().set_component(data.directionsX, data.directionsY);
+        std::cout << "x velocity before setting component = " << data.xVelocity << std::endl;
+        std::cout << "y velocity before setting component = " << data.yVelocity << std::endl;
+        _reg.get_components<Velocity>()[data.entity].value().set_component(data.xVelocity, data.yVelocity);
         for (int i = 0; i < _players.size(); i++) {
             if (_players.at(i).id == data.entity) {
                     if (data.hasShot) {
@@ -136,6 +126,8 @@ void Engine::runGame()
 {
     while (1) {
         _reg.run_systems();
+        if (tickPosition())
+            position_system(_reg, _reg.get_components<Position>(), _reg.get_components<Velocity>(), _reg.get_components<Controllable>());
     }
 }
 
@@ -159,4 +151,16 @@ void Engine::run()
 
     gameThread.join();
     networkThread.join();
+}
+
+bool Engine::tickPosition()
+{
+    static clock_t tick_position = std::clock();
+    clock_t current_tick = std::clock();
+
+    if (current_tick - tick_position > TICK_DURATION) {
+        tick_position = std::clock();
+        return true;
+    }
+    return false;
 }

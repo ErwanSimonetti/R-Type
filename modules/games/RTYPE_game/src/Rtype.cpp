@@ -37,7 +37,6 @@ void Rtype::create_player(registry &r, entity newEntity, const int16_t velX, con
     r.emplace_component<Animatable>(newEntity, 90);
     r.emplace_component<Position>(newEntity, posX, posY);
     r.emplace_component<Velocity>(newEntity, velX, velY);
-    // _player = newEntity;
     // can shoot component
     r.emplace_component<Hitbox>(newEntity, posX+45, posY+45, SHIP);
 }
@@ -47,7 +46,6 @@ void Rtype::create_enemy_entity(registry &r, entity newEntity, const int16_t vel
     r.emplace_component<Position>(newEntity, posX, posY);
     r.emplace_component<Velocity>(newEntity, velX, velY);
     r.emplace_component<Drawable>(newEntity, SHIP);
-    // r.emplace_component<Hitbox>(newEntity, posX+45, posY+45, SHIP);
     r.emplace_component<Drawable>(newEntity, ENEMYSHIP);
     r.emplace_component<Hitbox>(newEntity, posX+45, posY+45, ENEMYSHIP);
     r.emplace_component<Animatable>(newEntity, 90);
@@ -106,9 +104,8 @@ void Rtype::updateRegistry(registry &r, GameData data)
             printf("New player\n");
             create_entity(r, r.spawn_entity_by_id(data.entities[i]), 0, 0, data.posX[i], data.posY[i]);
         } else {
-            printf("Simple Update\n");
             r.get_components<Position>()[data.entities[i]].value().set_component(data.posX[i], data.posY[i]);
-            r.get_components<Velocity>()[data.entities[i]].value().set_component(data.directionsX[i], data.directionsY[i]);
+            r.get_components<Velocity>()[data.entities[i]].value().set_component(data.xVelocity[i], data.yVelocity[i]);
             if (data.hasShot[i] == 1) {
                 create_projectile(r, r.spawn_entity(), data.entities[i], 15, 0);
             }

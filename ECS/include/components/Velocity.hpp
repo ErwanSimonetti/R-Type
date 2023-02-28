@@ -34,9 +34,8 @@ struct Velocity {
         _speedX = velocityX == 0 ? _speedX : velocityX;
         _speedY = velocityY == 0 ? _speedY : velocityY;
     }
-
-    uint16_t _vX;
-    uint16_t _vY;
+    int16_t _vX;
+    int16_t _vY;
     uint16_t _speedX;
     uint16_t _speedY;
 
