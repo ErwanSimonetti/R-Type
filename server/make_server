@@ -1,6 +1,6 @@
 #!/bin/sh
 
 BINARY_SERVER="./r-type_server"
-CMAKE_DIRECTORY_SERVER="build"
+CMAKE_DIRECTORY_SERVER="./build"
 
-rm -rf build/ && mkdir $CMAKE_DIRECTORY_SERVER && cd $CMAKE_DIRECTORY_SERVER && cmake .. && cmake --build . && cd .. && mv $BINARY_SERVER .. && cd ..
+rm -rf $CMAKE_DIRECTORY_SERVER && mkdir $CMAKE_DIRECTORY_SERVER && cd $CMAKE_DIRECTORY_SERVER && cmake .. && cmake --build . && cd ../..

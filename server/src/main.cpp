@@ -8,11 +8,13 @@
 #include <functional>
 #include "Engine.hpp"
 
-int main(void)
+int main(int ac, char **av)
 {   
     boost::asio::io_service io_service;
-    Engine eng(1920, 1080, io_service, "1234");
+    std::cout << "creating engine" << std::endl;
+    Engine eng(io_service, "127.0.0.1", "1234", av[1]);
 
+    std::cout << "running engine" << std::endl;
     eng.run();
     return 0;
 }

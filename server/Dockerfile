@@ -30,4 +30,6 @@ COPY server/ /app/server
 COPY ECS/ /app/ECS
 COPY network/ /app/network
 
-CMD cd app/server && ./make_server && cd ../ && ./r-type_server
+CMD cd modules && make
+
+CMD cd app/server && ./make_server && cd ../ && ./r-type_server ${GRAPHIC}
