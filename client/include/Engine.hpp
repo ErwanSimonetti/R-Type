@@ -115,7 +115,6 @@ class Engine {
          **/
         registry _reg;
         MyNetwork _network;
-        entity _player;
 
         /**
          * @brief modules 

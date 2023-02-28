@@ -125,7 +125,7 @@ void Rtype::handleInputs(registry &r, size_t entity, const uint16_t inputs[10])
                 if (shoot && shoot.value()._canShoot == true) {
                     create_projectile(r, r.spawn_entity(), entity, 15, 0);
                     shoot.value()._canShoot = false;
-                    shoot.value()._clock.restart();
+                    shoot.value()._clock = std::chrono::high_resolution_clock::now();
                 }
             }
             break;
@@ -135,7 +135,6 @@ void Rtype::handleInputs(registry &r, size_t entity, const uint16_t inputs[10])
             break;
         default:
             std::cout << inputs[i] << " ";
-            printf("ma BITE comment ça\n");
             break;
         }
     }
@@ -192,7 +191,6 @@ void Rtype::updateRegistry(registry &r, const GameData &data)
         }
     }
 }
-
 
 void Rtype::run_gameLogic(registry &r, const Events &events) 
 {

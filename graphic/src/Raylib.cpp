@@ -9,13 +9,14 @@
 
 extern "C" std::shared_ptr<IGraphic> createLibrary()
 {
-    return std::make_shared<Raylib>();
+  return std::make_shared<Raylib>();
 }
 
 Raylib::Raylib() : _window(1920, 1080, "R-TYPE")
 {
     createCamera();
     constructFromJson();
+
 }
 
 Raylib::~Raylib()
@@ -25,7 +26,7 @@ Raylib::~Raylib()
 
 void Raylib::constructFromJson()
 {
-    ReadJson reader("ressources/Raylib/raylib.json");
+     ReadJson reader("ressources/Raylib/raylib.json");
     int nbAsset = reader.getNumberOfElement("asset");
 
     for (int i = 0; i < nbAsset; i++)
@@ -84,7 +85,7 @@ Events get_event() {
     Events newEvent;
     for (auto &it: KeyboardMap)
         if (IsKeyDown(it.first)) 
-            newEvent.inputs.emplace_back(it.second);
+            newEvent.events.emplace_back(it.second);
     return newEvent;
 }
 

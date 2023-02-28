@@ -30,14 +30,14 @@ class Rtype : public IGame {
          * 
          * @param r the registery comming from the Game Engine
          */
-        void run_gameLogic(registry &r, EntityEvent events);
+        void run_gameLogic(registry &r, const Events &events);
 
         /**
          * @brief Function used to update the registery with data received from the server
          * 
          * @param data struct corresponding to every player's data
          */
-        void updateRegistry(registry &r, GameData data);
+        void updateRegistry(registry &r, const GameData &data);
 
         void updateRegistry(registry &r, const GameData data[4]);
         

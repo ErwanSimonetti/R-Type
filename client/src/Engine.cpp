@@ -96,10 +96,6 @@ void Engine::sendData(ClientData data)
 {
     char *buffer = _network.getProtocol().serialiseData<ClientData>(data);
     _network.udpSend<ClientData>(buffer, _network.getServerEndpoint());
-
-}
-
-    _game->updateRegistry(_reg, gameData);
 }
 
 void Engine::updateRegistry(ServerData data)
@@ -149,6 +145,12 @@ void Engine::connectToServer()
 
     _network.UDPReceiveClient(std::bind(&Engine::updateRegistry, this, std::placeholders::_1), false);
     sendData(clientData);
+}
+
+void Engine::runNetwork() 
+{
+    _network.UDPReceiveClient(std::bind(&Engine::updateRegistry, this, std::placeholders::_1), true);
+    _network.getIOService().run();
 }
 
 void Engine::run()
