@@ -34,10 +34,10 @@ COPY client/ /app/client
 COPY ECS/ /app/ECS
 COPY network/ /app/network 
 COPY ressources/ /app/ressources
-COPY graphic/ /app/graphic
 COPY utils/ /app/utils
+COPY modules/ app/modules
 
-RUN cd app/graphic && make
+RUN cd app/modules && make
 
 # Launch game
 CMD cd app/client && ./make_client && cd ../ && ./r-type_client ${GRAPHIC}
