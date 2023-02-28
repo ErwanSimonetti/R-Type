@@ -18,6 +18,8 @@ set(SOURCE_FILES
 
 set(INCLUDE_DIRECTORY include/ ../utils ../modules ../modules/graphics ../modules/games ../network/include ../ECS/include ../ECS/include/components)
 
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ../../)
+
 include_directories(${INCLUDE_DIRECTORY})
 add_executable(r-type_client ${SOURCE_FILES})
 

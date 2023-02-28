@@ -81,7 +81,7 @@ Events SFML::event_system(registry &reg) {
     sf::Event event;
     Events events;
 
-    while(_window->pollEvent(event)) {
+    while (_window->pollEvent(event)) {
         if (event.type == sf::Event::Closed) {
             events.gameEvents.emplace_back(GAME_EVENT::WINDOW_CLOSE);
             _window->close();

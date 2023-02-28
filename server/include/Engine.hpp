@@ -14,10 +14,10 @@
 #include <boost/array.hpp>
 
 #include "MyNetwork.hpp"
-#include "Engine_utils.hpp"
+#include "GameEvents.hpp"
 #include "registry.hpp"
 #include "System.hpp"
-#include "Engine_utils.hpp"
+#include "GameEvents.hpp"
 #include "IGame.hpp"
 #include "LoadLibrary.hpp"
 

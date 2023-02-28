@@ -63,6 +63,4 @@ $(NAME_SFML):
 
 $(NAME_RTYPE):
 	$(CXX) $(SRC_RTYPE) -o $(NAME_RTYPE) $(INC) $(INC_RTYPE)
-# $(NAME):		$(OBJ)
-# 		$(CXX) -o $(NAME) $(OBJ) $(INC) $(LDFLAGS) -g3
 
