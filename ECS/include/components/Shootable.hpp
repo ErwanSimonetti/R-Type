@@ -7,7 +7,7 @@
 
 #pragma once
 
-#include <SFML/Graphics.hpp>
+
 
 struct Shootable {
     Shootable() = default;

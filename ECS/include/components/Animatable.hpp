@@ -9,7 +9,6 @@
 #pragma once
 
 #include <chrono>
-#include <SFML/Graphics.hpp>
 
 struct Animatable {
 
