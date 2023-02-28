@@ -54,12 +54,11 @@ void Rtype::create_enemy_entity(registry &r, entity newEntity, const int16_t vel
     r.emplace_component<Position>(newEntity, posX, posY);
     r.emplace_component<Velocity>(newEntity, velX, velY);
     r.emplace_component<Drawable>(newEntity, SHIP);
-    // r.emplace_component<Hitbox>(newEntity, posX+45, posY+45, SHIP);
+    r.emplace_component<Hitbox>(newEntity, posX+45, posY+45, SHIP);
     r.emplace_component<Drawable>(newEntity, ENEMYSHIP);
     r.emplace_component<Hitbox>(newEntity, posX+45, posY+45, ENEMYSHIP);
     r.emplace_component<Animatable>(newEntity, 90);
     r.emplace_component<FollowPath>(newEntity, "middle_diagonal");
-    // can shoot component
 }
 
 void Rtype::create_parallax(registry &r, entity newEntity, const uint16_t posX, const uint16_t posY, const uint16_t speed, const OBJECT obj) 
@@ -133,8 +132,6 @@ void Rtype::handleInputs(registry &r, size_t entity, const uint16_t inputs[10])
             goto endloop;
             break;
         default:
-            std::cout << inputs[i] << " ";
-            printf("ma BITE comment ça\n");
             break;
         }
     }
@@ -160,17 +157,16 @@ void Rtype::updateRegistry(registry &r, const GameData data[4])
             continue;
         }
         if (_players.size() == 0 && (i == 3 || data[i + 1].entity == -1)) {
-            printf("Our Player\n");
+            std::cout << "Our Player\n";
             entity newEntity = r.spawn_entity_by_id(data[i].entity);
             create_player(r, newEntity, true, 3, 3, data[i].posX, data[i].posY);
             _players.emplace_back(newEntity);
             continue;
         }
         if (!r.is_entity_alive(data[i].entity)) {
-            printf("New player\n");
+            std::cout << "New Player\n";
             create_player(r, r.spawn_entity_by_id(data[i].entity), false, 0, 0, data[i].posX, data[i].posY);
         } else {
-            // printf("Simple Update\n");
             r.get_components<Position>()[data[i].entity].value().set_component(data[i].posX, data[i].posY);
             handleInputs(r, data[i].entity, data[i].inputs);
         }
@@ -181,7 +177,8 @@ void Rtype::updateRegistry(registry &r, const GameData data[4])
 void Rtype::updateRegistry(registry &r, const GameData &data)
 {
     if (!r.is_entity_alive(data.entity)) {
-        printf("new PLayer\n");
+        printf("New PLayer\n");
+        std::cout << "New Player\n";
         create_player(r, r.spawn_entity(), true, 3, 3, 10, 10);
         return;
     }

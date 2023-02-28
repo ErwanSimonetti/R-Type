@@ -5,8 +5,8 @@
 ** Enigne_utils
 */
 
-#ifndef ENIGNE_UTILS_HPP_
-#define ENIGNE_UTILS_HPP_
+#ifndef GAME_EVENTS_HPP_
+#define GAME_EVENTS_HPP_
 
 #include <stdint.h>
 #include <vector>
@@ -22,6 +22,4 @@ struct Events {
     std::vector<KEYBOARD> inputs;
 };
 
-
-
-#endif /* !ENIGNE_UTILS_HPP_ */
+#endif /* !GAME_EVENTS_HPP_ */

@@ -81,10 +81,6 @@ ServerData Engine::buildServerData(size_t id, uint16_t inputs[10])
             }
         }
     }
-
-    // printf("CREATE SERVER DATA:\n");
-    // printServerData(data);
-    // printf("\n");
     return data;
 }
 
@@ -100,10 +96,6 @@ void Engine::sendData(ServerData data)
 
 void Engine::updateRegistry(ClientData data)
 {
-    // printf("UPDATE SERVER REG\n");
-    // printClientData(data);
-    // printf("\n");
-    
     GameData gameData;
 
     gameData.entity = data.entity;
