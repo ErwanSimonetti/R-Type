@@ -12,7 +12,6 @@ int TICK_DURATION = 50000;
 
 Engine::Engine(boost::asio::io_service &io_service, const std::string &host, const std::string &port, const std::string &gameLibrary) : _reg(), _network(io_service, port)
 {
-    std::cout << "entering server engine" << std::endl;
     _reg.register_component<Position>();
     _reg.register_component<Velocity>();
     _reg.register_component<Drawable>();

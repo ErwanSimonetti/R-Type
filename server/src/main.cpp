@@ -10,14 +10,11 @@
 
 int main(int ac, char **av)
 {   
-    boost::asio::io_service io_service;
-    std::cout << "creating engine" << std::endl;
-    if (ac != 2) {
+    if (ac != 2)
         return 84;
-    }
+    boost::asio::io_service io_service;
     Engine eng(io_service, "127.0.0.1", "1234", av[1]);
 
-    std::cout << "running engine" << std::endl;
     eng.run();
     return 0;
 }
