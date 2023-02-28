@@ -5,7 +5,7 @@ launch
 r-type_client
 r-type_server
 r-type_bootstrap
-server/ecs_tests
+ecs_tests
 clients_tests
 ecs_tests
 *.so

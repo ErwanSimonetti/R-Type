@@ -116,13 +116,16 @@ void Engine::runServerCommandLine()
 {
     std::string line;
 
+    std::cout << "Welcome to Server CLI !" << std::endl;
+    CLI::displayHelp();
     while (1) {
+        std::cout << "$> ";
         std::getline(std::cin, line);
         if (line.empty()) {
-            std::cout << "line is empty." << std::endl;
+            std::cout << "please type a command. use `help` to see commands available." << std::endl;
             continue;
         }
-        cli::launchSearchedFunction(line);
+        CLI::launchSearchedFunction(line, _reg);
     }
 }
 
