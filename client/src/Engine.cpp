@@ -30,7 +30,7 @@ Engine::Engine(boost::asio::io_service &io_service, const std::string &host, con
     _reg.add_system<Shootable>(shoot_system);
     _reg.add_system<Animatable, Position, Parallax>(parallax_system);
     _reg.add_system<Animatable, Drawable>(std::bind(&IGraphic::animation_system, _graphic, std::placeholders::_1, std::placeholders::_2));
-    _reg.add_system<Position, Drawable>(std::bind(&IGraphic::draw_system, _graphic, std::placeholders::_1, std::placeholders::_2));
+    _reg.add_system<Position, Drawable, DrawableScore>(std::bind(&IGraphic::draw_system, _graphic, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
     // _reg.add_system<Position, Velocity, FollowPath>(followPathSystem);
     _reg.add_system<Stats, Position, Pet>(entity_killing_system);
 }
@@ -43,9 +43,9 @@ registry &Engine::get_registry() {
     return _reg;
 }
 
-void Engine::create_score(entity newEntity, int16_t parentId, int16_t &score)
+void Engine::create_score(entity newEntity, int16_t parentId, int16_t *score)
 {
-    _reg.emplace_component<DrawableScore>(newEntity, &score);
+    _reg.emplace_component<DrawableScore>(newEntity, score);
     _reg.emplace_component<Pet>(newEntity, parentId);
 }
 
@@ -70,10 +70,10 @@ void Engine::create_player(entity newEntity, const int16_t velX, const int16_t v
     // can shoot component
     _reg.emplace_component<Hitbox>(newEntity, posX+45, posY+45, SHIP);
     _reg.emplace_component<Hitbox>(newEntity, posX+45, posY+45, SHIP);
-    _reg.emplace_component<Stats>(newEntity, 50, 0);
-
-    // uint16_t& score = _reg.get_components_at_pos<Stats>(newEntity)._score;
-    // create_score(_reg.spawn_entity(), newEntity, _reg.get_components_at_pos<Stats>(newEntity)._score);
+    _reg.emplace_component<Stats>(newEntity, 50, 10);
+    Stats *stat = _reg.get_component_at<Stats>(newEntity);
+    _testStat = stat;
+    create_score(_reg.spawn_entity(), newEntity, &(stat->_score));
 }
 
 void Engine::create_enemy_entity(entity newEntity, const int16_t velX, const int16_t velY, const uint16_t posX, const uint16_t posY)
@@ -203,13 +203,6 @@ void Engine::runNetwork()
     _network.getIOService().run();
 }
 
-// void Engine::update_score(sparse_array<Stats> &stats, sparse_array<Pet> &pets, sparse_array<DrawableScore> &drawableTexts) {
-//     for (int i = 0; i < stats.size() && i < pets.size() && i < drawableTexts.size(); ++i) {
-//         auto &sts = stats[i];
-//         auto &pet = pets[i];
-//         auto &drt = drawableTexts[i];
-//     }
-// }
 void Engine::checkStats(sparse_array<Hitbox> &hbxs, sparse_array<Stats> &sts, sparse_array<Pet> &pets) {
     for (size_t i = 0; i < hbxs.size() && i < sts.size() && i < pets.size(); ++i) {
         auto &hbx = hbxs[i];
@@ -221,10 +214,12 @@ void Engine::checkStats(sparse_array<Hitbox> &hbxs, sparse_array<Stats> &sts, sp
             if (pet.has_value() && sts[pet.value()._ent].has_value()) {
                 int16_t ent = pet.value()._ent;
                 sts[ent].value().set_component(sts[ent].value()._health, sts[ent].value()._score+5);
+                std::cout << "Dans le system : " << std::to_string(sts[ent].value()._score) << std::endl;
                 pet.value().set_component(NULL);
             }
         }
     }
+    std::cout << _testStat->_score << std::endl;
 }
 
 void Engine::runGame() 

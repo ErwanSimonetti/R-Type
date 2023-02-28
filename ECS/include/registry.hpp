@@ -51,9 +51,18 @@ class registry
          * @return sparse_array<Component>& get reference on the table
          */
         template <class Component>
-        Component &get_components_at_pos(size_t pos) {
-            return std::any_cast<sparse_array<Component>&>(_components_arrays.find(std::type_index(typeid(Component)))->second)[pos].value();
-        };
+        Component* get_component_at(int position) {
+            auto iter = _components_arrays.find(std::type_index(typeid(Component)));
+            if (iter == _components_arrays.end()) {
+                return nullptr;
+            }
+
+            auto& array = std::any_cast<sparse_array<Component>&>(iter->second);
+            if (position < 0 || position >= array.size()) {
+                return nullptr;
+            }
+            return &(array[position].value());
+        }
 
         /**
          * @brief Get the components object with a type given in template
