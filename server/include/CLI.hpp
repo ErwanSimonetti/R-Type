@@ -12,8 +12,9 @@
 
 #include <string>
 
-namespace cli {
-    void launchSearchedFunction(std::string functionToLaunch);
-}
+namespace CLI {
+    void launchSearchedFunction(std::string &line, registry &reg);
+    void displayHelp();
+};
 
 #endif /* !CLI_HPP_ */
