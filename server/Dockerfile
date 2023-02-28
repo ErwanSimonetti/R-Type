@@ -32,4 +32,4 @@ COPY network/ /app/network
 
 CMD cd modules && make
 
-CMD cd app/server && ./make_server && cd ../ && ./r-type_server ${GRAPHIC}
+CMD cd app/server && ./make_server && cd ../ && ./r-type_server ${GAME}
