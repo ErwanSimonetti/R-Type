@@ -28,7 +28,7 @@ class Raylib : public IGraphic {
         ~Raylib();
         void draw_system(sparse_array<Position> const &positions, sparse_array<Drawable> &drawables);
         void animation_system(sparse_array<Animatable> &animatables, sparse_array<Drawable> &drawables);
-        void createModel(OBJECT type, std::string texture, std::string model, std::string animation);
+        void createModel(uint16_t type, std::string texture, std::string model, std::string animation);
         Events run_graphic(registry &r);
         void constructFromJson();
         void createCamera();
@@ -36,7 +36,7 @@ class Raylib : public IGraphic {
     protected:
     private:
     Camera3D _camera;
-    std::map<OBJECT, Asset> _models;
+    std::map<uint16_t, Asset> _models;
     Window _window;
     // bool _initWindow;
 };

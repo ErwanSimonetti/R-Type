@@ -40,7 +40,7 @@ void SFML::createAsset(uint16_t type, std::string texture, uint16_t width, uint1
     newAsset._bounds = newRect;
     newAsset._texture = texture;
 
-    _assets.insert(std::pair<OBJECT, Asset>(static_cast<OBJECT>(type), newAsset));
+    _assets.insert(std::pair<uint16_t, Asset>(type, newAsset));
     
 }
 

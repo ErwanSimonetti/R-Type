@@ -25,6 +25,13 @@ std::vector<entity> Rtype::getPLayers() const
     return _players;
 }
 
+void Rtype::create_static(registry &r, entity newEntity, const uint16_t posX, const uint16_t posY, OBJECT type)
+{
+    r.emplace_component<Position>(newEntity, posX, posY);
+    r.emplace_component<Hitbox>(newEntity, posX+45, posY+45, type);
+    r.emplace_component<Drawable>(newEntity, type);
+}
+
 void Rtype::create_entity(registry &r, entity newEntity, const int16_t velX, const int16_t velY, const uint16_t posX, const uint16_t posY)
 {
     r.emplace_component<Position>(newEntity, posX, posY);
@@ -37,7 +44,7 @@ void Rtype::create_entity(registry &r, entity newEntity, const int16_t velX, con
 void Rtype::create_player(registry &r, entity newEntity, bool isControllable, const int16_t velX, const int16_t velY, const uint16_t posX, const uint16_t posY)
 {
     r.emplace_component<Shootable>(newEntity);
-    r.emplace_component<Drawable>(newEntity, SHIP);
+    r.emplace_component<Drawable>(newEntity, ENEMYSHIP);
     r.emplace_component<Animatable>(newEntity, 90);
     r.emplace_component<Position>(newEntity, posX, posY);
     r.emplace_component<Velocity>(newEntity, velX, velY);
@@ -85,7 +92,7 @@ void Rtype::create_projectile(registry &r, entity newEntity, int16_t parentId, c
 
 void Rtype::initGame(registry &r)
 {
-    create_entity(r, r.spawn_entity_by_id(0), 0, 0, 100, 100);
+    create_static(r, r.spawn_entity_by_id(0), 0, 0, ENEMYSHIP);
     create_parallax(r, r.spawn_entity(), 1920, 0, 3, PARA_1);
     create_parallax(r, r.spawn_entity(), 0, 0, 3, PARA_1);
     create_parallax(r, r.spawn_entity(), 1920, 0, 6, PARA_2);

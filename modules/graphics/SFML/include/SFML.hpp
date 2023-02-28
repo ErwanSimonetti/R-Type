@@ -39,7 +39,7 @@ class SFML : public IGraphic {
     protected:
     private:
         std::shared_ptr<sf::RenderWindow> _window;
-        std::unordered_map<OBJECT, Asset> _assets;
+        std::unordered_map<uint16_t, Asset> _assets;
 };
 
 extern "C" std::shared_ptr<IGraphic> createLibrary();
