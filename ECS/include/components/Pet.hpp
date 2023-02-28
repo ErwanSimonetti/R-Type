@@ -12,8 +12,8 @@
 struct Pet {
     Pet() : _ent(0) {};
 
-    void set_component(entity ent) {
+    void set_component(int16_t ent) {
         _ent = ent;
     }
-    entity _ent;
+    int16_t _ent;
 };

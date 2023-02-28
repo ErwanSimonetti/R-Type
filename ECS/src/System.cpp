@@ -110,15 +110,13 @@ bool isCollision(Position& a, Hitbox& aHitbox, Position& b, Hitbox& bHitbox)
 
 void collision_system(registry &r, sparse_array<Position> &positions, sparse_array<Hitbox> &hitboxes)
 {
-    for (int i = 0; i < positions.size() && i < hitboxes.size(); ++i) {;
+    for (int i = 0; i < positions.size() && i < hitboxes.size(); ++i) {
         for (int j = i + 1; j < positions.size() && i < hitboxes.size(); ++j) {
             auto &hbxI = hitboxes[i];
             auto &hbxJ = hitboxes[j];
             if (positions[i] && hbxI && positions[j] && hbxJ 
                 && isCollision(positions[i].value(), hbxI.value(), positions[j].value(), hbxJ.value())) {
-                    if ((hbxI.value()._type == ENEMYSHIP || hbxI.value()._type == BULLET)
-                     && (hbxJ.value()._type == ENEMYSHIP || hbxJ.value()._type == BULLET) 
-                     && hbxI.value()._active && hbxJ.value()._active ) {
+                    if (hbxI.value()._active && hbxJ.value()._active) {
                     hbxI.value()._obstacle = hbxJ.value()._type;
                     hbxJ.value()._obstacle = hbxI.value()._type;
                 }
@@ -127,11 +125,18 @@ void collision_system(registry &r, sparse_array<Position> &positions, sparse_arr
     }
 }
 
-void entity_killing_system(registry &r, sparse_array<Stats> &stats, sparse_array<Position> &positions) {
-    for (int i = 0; i < stats.size() && i < positions.size(); ++i) {
+void entity_killing_system(registry &r, sparse_array<Stats> &stats, sparse_array<Position> &positions, sparse_array<Pet> &pets, sparse_array<Parallax> &parallax) {
+    for (int i = 0; i < stats.size() && i < positions.size() && i < pets.size() && i < parallax.size(); ++i) {
         auto &sts = stats[i];
         auto &pos = positions[i];
-        if (sts.has_value() && sts.value()._health <= 0)
-            r.kill_entity(entity(i));
+        auto &pet = pets[i];
+        auto &par = parallax[i];
+        //When the entity has no health left
+        if (sts && sts.has_value() && sts.value()._health <= 0) r.kill_entity(entity(i));
+        //When the projectile entity has a no owner anymore
+        if (pet && pet.value()._ent == NULL) r.kill_entity(entity(i)); 
+        // //When the entity leaves the window
+        // if (!par)
+        //     if (pos && pos.value()._x > 1930  || pos.value()._x < -10  || pos.value()._y > 1090 || pos.value()._y < -10) r.kill_entity(entity(i));
     }
 }

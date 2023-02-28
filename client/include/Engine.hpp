@@ -120,6 +120,7 @@ class Engine {
         void run();
         void loadLib(std::string libName);
         void checkStats(sparse_array<Hitbox> &hbxs, sparse_array<Stats> &sts, sparse_array<Pet> &pets);
+        void create_score(entity newEntity, int16_t parentId, int16_t &score);
 
     protected:
     private:

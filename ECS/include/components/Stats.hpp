@@ -32,7 +32,7 @@ struct Stats {
      * @return std::ostream&, output.
      */
     friend std::ostream &operator<<(std::ostream &output, const Stats &D) {
-        output << " current action = " << D._health << std::endl;
+        output << " current action = " << D._score << std::endl;
         return output;
     }
     int16_t _health;

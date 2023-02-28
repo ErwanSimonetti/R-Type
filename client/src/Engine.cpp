@@ -23,6 +23,7 @@ Engine::Engine(boost::asio::io_service &io_service, const std::string &host, con
     _reg.register_component<FollowPath>();
     _reg.register_component<Shootable>();
     _reg.register_component<Stats>();
+    _reg.register_component<DrawableScore>();
 
     _reg.add_system<Position, Hitbox>(collision_system);
     _reg.add_system<Position, Velocity, Controllable>(position_system);
@@ -31,7 +32,7 @@ Engine::Engine(boost::asio::io_service &io_service, const std::string &host, con
     _reg.add_system<Animatable, Drawable>(std::bind(&IGraphic::animation_system, _graphic, std::placeholders::_1, std::placeholders::_2));
     _reg.add_system<Position, Drawable>(std::bind(&IGraphic::draw_system, _graphic, std::placeholders::_1, std::placeholders::_2));
     // _reg.add_system<Position, Velocity, FollowPath>(followPathSystem);
-    _reg.add_system<Stats, Position>(entity_killing_system);
+    _reg.add_system<Stats, Position, Pet, Parallax>(entity_killing_system);
 }
 
 Engine::~Engine()
@@ -40,6 +41,12 @@ Engine::~Engine()
 
 registry &Engine::get_registry() {
     return _reg;
+}
+
+void Engine::create_score(entity newEntity, int16_t parentId, int16_t &score)
+{
+    _reg.emplace_component<DrawableScore>(newEntity, score);
+    _reg.emplace_component<Pet>(newEntity, entity(parentId));
 }
 
 void Engine::create_entity(entity newEntity, const int16_t velX, const int16_t velY, const uint16_t posX, const uint16_t posY)
@@ -64,6 +71,9 @@ void Engine::create_player(entity newEntity, const int16_t velX, const int16_t v
     _reg.emplace_component<Hitbox>(newEntity, posX+45, posY+45, SHIP);
     _reg.emplace_component<Hitbox>(newEntity, posX+45, posY+45, SHIP);
     _reg.emplace_component<Stats>(newEntity, 50, 0);
+
+    int &score = _reg.get_components<Stats>()[newEntity].value()._score;
+    // create_score(_reg.spawn_entity(), newEntity, 12);
 }
 
 void Engine::create_enemy_entity(entity newEntity, const int16_t velX, const int16_t velY, const uint16_t posX, const uint16_t posY)
@@ -98,10 +108,10 @@ void Engine::create_projectile(entity newEntity, int16_t parentId, const uint16_
     _reg.emplace_component<Hitbox>(newEntity, posX+10, posY+10, BULLET);
     _reg.emplace_component<Velocity>(newEntity, velX, velY);
     _reg.emplace_component<Drawable>(newEntity, BULLET);
-    _reg.emplace_component<Pet>(newEntity, entity(parentId));
+    _reg.emplace_component<Pet>(newEntity, parentId);
     _reg.emplace_component<Animatable>(newEntity, 10);
     _reg.emplace_component<Stats>(newEntity, 1, 0);
-}  
+}
 
 ClientData Engine::buildClientData(EntityEvent entityEvent) 
 {
@@ -193,16 +203,25 @@ void Engine::runNetwork()
     _network.getIOService().run();
 }
 
+// void Engine::update_score(sparse_array<Stats> &stats, sparse_array<Pet> &pets, sparse_array<DrawableScore> &drawableTexts) {
+//     for (int i = 0; i < stats.size() && i < pets.size() && i < drawableTexts.size(); ++i) {
+//         auto &sts = stats[i];
+//         auto &pet = pets[i];
+//         auto &drt = drawableTexts[i];
+//     }
+// }
 void Engine::checkStats(sparse_array<Hitbox> &hbxs, sparse_array<Stats> &sts, sparse_array<Pet> &pets) {
     for (size_t i = 0; i < hbxs.size() && i < sts.size() && i < pets.size(); ++i) {
         auto &hbx = hbxs[i];
         auto &stat = sts[i];
         auto &pet = pets[i];
-        if (stat.has_value() && hbx.has_value() && hbx.value()._type == ENEMYSHIP && hbx.value()._obstacle == BULLET) {
+        if (stat.has_value() && hbx.has_value() && hbx.value()._type == ENEMYSHIP && hbx.value()._obstacle == BULLET)
             stat.value().set_component(stat.value()._health - 55, 0);
+        if (hbx.has_value() && hbx.value()._type == BULLET && hbx.value()._obstacle == ENEMYSHIP) {
             if (pet.has_value() && sts[pet.value()._ent].has_value()) {
-                entity ent = pet.value()._ent;
-                sts[ent].value().set_component(sts[ent].value()._score+5, sts[ent].value()._score);
+                int16_t ent = pet.value()._ent;
+                sts[ent].value().set_component(sts[ent].value()._health, sts[ent].value()._score+5);
+                pet.value().set_component(NULL);
             }
         }
     }

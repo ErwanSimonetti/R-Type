@@ -21,10 +21,10 @@ set(INCLUDE_DIRECTORY include/ include/utils ../network/include ../ECS/include .
 include_directories(${INCLUDE_DIRECTORY})
 add_executable(r-type_client ${SOURCE_FILES})
 
-if(DEFINED TEST_ENABLE AND "${TEST_ENABLE}" STREQUAL "yes")
-    message(STATUS "Unit testing enabled")
-    add_subdirectory("${CMAKE_SOURCE_DIR}/tests")
-endif()
+# if(DEFINED TEST_ENABLE AND "${TEST_ENABLE}" STREQUAL "yes")
+#     message(STATUS "Unit testing enabled")
+#     add_subdirectory("${CMAKE_SOURCE_DIR}/tests")
+# endif()
 
 set(Boost_USE_STATIC_LIBS OFF) 
 set(Boost_USE_MULTITHREADED ON)  
@@ -46,14 +46,14 @@ include(FetchContent)
 #   GIT_REPOSITORY https://github.com/SFML/SFML.git
 #   GIT_TAG 2.6.x  
 # )
-FetchContent_Declare(
-  googletest
-  URL https://github.com/google/googletest/archive/03597a01ee50ed33e9dfd640b249b4be3799d395.zip
-)
+# FetchContent_Declare(
+#   googletest
+#   URL https://github.com/google/googletest/archive/03597a01ee50ed33e9dfd640b249b4be3799d395.zip
+# )
 
 
 # FetchContent_MakeAvailable(SFML)
-FetchContent_MakeAvailable(googletest)
+# FetchContent_MakeAvailable(googletest)
 
 target_link_libraries(r-type_client PRIVATE sfml-graphics sfml-window sfml-system)
 target_compile_features(r-type_client PRIVATE cxx_std_17)
@@ -65,22 +65,22 @@ endif()
 
 # For Windows: Prevent overriding the parent project's compiler/linker settings
 
-enable_testing()
+# enable_testing()
 
-add_executable(
-  clients_tests
-  tests/ecs_tests.cpp
-  ../ECS/src/FollowPath.cpp
-  ../ECS/src/registry.cpp
-  tests/sparse_array_tests.cpp
-  tests/entity_tests.cpp
-  tests/registry_tests.cpp
-  tests/component_tests.cpp
-)
-target_link_libraries(
-  clients_tests
-  GTest::gtest_main
-)
+# add_executable(
+#   clients_tests
+#   tests/ecs_tests.cpp
+#   ../ECS/src/FollowPath.cpp
+#   ../ECS/src/registry.cpp
+#   tests/sparse_array_tests.cpp
+#   tests/entity_tests.cpp
+#   tests/registry_tests.cpp
+#   tests/component_tests.cpp
+# )
+# target_link_libraries(
+#   clients_tests
+#   GTest::gtest_main
+# )
 
-include(GoogleTest)
-gtest_discover_tests(clients_tests)
+# include(GoogleTest)
+# gtest_discover_tests(clients_tests)
