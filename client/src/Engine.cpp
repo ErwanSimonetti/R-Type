@@ -32,7 +32,7 @@ Engine::Engine(boost::asio::io_service &io_service, const std::string &host, con
     _reg.add_system<Animatable, Drawable>(std::bind(&IGraphic::animation_system, _graphic, std::placeholders::_1, std::placeholders::_2));
     _reg.add_system<Position, Drawable>(std::bind(&IGraphic::draw_system, _graphic, std::placeholders::_1, std::placeholders::_2));
     // _reg.add_system<Position, Velocity, FollowPath>(followPathSystem);
-    _reg.add_system<Stats, Position, Pet, Parallax>(entity_killing_system);
+    _reg.add_system<Stats, Position, Pet>(entity_killing_system);
 }
 
 Engine::~Engine()
@@ -45,8 +45,8 @@ registry &Engine::get_registry() {
 
 void Engine::create_score(entity newEntity, int16_t parentId, int16_t &score)
 {
-    _reg.emplace_component<DrawableScore>(newEntity, score);
-    _reg.emplace_component<Pet>(newEntity, entity(parentId));
+    _reg.emplace_component<DrawableScore>(newEntity, &score);
+    _reg.emplace_component<Pet>(newEntity, parentId);
 }
 
 void Engine::create_entity(entity newEntity, const int16_t velX, const int16_t velY, const uint16_t posX, const uint16_t posY)
@@ -72,8 +72,8 @@ void Engine::create_player(entity newEntity, const int16_t velX, const int16_t v
     _reg.emplace_component<Hitbox>(newEntity, posX+45, posY+45, SHIP);
     _reg.emplace_component<Stats>(newEntity, 50, 0);
 
-    int &score = _reg.get_components<Stats>()[newEntity].value()._score;
-    // create_score(_reg.spawn_entity(), newEntity, 12);
+    // uint16_t& score = _reg.get_components_at_pos<Stats>(newEntity)._score;
+    // create_score(_reg.spawn_entity(), newEntity, _reg.get_components_at_pos<Stats>(newEntity)._score);
 }
 
 void Engine::create_enemy_entity(entity newEntity, const int16_t velX, const int16_t velY, const uint16_t posX, const uint16_t posY)

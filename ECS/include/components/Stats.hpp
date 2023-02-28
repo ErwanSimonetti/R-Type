@@ -36,5 +36,5 @@ struct Stats {
         return output;
     }
     int16_t _health;
-    uint16_t _score;
+    int16_t _score;
 };
