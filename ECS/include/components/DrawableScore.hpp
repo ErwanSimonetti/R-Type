@@ -15,8 +15,9 @@
 struct DrawableScore {
 
     DrawableScore() = default;
-    void set_component(int16_t &score) {
+
+    void set_component(int16_t *score) {
         _score = score;
     }
-    int16_t &_score;
+    int16_t *_score;
 };

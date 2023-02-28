@@ -125,12 +125,11 @@ void collision_system(registry &r, sparse_array<Position> &positions, sparse_arr
     }
 }
 
-void entity_killing_system(registry &r, sparse_array<Stats> &stats, sparse_array<Position> &positions, sparse_array<Pet> &pets, sparse_array<Parallax> &parallax) {
-    for (int i = 0; i < stats.size() && i < positions.size() && i < pets.size() && i < parallax.size(); ++i) {
+void entity_killing_system(registry &r, sparse_array<Stats> &stats, sparse_array<Position> &positions, sparse_array<Pet> &pets) {
+    for (int i = 0; i < stats.size() && i < positions.size() && i < pets.size(); ++i) {
         auto &sts = stats[i];
         auto &pos = positions[i];
         auto &pet = pets[i];
-        auto &par = parallax[i];
         //When the entity has no health left
         if (sts && sts.has_value() && sts.value()._health <= 0) r.kill_entity(entity(i));
         //When the projectile entity has a no owner anymore
