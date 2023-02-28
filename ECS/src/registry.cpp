@@ -7,11 +7,27 @@
 
 #include "registry.hpp"
 
+entity findSmallestUnusedValue(const std::vector<entity>& v) {
+    std::vector<entity> sorted_v = v;
+    std::sort(sorted_v.begin(), sorted_v.end());
+
+    size_t smallest_unused_value = 1;
+    for (int i = 0; i < sorted_v.size(); i++) {
+        if (sorted_v[i] > smallest_unused_value) {
+            break;
+        } else if (sorted_v[i] == smallest_unused_value) {
+            smallest_unused_value++;
+        }
+    }
+
+    return entity(smallest_unused_value);
+}
+
 entity registry::spawn_entity() 
 {
     size_t id_entity = 0;
     if (!_entities.empty())
-        id_entity = _entities.at(_entities.size() - 1) + 1;
+        id_entity = findSmallestUnusedValue(_entities);
     entity new_entity(id_entity);
     _entities.emplace_back(new_entity);
     return new_entity;
