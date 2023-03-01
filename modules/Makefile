@@ -85,6 +85,3 @@ $(NAME_RTYPE):
 $(NAME_RAYLIB): 
 	$(CXX) $(SRC_RAYLIB) -o $(NAME_RAYLIB) $(INC) $(INC_RAYLIB) $(LDFLAGS_RAYLIB)
 
-# $(NAME):		$(OBJ)
-# 		$(CXX) -o $(NAME) $(OBJ) $(INC) $(LDFLAGS) -g3
-

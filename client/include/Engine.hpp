@@ -14,7 +14,7 @@
 #include <boost/array.hpp>
 
 #include "MyNetwork.hpp"
-#include "Engine_utils.hpp"
+#include "GameEvents.hpp"
 #include "IGraphic.hpp"
 #include "IGame.hpp"
 #include "LoadLibrary.hpp"
@@ -52,7 +52,6 @@ class Engine {
          * @return registry 
          */
         registry &get_registry();
-
 
         /**
          * @brief Get the registry object

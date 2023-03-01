@@ -100,10 +100,6 @@ void Engine::sendData(ClientData data)
 
 void Engine::updateRegistry(ServerData data)
 {
-    // printf("UPDATE Client REG:\n");
-    // printServerData(data);
-    // printf("\n");
-
     GameData gameData[4];
 
     for (int i = 0; i < 4; i++) {
@@ -118,7 +114,7 @@ void Engine::updateRegistry(ServerData data)
 
 void Engine::runGame() 
 {
-    loadModules("./modules/raylib.so", MODULE_TYPE::GRAPHIC);
+    loadModules("./modules/sfml.so", MODULE_TYPE::GRAPHIC);
     Events evt;
     while (1) {
         _reg.run_systems();
@@ -157,9 +153,8 @@ void Engine::run()
 {
     _game->initGame(_reg);
     connectToServer();
-    std::thread gameThread(&Engine::runGame, this);
 
-  // Start the network handler in a separate thread
+    std::thread gameThread(&Engine::runGame, this);
     std::thread networkThread(&Engine::runNetwork, this);
 
     gameThread.join();

@@ -100,10 +100,6 @@ void Engine::sendData(ServerData data)
 
 void Engine::updateRegistry(ClientData data)
 {
-    // printf("UPDATE SERVER REG\n");
-    // printClientData(data);
-    // printf("\n");
-    
     GameData gameData;
 
     gameData.entity = data.entity;

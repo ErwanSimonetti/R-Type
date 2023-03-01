@@ -85,7 +85,6 @@ class Rtype : public IGame {
          * @return a projectile entity 
         */
         void create_projectile(registry &r, entity newEntity, int16_t parentId, const uint16_t velX, const uint16_t velY);
-
         void create_parallax(registry &r, entity newEntity, const uint16_t posX, const uint16_t posY, const uint16_t speed, const OBJECT obj);
 
         void create_static(registry &r, entity newEntity, const uint16_t posX, const uint16_t posY, OBJECT type);

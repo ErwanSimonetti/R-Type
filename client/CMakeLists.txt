@@ -16,7 +16,9 @@ set(SOURCE_FILES
   ../modules/LoadLibrary.cpp
 )
 
-set(INCLUDE_DIRECTORY include/ ../modules ../modules/graphics ../modules/games ../network/include ../ECS/include ../ECS/include/components ../utils ../utils/JSON)
+set(INCLUDE_DIRECTORY include/ ../utils ../modules ../modules/graphics ../modules/games ../network/include ../ECS/include ../ECS/include/components ../utils/JSON)
+
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ../../)
 
 include_directories(${INCLUDE_DIRECTORY})
 add_executable(r-type_client ${SOURCE_FILES})
