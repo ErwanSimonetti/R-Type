@@ -111,7 +111,7 @@ bool isCollision(Position& a, Hitbox& aHitbox, Position& b, Hitbox& bHitbox)
 void collision_system(registry &r, sparse_array<Position> &positions, sparse_array<Hitbox> &hitboxes)
 {
     for (int i = 0; i < positions.size() && i < hitboxes.size(); ++i) {
-        for (int j = i + 1; j < positions.size() && i < hitboxes.size(); ++j) {
+        for (int j = i + 1; j < positions.size() && j < hitboxes.size(); ++j) {
             auto &hbxI = hitboxes[i];
             auto &hbxJ = hitboxes[j];
             if (positions[i] && hbxI && positions[j] && hbxJ 
@@ -130,12 +130,9 @@ void entity_killing_system(registry &r, sparse_array<Stats> &stats, sparse_array
         auto &sts = stats[i];
         auto &pos = positions[i];
         auto &pet = pets[i];
-        //When the entity has no health left
-        if (sts && sts.has_value() && sts.value()._health <= 0) r.kill_entity(entity(i));
-        //When the projectile entity has a no owner anymore
-        if (pet && pet.value()._ent == NULL) r.kill_entity(entity(i)); 
-        // //When the entity leaves the window
-        // if (!par)
-        //     if (pos && pos.value()._x > 1930  || pos.value()._x < -10  || pos.value()._y > 1090 || pos.value()._y < -10) r.kill_entity(entity(i));
+        if (sts && sts.has_value() && sts.value()._health <= 0)
+            r.kill_entity(entity(i));
+        if (pet && pet.value()._ent == NULL)
+            r.kill_entity(entity(i)); 
     }
 }

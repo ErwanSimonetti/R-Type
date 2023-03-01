@@ -13,9 +13,12 @@ set(SOURCE_FILES
   ../ECS/src/registry.cpp
   ../network/src/MyNetwork.cpp
   ../network/src/Protocol.cpp
+  ../modules/LoadLibrary.cpp
 )
 
-set(INCLUDE_DIRECTORY include/ include/utils ../network/include ../ECS/include/components ../ECS/include)
+set(INCLUDE_DIRECTORY include/ ../utils ../modules ../modules/games ../network/include ../ECS/include/components ../ECS/include)
+
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ../../)
 
 include_directories(${INCLUDE_DIRECTORY})
 add_executable(r-type_server ${SOURCE_FILES})

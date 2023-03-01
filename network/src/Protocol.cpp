@@ -17,8 +17,6 @@ Protocol::~Protocol()
 
 ClientData Protocol::readClient(char *buffer) 
 {
-    // Header header;
-    // std::memcpy(&header, buffer, sizeof(Header));
     ClientData clientData;
     std::memcpy(&clientData, buffer, sizeof(ClientData));
     return clientData;
@@ -26,8 +24,6 @@ ClientData Protocol::readClient(char *buffer)
 
 ServerData Protocol::readServer(char *buffer) 
 {
-    // Header header;
-    // std::memcpy(&header, buffer, sizeof(Header));
     ServerData serverData;
     std::memcpy(&serverData, buffer, sizeof(ServerData));
     return serverData;
@@ -56,23 +52,14 @@ void printServerData(const ServerData &data)
     }
     std::cout << "]" << std::endl;
 
-    std::cout << "directionsX: [";
+    std::cout << "inputs: [";
     for (int i = 0; i < 4; i++) {
-        std::cout << data.directionsX[i];
-        if (i < 3) std::cout << ", ";
-    }
-    std::cout << "]" << std::endl;
-
-    std::cout << "directionsY: [";
-    for (int i = 0; i < 4; i++) {
-        std::cout << data.directionsY[i];
-        if (i < 3) std::cout << ", ";
-    }
-    std::cout << "]" << std::endl;
-
-    std::cout << "hasShot: [";
-    for (int i = 0; i < 4; i++) {
-        std::cout << data.hasShot[i];
+        std::cout << "[";
+        for (int j = 0; j < 10; j++) {
+            std::cout << data.inputs[i][j];
+            if (j < 9) std::cout << ", ";
+        }
+        std::cout << "]" << std::endl;
         if (i < 3) std::cout << ", ";
     }
     std::cout << "]" << std::endl;
@@ -81,9 +68,10 @@ void printServerData(const ServerData &data)
 void printClientData(const ClientData &data) 
 {
     std::cout << "entity: " << data.entity << std::endl;
-    std::cout << "directionsX: " << data.directionsX << std::endl;
-    std::cout << "directionsY: " << data.directionsY << std::endl;
-    std::cout << "shoot: " << data.hasShot << std::endl;
-    std::cout << "posX: " << data.posX << std::endl;
-    std::cout << "posY: " << data.posY << std::endl;
+    std::cout << "inputs: [";
+    for (int i = 0; i < 10; i++) {
+        std::cout << data.inputs[i];
+        if (i < 9) std::cout << ", ";
+    }
+    std::cout << "]" << std::endl;
 }

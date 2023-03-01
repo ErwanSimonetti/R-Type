@@ -8,12 +8,9 @@
 #ifndef IGRAPHIC_HPP_
 #define IGRAPHIC_HPP_
 
-#include <SFML/Graphics.hpp>
-
 #include "registry.hpp"
 #include "System.hpp"
-#include "SFML_utils.hpp"
-#include "Engine_utils.hpp"
+#include "GameEvents.hpp"
 
 class IGraphic {
     public:
@@ -21,8 +18,7 @@ class IGraphic {
         ~IGraphic() = default;
         virtual void draw_system(sparse_array<Position> const &positions, sparse_array<Drawable> &drawables, sparse_array<DrawableScore> &drawableScores) = 0;
         virtual void animation_system(sparse_array<Animatable> &animatables, sparse_array<Drawable> &drawables) = 0;
-        virtual EntityEvent run_graphic(registry &r) = 0;
-
+        virtual Events run_graphic(registry &r) = 0;
     protected:
     private:
 };

@@ -31,12 +31,12 @@ struct Velocity {
             avVX = velocityX * -1;
         if (velocityY < 0)
             avVY = velocityY * -1;
-        _speedX = velocityX == 0 ? _speedX : velocityX;
-        _speedY = velocityY == 0 ? _speedY : velocityY;
+        _speedX = velocityX == 0 ? _speedX : avVX;
+        _speedY = velocityY == 0 ? _speedY : avVY;
     }
 
-    uint16_t _vX;
-    uint16_t _vY;
+    int16_t _vX;
+    int16_t _vY;
     uint16_t _speedX;
     uint16_t _speedY;
 

@@ -9,7 +9,7 @@
 
 extern "C" std::shared_ptr<IGraphic> createLibrary()
 {
-  return std::make_shared<SFML>();
+    return std::make_shared<SFML>();
 }
 
 SFML::SFML()
@@ -26,7 +26,7 @@ SFML::~SFML()
 
 void SFML::set_text()
 {
-    _font.loadFromFile("./ressources/OpenSans-Bold.ttf");
+    _font.loadFromFile("./ressources/SYNNova.otf");
 }
 
 void SFML::set_sprite() {
@@ -48,6 +48,8 @@ void SFML::draw_system(sparse_array<Position> const &positions, sparse_array<Dra
         auto &draw = drawables[i];
         auto &pos = positions[i];
         if (draw && pos) {
+            if (!draw.value()._rect)
+                initialize_rect(draw.value());
             _assets.find(draw.value()._type)->second._sprite.setPosition(pos.value()._x, pos.value()._y);
             sf::IntRect newRect = {draw.value()._rect->left, draw.value()._rect->top, draw.value()._rect->width, draw.value()._rect->height};
             _assets.find(draw.value()._type)->second._sprite.setTextureRect(newRect);
@@ -57,7 +59,7 @@ void SFML::draw_system(sparse_array<Position> const &positions, sparse_array<Dra
     for (size_t i = 0; i < drawableScores.size(); ++i) {
         auto &dbs = drawableScores[i];
         if (dbs) {
-            sf::Text text(std::to_string(*dbs.value()._score), _font, 48);
+            sf::Text text("Score: " + std::to_string(*dbs.value()._score), _font, 48);
             text.setFillColor(sf::Color::White);
             text.setPosition(100, 30);
             _window->draw(text);
@@ -87,81 +89,29 @@ void SFML::animation_system(sparse_array<Animatable> &animatables, sparse_array<
 }
 
 
-EntityEvent SFML::event_system(registry &reg) {
+Events SFML::event_system(registry &reg) {
     std::vector<int> inputs;
     sf::Event event;
-    EntityEvent entityEvent;
-    entityEvent.entity = -1;
+    Events events;
+
     while (_window->pollEvent(event)) {
-        if (event.type == sf::Event::Closed)
+        if (event.type == sf::Event::Closed) {
+            events.gameEvents.emplace_back(GAME_EVENT::WINDOW_CLOSE);
             _window->close();
+            break;
+        }
+        if (event.type ==  sf::Event::KeyReleased)
+            events.inputs.emplace_back(KEYBOARD::NONE);
         for (std::map<sf::Keyboard::Key, KEYBOARD>::iterator it = KeyboardMap.begin(); it != KeyboardMap.end(); it++) {
             if (sf::Keyboard::isKeyPressed(it->first)) {
-                inputs.emplace_back(it->second);
+                events.inputs.emplace_back(it->second);
             }
         }
-        return get_event(reg, inputs, reg.get_components<Position>(), reg.get_components<Controllable>(), reg.get_components<Velocity>(), reg.get_components<Shootable>());
     }
-    return entityEvent;
+    return events;
 }
 
-EntityEvent SFML::get_event(registry &r, std::vector<int> &directions, sparse_array<Position> &positions, sparse_array<Controllable> &controllables, sparse_array<Velocity> &velocities, sparse_array<Shootable> &shootable) {
-
-    EntityEvent entityEvent;
-    entityEvent.entity = -1;
-    int current_direction = 0;
-    int16_t xDirection = 0;
-    int16_t yDirection = 0;
-    for (size_t i = 0; i < velocities.size() && i < controllables.size() && i < positions.size() && i < shootable.size(); ++ i) {
-        auto &vel = velocities[i];
-        auto &pos = positions[i];
-        auto &contr = controllables[i];
-        auto &shoot = shootable[i];
-        if (vel && contr && pos && shoot) {
-            for(std::size_t j = 0; j < directions.size(); ++j) {
-                entityEvent.entity = i;
-                current_direction = directions[j];
-                contr.value()._currentAction = current_direction;
-                switch (current_direction) {
-                    case KEYBOARD::ARROW_UP:
-                        yDirection = -1;
-                        entityEvent.events.emplace_back(GAME_EVENT::UP);
-                        break;
-                    case KEYBOARD::ARROW_DOWN:
-                        yDirection = 1;
-                        entityEvent.events.emplace_back(GAME_EVENT::DOWN);
-                        break;
-                    case KEYBOARD::ARROW_LEFT:
-                        xDirection = -1;
-                        entityEvent.events.emplace_back(GAME_EVENT::LEFT);
-                        break;
-                    case KEYBOARD::ARROW_RIGHT:
-                        xDirection = 1;
-                        entityEvent.events.emplace_back(GAME_EVENT::RIGHT);
-                        break;
-                    case KEYBOARD::SPACE:
-                        if (shoot.value()._canShoot == true) {
-                            entityEvent.events.emplace_back(GAME_EVENT::SHOOT);
-                            shoot.value()._clock.restart();
-                        }
-                        break;
-                    default:
-                        xDirection = 0;
-                        yDirection = 0;
-                        break;
-                }
-            }
-            if (directions.empty()) {
-                xDirection = 0;
-                yDirection = 0;
-            }
-            vel.value().set_component(xDirection * vel.value()._speedX, yDirection * vel.value()._speedY);
-        }
-    }
-    return entityEvent;
-}
-
-EntityEvent SFML::run_graphic(registry &reg) {
+Events SFML::run_graphic(registry &reg) {
     _window->display();
     _window->clear();
     return event_system(reg);

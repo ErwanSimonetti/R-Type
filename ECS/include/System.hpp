@@ -22,10 +22,9 @@
 #include "Parallax.hpp"
 #include "FollowPath.hpp"
 #include "Shootable.hpp"
-#include "Engine_utils.hpp"
 #include "Stats.hpp"
 #include "DrawableScore.hpp"
-
+#include "GameEvents.hpp"
 
 /**
  * @brief logging system displaying all nodes with their position & velocity
@@ -47,7 +46,7 @@ void logging_system (registry &r, sparse_array<Position> const& positions, spars
 void position_system(registry &r, sparse_array<Position> &positions, sparse_array<Velocity> &velocities, const sparse_array<Controllable> &controllables);
 
 /**
- * @brief Control system, system emplacing the event corresponding to an interaction in the EntityEvent vector.
+ * @brief Control system, system emplacing the event corresponding to an interaction in the Events vector.
  * 
  * @param r  registery holding every entity
  * @param directions sparse array of directions
@@ -55,9 +54,9 @@ void position_system(registry &r, sparse_array<Position> &positions, sparse_arra
  * @param controllables sparse array of controllables
  * @param velocities sparse array of velocities
  * @param shootable sparse array of shootable
- * @return EntityEvent 
+ * @return Events 
  */
-EntityEvent control_system(registry &r, std::vector<int> &directions, sparse_array<Position> &positions, sparse_array<Controllable> &controllables, sparse_array<Velocity> &velocities, sparse_array<Shootable> &shootable);
+Events control_system(registry &r, std::vector<int> &directions, sparse_array<Position> &positions, sparse_array<Controllable> &controllables, sparse_array<Velocity> &velocities, sparse_array<Shootable> &shootable);
 
 /**
  * @brief System used to move enemies according to a specific path
