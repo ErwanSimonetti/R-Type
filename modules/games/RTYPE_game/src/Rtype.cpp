@@ -44,7 +44,7 @@ void Rtype::create_entity(registry &r, entity newEntity, const int16_t velX, con
 void Rtype::create_player(registry &r, entity newEntity, bool isControllable, const int16_t velX, const int16_t velY, const uint16_t posX, const uint16_t posY)
 {
     r.emplace_component<Shootable>(newEntity);
-    r.emplace_component<Drawable>(newEntity, ENEMYSHIP);
+    r.emplace_component<Drawable>(newEntity, SHIP);
     r.emplace_component<Animatable>(newEntity, 90);
     r.emplace_component<Position>(newEntity, posX, posY);
     r.emplace_component<Velocity>(newEntity, velX, velY);

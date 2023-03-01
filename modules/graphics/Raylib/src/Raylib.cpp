@@ -53,7 +53,6 @@ void Raylib::createModel(uint16_t type, std::string texture, std::string model, 
     unsigned int animsmodel = 0;
     asset.animation = LoadModelAnimations(animation.c_str(), &animsmodel);
     asset.size = {0.10f, 0.10f, 0.10f};
-    std::cout << type << " "<< texture << model<< " " << animation << " " << std::endl;
     _models.insert(std::pair<uint16_t, Asset>(type, asset));
 }
 
@@ -65,18 +64,19 @@ void Raylib::animation_system(sparse_array<Animatable> &animatables, sparse_arra
         if (anim && draw) {
             if (!_models.count(draw.value()._type) )
                 continue;
-            if( _models.find(draw.value()._type)->second.animation[0].frameCount <= 0 || !(IsModelReady(_models.find(draw.value()._type)->second.model)))
+            auto model = _models.find(draw.value()._type)->second;
+            if (!model.animation || !IsModelReady(model.model)) {
                 continue;
+        }
             auto currentTime = std::chrono::high_resolution_clock::now();
             auto elapsedTime = std::chrono::duration_cast<std::chrono::milliseconds>(currentTime - anim.value()._clock);
+                if ( anim.value()._refreshPoint == nullptr || *anim.value()._refreshPoint >= _models.find(draw.value()._type)->second.animation[0].frameCount) 
+                    anim.value()._refreshPoint = std::make_shared<int>(0);
 
-            if ( anim.value()._refreshPoint == nullptr || *anim.value()._refreshPoint >= _models.find(draw.value()._type)->second.animation[0].frameCount) 
-                anim.value()._refreshPoint = std::make_shared<int>(0);
-
-            if (elapsedTime.count() >= 30) {
-                    *anim.value()._refreshPoint += 1;
-                    UpdateModelAnimation(_models.find(draw.value()._type)->second.model, _models.find(draw.value()._type)->second.animation[0], *anim.value()._refreshPoint);
-                    anim.value()._clock = currentTime;
+                if (elapsedTime.count() >= 30) {
+                        *anim.value()._refreshPoint += 1;
+                        UpdateModelAnimation(_models.find(draw.value()._type)->second.model, _models.find(draw.value()._type)->second.animation[0], *anim.value()._refreshPoint);
+                        anim.value()._clock = currentTime;
             }
         }
     }
@@ -105,7 +105,6 @@ Events get_event() {
         if (draw && pos) {
             if (!_models.count(draw.value()._type))
                 continue;
-            // std::cout << (draw.value()._type) << std::endl;
             DrawModelEx(_models.find(draw.value()._type)->second.model , (Vector3){ pos.value()._x , 0.0f, pos.value()._y }, (Vector3){ 0.0f, 0.0f, 0.0f }, 0.0f, (Vector3){ 1.0f, 1.0f, 1.0f }, WHITE);
         }
 

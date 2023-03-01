@@ -13,10 +13,6 @@
 #include <functional>
 #include "Engine.hpp"
 
-void salut()
-{
-    std::cout << "hello";
-}
 
 int main(void)
 {   

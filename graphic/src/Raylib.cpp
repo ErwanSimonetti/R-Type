@@ -54,7 +54,6 @@ void Raylib::createModel(OBJECT type, std::string texture, std::string model, st
     unsigned int animsmodel = 0;
     asset.animation = LoadModelAnimations(animation.c_str(), &animsmodel);
     asset.size = {0.10f, 0.10f, 0.10f};
-    std::cout << type << " "<< texture << model<< " " << animation << " " << std::endl;
     _models.insert(std::pair<OBJECT, Asset>(type, asset));
 }
 
@@ -96,11 +95,7 @@ Events get_event() {
     _window.clearWindow();
     _window.start3DMode(_camera);
 
-    if (IsKeyDown(KEY_SPACE)) {
-    std::cout << _camera.position.x << " " << _camera.position.y << " " << _camera.position.x  << " " << std::endl;
-    std::cout << _camera.position.x << " " << _camera.position.y << " " << _camera.position.x  << " " << std::endl;
-    std::cout << _camera.up.x << " " << _camera.up.y << " " << _camera.up.x  << " " << std::endl;
-    }
+
 
     for (size_t i = 0; i < drawables.size() && i < positions.size(); ++ i) {
         auto &draw = drawables[i];

@@ -118,7 +118,7 @@ void Engine::updateRegistry(ServerData data)
 
 void Engine::runGame() 
 {
-    loadModules("./modules/sfml.so", MODULE_TYPE::GRAPHIC);
+    loadModules("./modules/raylib.so", MODULE_TYPE::GRAPHIC);
     Events evt;
     while (1) {
         _reg.run_systems();
