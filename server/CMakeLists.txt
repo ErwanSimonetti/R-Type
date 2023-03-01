@@ -13,9 +13,10 @@ set(SOURCE_FILES
   ../ECS/src/registry.cpp
   ../network/src/MyNetwork.cpp
   ../network/src/Protocol.cpp
+  ../modules/LoadLibrary.cpp
 )
 
-set(INCLUDE_DIRECTORY include/ ../utils ../network/include ../ECS/include/components ../ECS/include)
+set(INCLUDE_DIRECTORY include/ ../utils ../modules ../modules/games ../network/include ../ECS/include/components ../ECS/include)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ../../)
 

@@ -35,6 +35,7 @@ COPY ECS/ /app/ECS
 COPY network/ /app/network 
 COPY ressources/ /app/ressources
 COPY modules/ /app/modules
+COPY utils /app/utils
 
 CMD cd modules && make
 

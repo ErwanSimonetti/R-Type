@@ -7,7 +7,7 @@
 
 #include "Engine.hpp"
 
-Engine::Engine(boost::asio::io_service &io_service, const std::string &host, const std::string &port, const std::string &graphicLibrary) : _reg(), _network(io_service, host, port), _player(0)
+Engine::Engine(boost::asio::io_service &io_service, const std::string &host, const std::string &port, const std::string &graphicLibrary) : _reg(), _network(io_service, host, port)
 {
     loadModules(graphicLibrary, MODULE_TYPE::GRAPHIC);
     loadModules("./modules/rtype.so", MODULE_TYPE::GAME);
@@ -25,6 +25,7 @@ Engine::Engine(boost::asio::io_service &io_service, const std::string &host, con
     _reg.register_component<Shootable>();
 
     _reg.add_system<Position, Hitbox>(collision_system);
+    _reg.add_system<Position, Velocity, Controllable>(position_system);
     _reg.add_system<Shootable>(shoot_system);
     _reg.add_system<Animatable, Position, Parallax>(parallax_system);
     _reg.add_system<Animatable, Drawable>(std::bind(&IGraphic::animation_system, _graphic, std::placeholders::_1, std::placeholders::_2));
@@ -59,31 +60,27 @@ void Engine::loadModules(std::string libName, MODULE_TYPE type)
     }
 }
 
-ClientData Engine::buildClientData(EntityEvent entityEvent) 
+ClientData Engine::buildClientData(Events events)
 {
     ClientData clientData;
     
-    if (entityEvent.entity == -1) {
-        clientData.xVelocity = 0;
-        clientData.yVelocity = 0;
+    if (events.inputs.size() == 0) {
         clientData.entity = -1;
         return clientData;
     }
-    Position &pos = _reg.get_components<Position>()[entityEvent.entity].value();
-    int size = 0;
-    clientData.entity = entityEvent.entity;
-    clientData.xVelocity = entityEvent.xVelocity;
-    clientData.yVelocity = entityEvent.yVelocity;
-    clientData.hasShot = 0;
-    
-    for (auto &it : entityEvent.events) {
-        switch (it) {
-            case GAME_EVENT::SHOOT:
-                clientData.hasShot = 1;
-                break;
-            default:
-                break;
-        }
+
+    clientData.entity = _game->getPLayers().at(0);
+    for (int i = 0; i < 10; i++) {
+        clientData.inputs[i] = 0;
+    }
+
+    int index = 0;
+    for (auto &it : events.inputs) {
+        if (index >= 10)
+            break;
+
+        clientData.inputs[index] = it;
+        index++;
     }
     return clientData;
 }
@@ -102,15 +99,13 @@ void Engine::runNetwork()
 
 void Engine::updateRegistry(ServerData data)
 {
-    GameData gameData;
+    GameData gameData[4];
 
     for (int i = 0; i < 4; i++) {
-        gameData.entities[i] = data.entities[i];
-        gameData.posX[i] = data.posX[i];
-        gameData.posY[i] = data.posY[i];
-        gameData.xVelocity[i] = data.xVelocity[i];
-        gameData.yVelocity[i] = data.yVelocity[i];
-        gameData.hasShot[i] = data.hasShot[i];
+        gameData[i].entity = data.entities[i];
+        gameData[i].posX = data.posX[i];
+        gameData[i].posY = data.posY[i];
+        memcpy(gameData[i].inputs, data.inputs[i], sizeof(uint16_t) * 10);
     }
 
     _game->updateRegistry(_reg, gameData);
@@ -118,12 +113,18 @@ void Engine::updateRegistry(ServerData data)
 
 void Engine::runGame() 
 {
-    EntityEvent evt;
+    Events evt;
+
     while (1) {
         _reg.run_systems();
         evt = _graphic->run_graphic(_reg);
+        if (std::find(evt.gameEvents.begin(), evt.gameEvents.end(), GAME_EVENT::WINDOW_CLOSE) != evt.gameEvents.end()) {
+            return;
+        }
         _game->run_gameLogic(_reg, evt);
         ClientData clientData = buildClientData(evt);
+        if(clientData.entity == -1)
+            continue;
         sendData(clientData);
     }
 }
@@ -132,12 +133,10 @@ void Engine::connectToServer()
 {
     ClientData clientData;
 
-    clientData.xVelocity = 0;
-    clientData.yVelocity = 0;
     clientData.entity = -1;
-    clientData.hasShot = 0;
-    clientData.posX = 0;
-    clientData.posY = 0;
+    for (int i = 0; i < 10; i++) {
+        clientData.inputs[i] = 0;
+    }
 
     _network.UDPReceiveClient(std::bind(&Engine::updateRegistry, this, std::placeholders::_1), false);
     sendData(clientData);
@@ -146,11 +145,9 @@ void Engine::connectToServer()
 void Engine::run() 
 {
     _game->initGame(_reg);
-
     connectToServer();
-    std::thread gameThread(&Engine::runGame, this);
 
-  // Start the network handler in a separate thread
+    std::thread gameThread(&Engine::runGame, this);
     std::thread networkThread(&Engine::runNetwork, this);
 
     gameThread.join();

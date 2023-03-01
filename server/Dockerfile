@@ -28,7 +28,9 @@ RUN apt-get update && apt-get install -y \
 
 COPY server/ /app/server
 COPY ECS/ /app/ECS
+COPY modules /app/modules
 COPY network/ /app/network
+COPY utils /app/utils
 
 CMD cd modules && make
 

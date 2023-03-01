@@ -44,7 +44,7 @@ void logging_system (registry &r, sparse_array<Position> const& positions, spars
 void position_system(registry &r, sparse_array<Position> &positions, sparse_array<Velocity> &velocities, const sparse_array<Controllable> &controllables);
 
 /**
- * @brief Control system, system emplacing the event corresponding to an interaction in the EntityEvent vector.
+ * @brief Control system, system emplacing the event corresponding to an interaction in the Events vector.
  * 
  * @param r  registery holding every entity
  * @param directions sparse array of directions
@@ -52,9 +52,9 @@ void position_system(registry &r, sparse_array<Position> &positions, sparse_arra
  * @param controllables sparse array of controllables
  * @param velocities sparse array of velocities
  * @param shootable sparse array of shootable
- * @return EntityEvent 
+ * @return Events 
  */
-EntityEvent control_system(registry &r, std::vector<int> &directions, sparse_array<Position> &positions, sparse_array<Controllable> &controllables, sparse_array<Velocity> &velocities, sparse_array<Shootable> &shootable);
+Events control_system(registry &r, std::vector<int> &directions, sparse_array<Position> &positions, sparse_array<Controllable> &controllables, sparse_array<Velocity> &velocities, sparse_array<Shootable> &shootable);
 
 /**
  * @brief System used to move enemies according to a specific path
@@ -63,6 +63,7 @@ EntityEvent control_system(registry &r, std::vector<int> &directions, sparse_arr
  * @param velocities sparseArray containing entity velocities
  * @param paths paths to follow
  */
+// void followPathSystem(const sparse_array<Position> &positions, sparse_array<Velocity> &velocities, sparse_array<FollowPath> &paths);
 
 void collision_system(registry &r, sparse_array<Position> &positions, sparse_array<Hitbox> &hitboxes);
 void parallax_system(registry &r, sparse_array<Animatable> &animatable, sparse_array<Position> &positions, sparse_array<Parallax> &parallax);

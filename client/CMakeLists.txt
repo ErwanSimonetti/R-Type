@@ -16,7 +16,7 @@ set(SOURCE_FILES
   ../modules/LoadLibrary.cpp
 )
 
-set(INCLUDE_DIRECTORY include/ ../modules ../modules/graphics ../modules/games ../network/include ../ECS/include ../ECS/include/components ../utils)
+set(INCLUDE_DIRECTORY include/ ../utils ../modules ../modules/graphics ../modules/games ../network/include ../ECS/include ../ECS/include/components)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ../../)
 

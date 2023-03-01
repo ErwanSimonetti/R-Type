@@ -16,27 +16,13 @@ class Rtype : public IGame {
         Rtype();
         ~Rtype();
 
-        /**
-         * @brief Function used to create all starting assets needed fro the game
-         * 
-         * @param r the registery comming from the Game Engine
-         */
+        std::vector<entity> getPLayers() const;
+
         void initGame(registry &r);
-
-        /**
-         * @brief Function used to execute all the game logic (handling event or phases of the game)
-         * 
-         * @param r the registery comming from the Game Engine
-         */
-        void run_gameLogic(registry &r, EntityEvent events);
-
-        /**
-         * @brief Function used to update the registery with data received from the server
-         * 
-         * @param data struct corresponding to every player's data
-         */
-        void updateRegistry(registry &r, GameData data);
-
+        void run_gameLogic(registry &r, const Events &events);
+        void updateRegistry(registry &r, const GameData &data);
+        void updateRegistry(registry &r, const GameData data[4]);
+        
         /** 
          * @brief Function used to create a friendly "character" entity, giving it an id, and various parameters 
          * @param r registry the registery to update
@@ -46,8 +32,8 @@ class Rtype : public IGame {
          * @param posX uint16_t corresponding to the vertical position
          * @param posY uint16_t corresponding to the horizontal position
          **/
-        void create_player(registry &r, entity newEntity, const int16_t velX, const int16_t velY, const uint16_t posX, const uint16_t posY);
-        
+        void create_player(registry &r, entity newEntity, bool isControllable, const int16_t velX, const int16_t velY, const uint16_t posX, const uint16_t posY);
+
         /**
          * @brief Function used to create an enemy "character" entity, giving it an id, and various parameters 
          * @param r registry the registery to update
@@ -81,12 +67,15 @@ class Rtype : public IGame {
          * @return a projectile entity 
         */
         void create_projectile(registry &r, entity newEntity, int16_t parentId, const uint16_t velX, const uint16_t velY);
-
         void create_parallax(registry &r, entity newEntity, const uint16_t posX, const uint16_t posY, const uint16_t speed, const OBJECT obj);
 
     protected:
+        void handleInputs(registry &r, size_t entity, const uint16_t inputs[10]);
     private:
-        entity _player;
+        /**
+         * @brief players vector 
+         **/ 
+        std::vector<entity> _players;
 
 };
 

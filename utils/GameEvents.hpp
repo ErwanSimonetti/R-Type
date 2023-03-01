@@ -2,7 +2,7 @@
 ** EPITECH PROJECT, 2023
 ** R-Type
 ** File description:
-** GameEvents
+** Enigne_utils
 */
 
 #ifndef GAME_EVENTS_HPP_
@@ -11,18 +11,15 @@
 #include <stdint.h>
 #include <vector>
 
+#include "keyboard.hpp"
+
 enum GAME_EVENT {
-    SHOOT = 1,
     WINDOW_CLOSE = -1
 };
 
-struct EntityEvent {
-    int16_t entity;
-    std::vector<GAME_EVENT> events;
-    int16_t xVelocity;
-    int16_t yVelocity;
+struct Events {
+    std::vector<GAME_EVENT> gameEvents;
+    std::vector<KEYBOARD> inputs;
 };
-
-
 
 #endif /* !GAME_EVENTS_HPP_ */
