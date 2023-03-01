@@ -104,7 +104,6 @@ class Engine {
          */
         void runServerCommandLine();
 
-        MyNetwork _network;
 
     protected:
     private:
