@@ -17,7 +17,6 @@
 #include "Engine_utils.hpp"
 #include "registry.hpp"
 #include "System.hpp"
-#include "Engine_utils.hpp"
 
 struct Player {
     entity id;

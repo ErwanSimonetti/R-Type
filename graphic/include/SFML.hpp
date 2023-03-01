@@ -35,7 +35,7 @@ class SFML : public IGraphic {
     protected:
     private:
         std::shared_ptr<sf::RenderWindow> _window;
-        sf::Text _text;
+        sf::Font _font;
         std::unordered_map<OBJECT, Asset> _assets = {
             { SHIP, { "ressources/ship.png", sf::IntRect(0, 0, 101, 41), 808, 101 }},
             { ENEMYSHIP, { "ressources/enemyship.png", sf::IntRect(0, 0, 101, 41), 808, 101 }},

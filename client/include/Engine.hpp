@@ -130,7 +130,6 @@ class Engine {
         registry _reg;
 
         MyNetwork _network;
-        Stats *_testStat;
         /**
          * @brief SFML encapsulation 
          **/

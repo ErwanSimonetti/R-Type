@@ -26,13 +26,7 @@ SFML::~SFML()
 
 void SFML::set_text()
 {
-    sf::Font font;
-    font.loadFromFile("OpenSans-Bold.ttf");
-
-    sf::Text text("Hello, SFML!", font, 48);
-    _text.setFillColor(sf::Color::White);
-    _text.setPosition(300, 300);
-    _text.setStyle(sf::Text::Bold | sf::Text::Italic);
+    _font.loadFromFile("./ressources/OpenSans-Bold.ttf");
 }
 
 void SFML::set_sprite() {
@@ -51,26 +45,22 @@ void SFML::initialize_rect(Drawable &draw){
 
 void SFML::draw_system(sparse_array<Position> const &positions, sparse_array<Drawable> &drawables, sparse_array<DrawableScore> &drawableScores) {
     for (size_t i = 0; i < drawables.size() && i < positions.size(); ++ i) {
-    // for (size_t i = 0; i < drawables.size() && i < positions.size() && i < drawableScores.size(); ++i) {
         auto &draw = drawables[i];
         auto &pos = positions[i];
         if (draw && pos) {
             _assets.find(draw.value()._type)->second._sprite.setPosition(pos.value()._x, pos.value()._y);
             sf::IntRect newRect = {draw.value()._rect->left, draw.value()._rect->top, draw.value()._rect->width, draw.value()._rect->height};
             _assets.find(draw.value()._type)->second._sprite.setTextureRect(newRect);
-            // _window->draw(_text);
             _window->draw(_assets.find(draw.value()._type)->second._sprite);
         }
     }
     for (size_t i = 0; i < drawableScores.size(); ++i) {
         auto &dbs = drawableScores[i];
         if (dbs) {
-            std::cout << "AAAA " << i << "   " << std::to_string(*dbs.value()._score) << std::endl;
-            std::cout << "DBS" << std::endl;
-            _text.setString(std::to_string(*dbs.value()._score));
-            //PQ CA CHANGE PAS PUTAIN
-            _window->draw(_text);
-            //PQ CA S'AFFICHE PAS PUTAIN
+            sf::Text text(std::to_string(*dbs.value()._score), _font, 48);
+            text.setFillColor(sf::Color::White);
+            text.setPosition(100, 30);
+            _window->draw(text);
         }
     }
 }
@@ -174,6 +164,5 @@ EntityEvent SFML::get_event(registry &r, std::vector<int> &directions, sparse_ar
 EntityEvent SFML::run_graphic(registry &reg) {
     _window->display();
     _window->clear();
-    // _window->draw(_text);
     return event_system(reg);
 }
