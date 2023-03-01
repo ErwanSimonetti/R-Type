@@ -103,6 +103,16 @@ void Engine::sendData(ClientData data)
     std::memcpy(buffer + sizeof(Header), Protocol::serialiseData<ClientData>(data), sizeof(ClientData));
     _network.udpSend(buffer, _network.getServerEndpoint(), sizeof(buffer));
 
+}
+
+void Engine::runNetwork() 
+{
+    _proto->askConnection();
+    _network.UDPReceiveClient(std::bind(&Engine::updateRegistry, this, std::placeholders::_1), true);
+    _network.getIOService().run();
+    std::cout << "Thread NETWORK exiting..." << std::endl;
+}
+
 void Engine::updateRegistry(ServerData data)
 {
     GameData gameData[4];
@@ -164,4 +174,5 @@ void Engine::run()
 
     gameThread.join();
     networkThread.join();
+    return;
 }

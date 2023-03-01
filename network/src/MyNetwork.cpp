@@ -15,6 +15,7 @@ MyNetwork::MyNetwork(boost::asio::io_service &io_service, const std::string& hos
     boost::asio::ip::udp::endpoint serverEndpoint(boost::asio::ip::address::from_string(host), std::stoi(port));
     _endpoints.emplace_back(serverEndpoint);
     _shouldCallback = false;
+    _isSuspendClient = false;
 }
 
 // server
@@ -23,6 +24,7 @@ MyNetwork::MyNetwork(boost::asio::io_service& io_service, const std::string &por
     _socket(io_service, boost::asio::ip::udp::endpoint(boost::asio::ip::udp::v4(), 1234))
 {
     _shouldCallback = false;
+    _isSuspendClient = false;
 }
 
 MyNetwork::~MyNetwork()
@@ -88,13 +90,12 @@ void MyNetwork::UDPReceiveServer(std::function<void(char *, boost::asio::ip::udp
     std::memset(_recvBuffer, '\0', 1024);
     _socket.async_receive_from(boost::asio::buffer(_recvBuffer), _endpoint,
     [this, func] (boost::system::error_code ec, std::size_t recvd_bytes) {
-        if (ec || recvd_bytes <= 0)
-            UDPReceiveServer(func);
-        if (isNewEndpoint(_endpoint)) {
-            addEndpoint(_endpoint);
-        } else {
+        if (!ec)
+        {
+            if (ec || recvd_bytes <= 0)
+                UDPReceiveServer(func);
             func(_recvBuffer, _endpoint);
+            UDPReceiveServer(func);
         }
-        UDPReceiveServer(func);
     });
 };

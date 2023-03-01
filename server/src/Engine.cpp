@@ -55,7 +55,7 @@ void Engine::loadModules(std::string libName, MODULE_TYPE type)
 
 ServerData Engine::buildServerData(size_t id, uint16_t inputs[10]) 
 {
-    ServerData data;
+    // ServerData data;
 
     auto &positions = _reg.get_components<Position>();
     auto &velocities = _reg.get_components<Velocity>();
@@ -133,7 +133,11 @@ void Engine::runServerCommandLine()
 void Engine::runGame() 
 {
     while (1) {
-        _reg.run_systems();
+        {
+            sleep(1);
+            std::cout << "Nb of entities == " <<  _reg.get_entities().size() << std::endl;
+            _reg.run_systems();
+        }
     }
 }
 

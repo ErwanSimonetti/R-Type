@@ -13,6 +13,7 @@
 #include <cstddef>
 
 #include "Header.hpp"
+#include "registry.hpp"
 #include "IProtocol.hpp"
 #include "Protocol.hpp"
 #include "NewPlayer.hpp"
@@ -22,12 +23,14 @@ namespace Protocol
 {
     class ProtocolServer : public IProtocol {
         public:
-            ProtocolServer(MyNetwork &net) :
-                _net(net)
+            ProtocolServer(MyNetwork &net, std::unordered_map<int, std::function<void(void)>> &functionEngine) :
+                _net(net),
+                _functionEngine(functionEngine)
             {
                 std::cout << "Hey, I build a new Protocol Server." << std::endl;
                 _idToType.emplace(1, std::bind(&ProtocolServer::receiveRequestOfConnection, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
                 _idToType.emplace(2, std::bind(&ProtocolServer::receiveClientData, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
+                _idToType.emplace(2, std::bind(&ProtocolServer::receiveInputPressed, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
             };
 
             ~ProtocolServer() = default;
@@ -56,15 +59,21 @@ namespace Protocol
             void receiveRequestOfConnection(char *buffer, size_t lenghtValue, boost::asio::ip::udp::endpoint endpoint)
             {
                 NewPlayer* ptr1 = reinterpret_cast<NewPlayer*>(buffer + lenghtValue);
-                std::cout << "receiveNewPlayer" << std::endl;
-                std::cout << "ID == " << ptr1->id << std::endl;
-                if (_net.getEndpoints().size() > 4) {
+                if (_net.getEndpoints().size() > 3) {
                     std::cout << "Send access refused to " << endpoint.address() << std::endl;
-                    this->sendConnectionStatus(ConnectionStatus{false, 0}, endpoint);
+                    this->sendConnectionStatus(ConnectionStatus{false, -1}, endpoint);
                 } else {
-                    std::cout << "Send access accepted to " << endpoint.address() << std::endl;
+                    std::cout << "Nb of Endpoints == " << _net.getEndpoints().size() << std::endl;
+                    if (_net.isNewEndpoint(endpoint))
+                        _net.addEndpoint(endpoint);
+                    _functionEngine[1]();
                     this->sendConnectionStatus(ConnectionStatus{true, 0}, endpoint);
                 }
+            }
+
+            void receiveInputPressed(char *buffer, size_t lenghtValue, boost::asio::ip::udp::endpoint endpoint)
+            {
+                InputPressed* ptr1 = reinterpret_cast<InputPressed*>(buffer + lenghtValue);
             }
 
             void receiveClientData(char *buffer, size_t lenghtValue, boost::asio::ip::udp::endpoint endpoint)
@@ -89,6 +98,7 @@ namespace Protocol
 
             std::unordered_map<int, std::function<void(char *, size_t, boost::asio::ip::udp::endpoint)>> _idToType;
             MyNetwork &_net;
+            std::unordered_map<int, std::function<void(void)>> &_functionEngine;
     };
 }
 

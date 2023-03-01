@@ -21,8 +21,9 @@ namespace Protocol
 {
     class ProtocolClient : public IProtocol {
         public:
-            ProtocolClient(MyNetwork &net) :
-                _net(net)
+            ProtocolClient(MyNetwork &net, registry &reg) :
+                _net(net),
+                _reg(reg)
             {
                 std::cout << "Hey, I build a new Protocol Client." << std::endl;
                 _idToType.emplace(1, std::bind(&ProtocolClient::receiveStatusOfConnection, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
@@ -59,12 +60,22 @@ namespace Protocol
             void receiveStatusOfConnection(char *buffer, size_t lenghtValue, boost::asio::ip::udp::endpoint endpoint)
             {
                 ConnectionStatus* ptr1 = reinterpret_cast<ConnectionStatus*>(buffer + lenghtValue);
-                std::cout << "nb player : " << ptr1->nbPlayer << std::endl;
-                std::cout << "is accepted" << ptr1->isAccepted << std::endl;
+
+                std::cout << "Receive Status of Connection" << std::endl;
+                if (ptr1->isAccepted) {
+                    std::cout << "Receive Status of Connection Accepted" << std::endl;
+                    std::cout << "nbplayer == " << ptr1->nbPlayer << std::endl;
+
+                } else {
+                    std::cout << "Receive Status of Connection Refused" << std::endl;
+                    _net._isSuspendClient = true;
+                    _net._shouldCallback = false;
+                }
             }
 
             std::unordered_map<int, std::function<void(char *, size_t, boost::asio::ip::udp::endpoint)>> _idToType;
             MyNetwork &_net;
+            registry &_reg;
     };
 }
 

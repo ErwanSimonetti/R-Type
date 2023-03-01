@@ -46,12 +46,17 @@ struct ServerData {
     uint16_t posY[4];
     uint16_t inputs[4][10];
 };
+
 struct ConnectionStatus
 {
     bool isAccepted;
-    int nbPlayer;
+    int16_t nbPlayer;
 };
 
+struct InputPressed
+{
+    uint16_t inputs[10];   
+};
 
 class Protocol {
     public:

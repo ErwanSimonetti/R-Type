@@ -37,6 +37,8 @@ class MyNetwork {
         boost::asio::io_service &getIOService();
         // Protocol &getProtocol();
         std::vector<boost::asio::ip::udp::endpoint> &getEndpoints();
+        bool _isSuspendClient;
+        bool _shouldCallback;
 
     protected:
     private:
@@ -47,6 +49,5 @@ class MyNetwork {
         boost::asio::ip::udp::socket _socket;
         boost::asio::io_service &_io_services;
         char _recvBuffer[1024];
-        bool _shouldCallback;
 
 };
