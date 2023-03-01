@@ -117,8 +117,7 @@ namespace CLI
         }
         try
         {
-            entity entityToKill = reg.entity_from_index(idToKill);
-            reg.kill_entity(entityToKill);
+            reg.kill_entity(entity(idToKill));
         }
         catch(const NoEntityFound &e)
         {
