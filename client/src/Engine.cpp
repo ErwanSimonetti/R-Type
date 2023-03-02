@@ -7,10 +7,10 @@
 
 #include "Engine.hpp"
 
-Engine::Engine(boost::asio::io_service &io_service, const std::string &host, const std::string &port, const std::string &graphicLibrary, const std::string &gameLibrary) : _reg(), _network(io_service, host, port)
+Engine::Engine(boost::asio::io_service &io_service, const std::string &host, const std::string &port, const std::string &graphicLibrary, const std::string &gameModuleName) : _reg(), _network(io_service, host, port)
 {
     loadModules(graphicLibrary, MODULE_TYPE::GRAPHIC);
-    loadModules(gameLibrary, MODULE_TYPE::GAME);
+    loadModules(gameModuleName, MODULE_TYPE::GAME);
 
 
     _reg.register_component<Position>();
@@ -53,8 +53,8 @@ void Engine::loadModules(std::string libName, MODULE_TYPE type)
             break;
         }
         case MODULE_TYPE::GAME: {
-            create_d_game newGameLibrary = (create_d_game)library.getFunction(lib, "createLibrary");
-            _game = newGameLibrary();
+            create_d_game newgameModuleName = (create_d_game)library.getFunction(lib, "createLibrary");
+            _game = newgameModuleName();
             break;
         }
     }
