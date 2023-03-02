@@ -45,6 +45,7 @@ class SFML : public IGraphic {
             { PARA_2, {"ressources/para_2.png", sf::IntRect(0, 0, 1920, 1059) , 1920, 1920}},
             { PARA_3, {"ressources/para_3.png", sf::IntRect(0, 0, 1920, 1280), 1920, 1920}},
             { PARA_4, {"ressources/para_4.png", sf::IntRect(0, 0, 1920, 734), 1920, 1920}},
+            { HEALTH, { "ressources/ship.png", sf::IntRect(0, 0, 303, 41), 303, 303 }},
         };
 };
 

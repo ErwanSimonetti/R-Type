@@ -31,6 +31,12 @@ void Rtype::create_score(registry &r, entity newEntity, int16_t parentId, int16_
     r.emplace_component<Pet>(newEntity, parentId);
 }
 
+void Rtype::create_health(registry &r, entity newEntity, int16_t parentId, int16_t *health)
+{
+    r.emplace_component<Drawable>(newEntity, HEALTH);
+    r.emplace_component<Pet>(newEntity, parentId);
+}
+
 void Rtype::create_entity(registry &r, entity newEntity, const int16_t velX, const int16_t velY, const uint16_t posX, const uint16_t posY)
 {
     r.emplace_component<Position>(newEntity, posX, posY);
@@ -48,9 +54,10 @@ void Rtype::create_player(registry &r, entity newEntity, bool isControllable, co
     r.emplace_component<Position>(newEntity, posX, posY);
     r.emplace_component<Velocity>(newEntity, velX, velY);
     r.emplace_component<Hitbox>(newEntity, posX+45, posY+45, SHIP);
-    r.emplace_component<Stats>(newEntity, 50, 0);
+    r.emplace_component<Stats>(newEntity, 3, 0);
     Stats *stat = r.get_component_at<Stats>(newEntity);
     create_score(r, r.spawn_entity(), newEntity, stat->_score);
+    create_health(r, r.spawn_entity(), newEntity, stat->_health);
 
     if (isControllable) {
         r.emplace_component<Controllable>(newEntity);
@@ -208,7 +215,7 @@ void Rtype::checkStats(sparse_array<Hitbox> &hbxs, sparse_array<Stats> &sts, spa
         auto &stat = sts[i];
         auto &pet = pets[i];
         if (stat.has_value() && hbx.has_value() && hbx.value()._type == ENEMYSHIP && hbx.value()._obstacle == BULLET)
-            stat.value().set_component(stat.value()._health - 55, 0);
+            stat.value().set_component(stat.value()._health - 1, 0);
         if (hbx.has_value() && hbx.value()._type == BULLET && hbx.value()._obstacle == ENEMYSHIP) {
             if (pet.has_value() && sts[pet.value()._ent].has_value()) {
                 int16_t ent = pet.value()._ent;
