@@ -27,7 +27,8 @@ RUN apt-get update && \
     udev \
     libx11-dev \
     libdrm-dev \
-    libboost-all-dev
+    libboost-all-dev \
+    libjsoncpp-dev
 
 # Copy client files
 COPY client/ /app/client
@@ -40,4 +41,4 @@ COPY utils /app/utils
 CMD cd modules && make
 
 # Launch game
-CMD cd app/client && ./make_client && cd ../ && ./r-type_client ${GRAPHIC}
+CMD cd app/client && ./make_client && cd ../ && ./r-type_client ${GRAPHIC} ${GAME}
