@@ -7,7 +7,7 @@
 
 CXX				=	g++ -std=c++17
 
-INC				=	-I include/ -I ../ECS/include -I ../ECS/include/components -I ../utils/
+INC				=	-I include -I ../utils -I ../ECS/include -I ../utils/JSON -I ../ECS/include/components
 
 INC_GRAPHICS	=	-I graphics
 
@@ -20,13 +20,29 @@ INC_GAMES		=	-I games
 
 NAME_SFML		=	sfml.so
 
-SRC_SFML		=	graphics/SFML/src/SFML.cpp
+SRC_SFML		=	graphics/SFML/src/SFML.cpp \
+					../utils/JSON/ReadJson.cpp
+					
 
 OBJ_SFML		=	$(SRC_SFML:.cpp=.o)
 
 INC_SFML		=	$(INC_GRAPHICS) -I graphics/SFML/include
 
-LDFLAGS_SFML	=	-fPIC -shared -lsfml-graphics -lsfml-system -lsfml-window -lsfml-audio
+LDFLAGS_SFML	=	-fPIC -shared -lsfml-graphics -lsfml-system -lsfml-window -lsfml-audio -ljsoncpp
+
+# RAYLIB
+
+NAME_RAYLIB	=	raylib.so
+
+SRC_RAYLIB	=	graphics/Raylib/src/Raylib.cpp \
+				graphics/Raylib/src/RaylibWindow.cpp \
+				../utils/JSON/ReadJson.cpp
+
+OBJ_RAYLIB	=	$(SRC_RAYLIB:.cpp=.o)
+
+INC_RAYLIB		=	$(INC_GRAPHICS) -I graphics/Raylib/include
+
+LDFLAGS_RAYLIB	=	-fPIC -shared -lraylib -ljsoncpp
 
 
 #---------- GAMES ----------#
@@ -46,11 +62,17 @@ INC_RTYPE		=	$(INC_GAMES) -I games/RTYPE_game/include -fPIC -shared
 
 #---------- RULES ----------#
 
-all:		sfml rtype
+all:		sfml raylib rtype
+
+graphic:	sfml raylib
+
+game:		rtype
 
 sfml:		$(NAME_SFML)
 
 rtype:		$(NAME_RTYPE)
+
+raylib:		$(NAME_RAYLIB)
 
 clean: 
 	rm *.so
@@ -63,4 +85,7 @@ $(NAME_SFML):
 
 $(NAME_RTYPE):
 	$(CXX) $(SRC_RTYPE) -o $(NAME_RTYPE) $(INC) $(INC_RTYPE)
+
+$(NAME_RAYLIB): 
+	$(CXX) $(SRC_RAYLIB) -o $(NAME_RAYLIB) $(INC) $(INC_RAYLIB) $(LDFLAGS_RAYLIB)
 

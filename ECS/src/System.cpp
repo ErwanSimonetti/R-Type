@@ -94,10 +94,13 @@ void shoot_system(registry &r, sparse_array<Shootable> &shootable)
     for (size_t i = 0; i < shootable.size(); ++i) {
         auto &shoot = shootable[i];
         if (shoot) {
-            if (shoot.value()._clock.getElapsedTime().asMilliseconds() <= 1000) {
-                shoot.value()._canShoot = false;
-            } else {
+            auto currentTime = std::chrono::high_resolution_clock::now();
+            auto elapsedTime = std::chrono::duration_cast<std::chrono::milliseconds>(currentTime - shoot.value()._clock);
+
+            if (elapsedTime.count() >= 1000) {
                 shoot.value()._canShoot = true;
+            } else {
+                shoot.value()._canShoot = false;
             }
         }
     }

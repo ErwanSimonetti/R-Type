@@ -17,10 +17,28 @@ class Rtype : public IGame {
         ~Rtype();
 
         std::vector<entity> getPLayers() const;
-
+        
+        /**
+         * @brief Function used to create all starting assets needed fro the game
+         * 
+         * @param r the registery comming from the Game Engine
+         */
         void initGame(registry &r);
+
+        /**
+         * @brief Function used to execute all the game logic (handling event or phases of the game)
+         * 
+         * @param r the registery comming from the Game Engine
+         */
         void run_gameLogic(registry &r, const Events &events);
+
+        /**
+         * @brief Function used to update the registery with data received from the server
+         * 
+         * @param data struct corresponding to every player's data
+         */
         void updateRegistry(registry &r, const GameData &data);
+
         void updateRegistry(registry &r, const GameData data[4]);
         void checkStats(sparse_array<Hitbox> &hbxs, sparse_array<Stats> &sts, sparse_array<Pet> &pets);
         void create_score(registry &r, entity newEntity, int16_t parentId, int16_t *score);
@@ -70,6 +88,8 @@ class Rtype : public IGame {
         */
         void create_projectile(registry &r, entity newEntity, int16_t parentId, const uint16_t velX, const uint16_t velY);
         void create_parallax(registry &r, entity newEntity, const uint16_t posX, const uint16_t posY, const uint16_t speed, const OBJECT obj);
+
+        void create_static(registry &r, entity newEntity, const uint16_t posX, const uint16_t posY, OBJECT type);
 
     protected:
         void handleInputs(registry &r, size_t entity, const uint16_t inputs[10]);

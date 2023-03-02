@@ -11,6 +11,7 @@
 #include "registry.hpp"
 #include "System.hpp"
 #include "GameEvents.hpp"
+#include "ReadJson.hpp"
 
 class IGraphic {
     public:

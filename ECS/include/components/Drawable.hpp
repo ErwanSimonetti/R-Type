@@ -5,7 +5,6 @@
 ** Drawable
 */
 
-#include <SFML/Graphics.hpp>
 #include <unordered_map>
 #include <memory>
 #include "ECS_Utils.hpp"
@@ -22,11 +21,11 @@ struct spriteRect {
 struct Drawable {
 
     Drawable() = default;
-    void set_component(const OBJECT &obj) {
+    void set_component(const uint16_t &obj) {
         _type = obj;
         _rect = nullptr;
     }
 
-    OBJECT _type;
+    uint16_t _type;
     std::shared_ptr<spriteRect> _rect;
 };

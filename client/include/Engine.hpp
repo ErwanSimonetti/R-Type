@@ -43,7 +43,7 @@ class Engine {
          * @param host listening IP
          * @param port listening port
          */
-        Engine(boost::asio::io_service &io_service, const std::string &host, const std::string &port);
+        Engine(boost::asio::io_service &io_service, const std::string &host, const std::string &port, const std::string &graphicModulePath, const std::string &gameModulePath);
         ~Engine();
         
         /**
@@ -108,6 +108,8 @@ class Engine {
 
     protected:
     private:
+
+        std::string _graphicPath;
         /**
          * @brief registry object 
          **/

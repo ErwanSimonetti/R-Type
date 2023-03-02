@@ -8,10 +8,14 @@
 #include <functional>
 #include "Engine.hpp"
 
-int main(void)
+int main(int ac, char **av)
 {   
+    if (ac != 2) {
+        std::cerr << "Need 2 arguments to launch" << std::endl;
+        return 84;
+    }
     boost::asio::io_service io_service;
-    Engine eng(1920, 1080, io_service, "1234");
+    Engine eng(io_service, "172.17.0.1", "1234", av[1]);
 
     eng.run();
     return 0;

@@ -16,6 +16,8 @@ SFML::SFML()
 {
     _window = std::make_shared<sf::RenderWindow>(sf::VideoMode(1920, 1080), "R-TYPE");
     _window->setFramerateLimit(30);
+
+    constructFromJson();
     set_sprite();
     set_text();
 }
@@ -27,6 +29,36 @@ SFML::~SFML()
 void SFML::set_text()
 {
     _font.loadFromFile("./ressources/SYNNova.otf");
+}
+
+void SFML::createAsset(uint16_t type, std::string texture, uint16_t width, uint16_t height, uint16_t size)
+{
+    Asset newAsset;
+
+    sf::IntRect newRect;
+    newRect.left = 0;
+    newRect.top = 0;
+    newRect.width = width;
+    newRect.height = height;
+
+    newAsset._textureRect = width;
+    newAsset._textureSize = size;
+    newAsset._bounds = newRect;
+    newAsset._texture = texture;
+
+    _assets.insert(std::pair<uint16_t, Asset>(type, newAsset));
+    
+}
+
+void SFML::constructFromJson()
+{
+    ReadJson reader("ressources/SFML/sfml.json");
+    int nbAsset = reader.getNumberOfElement("asset");
+
+    for (int i = 0; i < nbAsset; i++) {
+        createAsset(reader.IntValueFromArray("asset", i, "type"), reader.readValueFromArray("asset", i, "texture"), \
+        reader.IntValueFromArray("asset", i, "width"), reader.IntValueFromArray("asset", i, "height"), reader.IntValueFromArray("asset", i, "size"));
+    }
 }
 
 void SFML::set_sprite() {
@@ -48,6 +80,8 @@ void SFML::draw_system(sparse_array<Position> const &positions, sparse_array<Dra
         auto &draw = drawables[i];
         auto &pos = positions[i];
         if (draw && pos) {
+            if (! _assets.count(draw.value()._type))
+                continue;
             if (!draw.value()._rect)
                 initialize_rect(draw.value());
             _assets.find(draw.value()._type)->second._sprite.setPosition(pos.value()._x, pos.value()._y);
@@ -73,6 +107,8 @@ void SFML::animation_system(sparse_array<Animatable> &animatables, sparse_array<
         auto &anim = animatables[i];
         auto &draw = drawables[i];
         if (anim && draw) {
+            if (! _assets.count(draw.value()._type))
+                continue;
             if (!draw.value()._rect)
                 initialize_rect(draw.value());
             auto currentTime = std::chrono::high_resolution_clock::now();
@@ -88,13 +124,12 @@ void SFML::animation_system(sparse_array<Animatable> &animatables, sparse_array<
     }
 }
 
-
 Events SFML::event_system(registry &reg) {
     std::vector<int> inputs;
     sf::Event event;
     Events events;
 
-    while (_window->pollEvent(event)) {
+    while(_window->pollEvent(event)) {
         if (event.type == sf::Event::Closed) {
             events.gameEvents.emplace_back(GAME_EVENT::WINDOW_CLOSE);
             _window->close();

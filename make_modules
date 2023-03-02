@@ -1,8 +1,0 @@
-#!/bin/sh
-
-LIB_SFML="./libsfml.so"
-LIB_RTYPE="./librtype.so"
-CMAKE_DIRECTORY_SFML="./modules/build"
-
-rm -rf $CMAKE_DIRECTORY_SFML
-mkdir $CMAKE_DIRECTORY_SFML && cd $CMAKE_DIRECTORY_SFML && cmake .. && cmake --build . && cd ..
