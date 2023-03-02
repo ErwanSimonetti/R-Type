@@ -105,7 +105,7 @@ Events get_event() {
         if (draw && pos) {
             if (!_models.count(draw.value()._type))
                 continue;
-            DrawModelEx(_models.find(draw.value()._type)->second.model , (Vector3){ pos.value()._x , 0.0f, pos.value()._y }, (Vector3){ 0.0f, 0.0f, 0.0f }, 0.0f, (Vector3){ 1.0f, 1.0f, 1.0f }, WHITE);
+            DrawModelEx(_models.find(draw.value()._type)->second.model , (Vector3){ float(pos.value()._x) , 0.0f, float(pos.value()._y) }, (Vector3){ 0.0f, 0.0f, 0.0f }, 0.0f, (Vector3){ 1.0f, 1.0f, 1.0f }, WHITE);
         }
 
     }
