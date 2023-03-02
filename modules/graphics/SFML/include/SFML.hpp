@@ -38,13 +38,13 @@ class SFML : public IGraphic {
         std::shared_ptr<sf::RenderWindow> _window;
 
         std::unordered_map<OBJECT, Asset> _assets = {
-            { SHIP, { "ressources/ship.png", sf::IntRect(0, 0, 101, 41), 808, 101 }},
-            { ENEMYSHIP, { "ressources/enemyship.png", sf::IntRect(0, 0, 101, 41), 808, 101 }},
-            { BULLET, {"ressources/shoot.png", sf::IntRect(0, 0, 43, 41), 174, 43}},
-            { PARA_1, {"ressources/para_1.png", sf::IntRect(0, 0, 1920, 1129), 1920, 1920}},
-            { PARA_2, {"ressources/para_2.png", sf::IntRect(0, 0, 1920, 1059) , 1920, 1920}},
-            { PARA_3, {"ressources/para_3.png", sf::IntRect(0, 0, 1920, 1280), 1920, 1920}},
-            { PARA_4, {"ressources/para_4.png", sf::IntRect(0, 0, 1920, 734), 1920, 1920}},
+            { SHIP, { "ressources/SFML/ship.png", sf::IntRect(0, 0, 101, 41), 808, 101 }},
+            { ENEMYSHIP, { "ressources/SFML/enemyship.png", sf::IntRect(0, 0, 101, 41), 808, 101 }},
+            { BULLET, {"ressources/SFML/shoot.png", sf::IntRect(0, 0, 43, 41), 174, 43}},
+            { PARA_1, {"ressources/SFML/para_1.png", sf::IntRect(0, 0, 1920, 1129), 1920, 1920}},
+            { PARA_2, {"ressources/SFML/para_2.png", sf::IntRect(0, 0, 1920, 1059) , 1920, 1920}},
+            { PARA_3, {"ressources/SFML/para_3.png", sf::IntRect(0, 0, 1920, 1280), 1920, 1920}},
+            { PARA_4, {"ressources/SFML/para_4.png", sf::IntRect(0, 0, 1920, 734), 1920, 1920}},
         };
 };
 
