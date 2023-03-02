@@ -21,9 +21,9 @@ namespace Protocol
 {
     class ProtocolClient : public IProtocol {
         public:
-            ProtocolClient(MyNetwork &net, registry &reg) :
+            ProtocolClient(MyNetwork &net, std::unordered_map<int, std::any> &functionEngine) :
                 _net(net),
-                _reg(reg)
+                _functionEngine(functionEngine)
             {
                 std::cout << "Hey, I build a new Protocol Client." << std::endl;
                 _idToType.emplace(1, std::bind(&ProtocolClient::receiveStatusOfConnection, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
@@ -75,7 +75,7 @@ namespace Protocol
 
             std::unordered_map<int, std::function<void(char *, size_t, boost::asio::ip::udp::endpoint)>> _idToType;
             MyNetwork &_net;
-            registry &_reg;
+            std::unordered_map<int, std::any> &_functionEngine;
     };
 }
 

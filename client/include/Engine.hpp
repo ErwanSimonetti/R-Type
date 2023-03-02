@@ -12,6 +12,7 @@
 
 #include <boost/asio.hpp>
 #include <boost/array.hpp>
+#include <any>
 
 #include "MyNetwork.hpp"
 #include "GameEvents.hpp"
