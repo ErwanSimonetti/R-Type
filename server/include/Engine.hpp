@@ -40,7 +40,9 @@ class Engine {
          * @param io_service core I/O functionality for users of the asynchronous I/O objects
          * @param port listening port
          */
-        Engine(uint16_t width, uint16_t height, boost::asio::io_service &io_service, const std::string &port);
+        Engine(boost::asio::io_service &io_service, const std::string &host, const std::string &port, const std::string &graphicLibrary);
+        ~Engine();
+
 
         /**
          * @brief Create a new instance of object Engine, with a game window size of width and height 
@@ -51,8 +53,6 @@ class Engine {
          * @param host listening IP
          * @param port listening port
          */
-        Engine(uint16_t width, uint16_t height, boost::asio::io_service &io_service, const std::string &host, const std::string &port);
-        ~Engine();
         
         /**
          * @brief Get the registry object

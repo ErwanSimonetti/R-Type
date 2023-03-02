@@ -7,7 +7,7 @@
 
 #include "Engine.hpp"
 
-Engine::Engine(uint16_t width, uint16_t height, boost::asio::io_service &io_service, const std::string &port) : _reg(), _network(io_service, port)
+Engine::Engine(boost::asio::io_service &io_service, const std::string &host, const std::string &port, const std::string &gameLibrary) : _reg(), _network(io_service, port)
 {
     loadModules("./modules/rtype.so", MODULE_TYPE::GAME);
 

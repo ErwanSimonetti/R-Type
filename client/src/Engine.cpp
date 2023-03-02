@@ -7,10 +7,9 @@
 
 #include "Engine.hpp"
 
-Engine::Engine(boost::asio::io_service &io_service, const std::string &host, const std::string &port) : _reg(), _network(io_service, host, port)
+Engine::Engine(boost::asio::io_service &io_service, const std::string &host, const std::string &port, const std::string &graphicLibrary, const std::string &gameLibrary) : _reg(), _network(io_service, host, port)
 {
-    //loadModules("./modules/sfml.so", MODULE_TYPE::GRAPHIC);
-    loadModules("./modules/rtype.so", MODULE_TYPE::GAME);
+    loadModules(gameLibrary, MODULE_TYPE::GAME);
 
     _reg.register_component<Position>();
     _reg.register_component<Velocity>();
@@ -27,9 +26,6 @@ Engine::Engine(boost::asio::io_service &io_service, const std::string &host, con
     _reg.add_system<Position, Velocity, Controllable>(position_system);
     _reg.add_system<Shootable>(shoot_system);
     _reg.add_system<Animatable, Position, Parallax>(parallax_system);
-    // _reg.add_system<Animatable, Drawable>(std::bind(&IGraphic::animation_system, _graphic, std::placeholders::_1, std::placeholders::_2));
-    //  _reg.add_system<Position, Drawable>(std::bind(&IGraphic::draw_system, _graphic, std::placeholders::_1, std::placeholders::_2));
-    // _reg.add_system<Position, Velocity, FollowPath>(followPathSystem);
 }
 
 Engine::~Engine()
