@@ -44,8 +44,8 @@ void Engine::loadModules(std::string libName, MODULE_TYPE type)
     void *lib = library.loadLibrary();
     switch (type) {
         case MODULE_TYPE::GAME: {
-            create_d_game newgameModulePath = (create_d_game)library.getFunction(lib, "createLibrary");
-            _game = newgameModulePath();
+            create_d_game newGame = (create_d_game)library.getFunction(lib, "createLibrary");
+            _game = newGame();
             break;
         }
     }

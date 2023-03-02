@@ -5,11 +5,6 @@
 ** main
 */
 
-// // #include "../include/RenderGame.hpp"
-// #include "../include/components/Components.hpp"
-// #include "../include/entity.hpp"
-// #include "../include/registry.hpp"
-
 #include <functional>
 #include "Engine.hpp"
 
