@@ -23,7 +23,7 @@
 #include "FollowPath.hpp"
 #include "Shootable.hpp"
 #include "Stats.hpp"
-#include "DrawableScore.hpp"
+#include "DrawableText.hpp"
 #include "GameEvents.hpp"
 
 /**

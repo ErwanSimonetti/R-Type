@@ -105,7 +105,6 @@ class Engine {
          * 
          */
         void run();
-        void loadLib(std::string libName);
 
     protected:
     private:

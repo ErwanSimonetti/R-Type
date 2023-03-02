@@ -22,7 +22,7 @@ Engine::Engine(uint16_t width, uint16_t height, boost::asio::io_service &io_serv
     _reg.register_component<FollowPath>();
     _reg.register_component<Shootable>();
     _reg.register_component<Stats>();
-    _reg.register_component<DrawableScore>();
+    _reg.register_component<DrawableText>();
 
     _reg.add_system<Position, Velocity, Controllable>(position_system);
     _reg.add_system<Shootable>(shoot_system);

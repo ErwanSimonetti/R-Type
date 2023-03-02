@@ -2,7 +2,7 @@
 ** EPITECH PROJECT, 2023
 ** R-Type
 ** File description:
-** DrawableScore
+** DrawableText
 */
 
 #include <SFML/Graphics.hpp>
@@ -12,9 +12,9 @@
 
 #pragma once
 
-struct DrawableScore {
+struct DrawableText {
 
-    DrawableScore() = default;
+    DrawableText() = default;
 
     void set_component(int16_t *score) {
         _score = score;

@@ -27,7 +27,7 @@ class SFML : public IGraphic {
         SFML();
         ~SFML();
         void animation_system(sparse_array<Animatable> &animatables, sparse_array<Drawable> &drawables);
-        void draw_system(sparse_array<Position> const &positions, sparse_array<Drawable> &drawables, sparse_array<DrawableScore> &drawableScores);
+        void draw_system(sparse_array<Position> const &positions, sparse_array<Drawable> &drawables, sparse_array<DrawableText> &drawableTexts);
         Events event_system(registry &reg);
         void initialize_rect(Drawable &draw);
         Events run_graphic(registry &r);

@@ -16,7 +16,7 @@ class IGraphic {
     public:
         IGraphic() = default;
         ~IGraphic() = default;
-        virtual void draw_system(sparse_array<Position> const &positions, sparse_array<Drawable> &drawables, sparse_array<DrawableScore> &drawableScores) = 0;
+        virtual void draw_system(sparse_array<Position> const &positions, sparse_array<Drawable> &drawables, sparse_array<DrawableText> &drawableTexts) = 0;
         virtual void animation_system(sparse_array<Animatable> &animatables, sparse_array<Drawable> &drawables) = 0;
         virtual Events run_graphic(registry &r) = 0;
     protected:

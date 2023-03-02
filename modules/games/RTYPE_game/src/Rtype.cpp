@@ -27,13 +27,7 @@ std::vector<entity> Rtype::getPLayers() const
 
 void Rtype::create_score(registry &r, entity newEntity, int16_t parentId, int16_t *score)
 {
-    r.emplace_component<DrawableScore>(newEntity, score);
-    r.emplace_component<Pet>(newEntity, parentId);
-}
-
-void Rtype::create_health(registry &r, entity newEntity, int16_t parentId, int16_t *health)
-{
-    r.emplace_component<Drawable>(newEntity, HEALTH);
+    r.emplace_component<DrawableText>(newEntity, score);
     r.emplace_component<Pet>(newEntity, parentId);
 }
 
@@ -57,7 +51,6 @@ void Rtype::create_player(registry &r, entity newEntity, bool isControllable, co
     r.emplace_component<Stats>(newEntity, 3, 0);
     Stats *stat = r.get_component_at<Stats>(newEntity);
     create_score(r, r.spawn_entity(), newEntity, stat->_score);
-    create_health(r, r.spawn_entity(), newEntity, stat->_health);
 
     if (isControllable) {
         r.emplace_component<Controllable>(newEntity);

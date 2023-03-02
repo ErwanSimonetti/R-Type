@@ -43,7 +43,7 @@ void SFML::initialize_rect(Drawable &draw){
     draw._rect = std::make_shared<spriteRect>(spriteRect{_assets.at(draw._type)._bounds.left, _assets.at(draw._type)._bounds.top, _assets.at(draw._type)._bounds.width, _assets.at(draw._type)._bounds.height});
 }
 
-void SFML::draw_system(sparse_array<Position> const &positions, sparse_array<Drawable> &drawables, sparse_array<DrawableScore> &drawableScores) {
+void SFML::draw_system(sparse_array<Position> const &positions, sparse_array<Drawable> &drawables, sparse_array<DrawableText> &drawableTexts) {
     for (size_t i = 0; i < drawables.size() && i < positions.size(); ++ i) {
         auto &draw = drawables[i];
         auto &pos = positions[i];
@@ -56,8 +56,8 @@ void SFML::draw_system(sparse_array<Position> const &positions, sparse_array<Dra
             _window->draw(_assets.find(draw.value()._type)->second._sprite);
         }
     }
-    for (size_t i = 0; i < drawableScores.size(); ++i) {
-        auto &dbs = drawableScores[i];
+    for (size_t i = 0; i < drawableTexts.size(); ++i) {
+        auto &dbs = drawableTexts[i];
         if (dbs) {
             sf::Text text("Score: " + std::to_string(*dbs.value()._score), _font, 48);
             text.setFillColor(sf::Color::White);
