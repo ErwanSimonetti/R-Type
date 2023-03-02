@@ -25,6 +25,13 @@ std::vector<entity> Rtype::getPLayers() const
     return _players;
 }
 
+void Rtype::create_static(registry &r, entity newEntity, const uint16_t posX, const uint16_t posY, OBJECT type)
+{
+    r.emplace_component<Position>(newEntity, posX, posY);
+    r.emplace_component<Hitbox>(newEntity, posX+45, posY+45, type);
+    r.emplace_component<Drawable>(newEntity, type);
+}
+
 void Rtype::create_entity(registry &r, entity newEntity, const int16_t velX, const int16_t velY, const uint16_t posX, const uint16_t posY)
 {
     r.emplace_component<Position>(newEntity, posX, posY);
@@ -83,7 +90,7 @@ void Rtype::create_projectile(registry &r, entity newEntity, int16_t parentId, c
 
 void Rtype::initGame(registry &r)
 {
-    create_entity(r, r.spawn_entity_by_id(0), 0, 0, 100, 100);
+    create_static(r, r.spawn_entity_by_id(0), 0, 0, ENEMYSHIP);
     create_parallax(r, r.spawn_entity(), 1920, 0, 3, PARA_1);
     create_parallax(r, r.spawn_entity(), 0, 0, 3, PARA_1);
     create_parallax(r, r.spawn_entity(), 1920, 0, 6, PARA_2);
@@ -127,7 +134,7 @@ void Rtype::handleInputs(registry &r, size_t entity, const uint16_t inputs[10])
                 if (shoot && shoot.value()._canShoot == true) {
                     create_projectile(r, r.spawn_entity(), entity, 15, 0);
                     shoot.value()._canShoot = false;
-                    shoot.value()._clock.restart();
+                    shoot.value()._clock = std::chrono::high_resolution_clock::now();
                 }
             }
             break;
@@ -179,8 +186,6 @@ void Rtype::updateRegistry(registry &r, const GameData data[4])
 void Rtype::updateRegistry(registry &r, const GameData &data)
 {
     if (!r.is_entity_alive(data.entity)) {
-        printf("New PLayer\n");
-        std::cout << "New Player\n";
         create_player(r, r.spawn_entity(), true, 3, 3, 10, 10);
         return;
     }

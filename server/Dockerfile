@@ -1,7 +1,5 @@
 FROM ubuntu:latest
 
-
-
 RUN apt-get update && apt-get install -y \
     build-essential \
     wget \
@@ -13,7 +11,6 @@ RUN apt-get update && apt-get install -y \
     libgl1-mesa-dev \
     libglu1-mesa \
     libglu1-mesa-dev \
-    libsfml-dev \
     libgtest-dev \
     binutils-dev \
     libtool \
@@ -33,6 +30,6 @@ COPY modules /app/modules
 COPY network/ /app/network
 COPY utils /app/utils
 
-RUN cd app/modules && make
+RUN cd app/modules && make game
 
 CMD cd app/server && ./make_server && cd ../ && ./r-type_server ${GAME}

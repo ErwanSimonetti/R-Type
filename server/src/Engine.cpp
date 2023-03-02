@@ -8,7 +8,7 @@
 #include "Engine.hpp"
 #include "CLI.hpp"
 
-Engine::Engine(boost::asio::io_service &io_service, const std::string &host, const std::string &port, const std::string &gameModuleName) : _reg(), _network(io_service, port)
+Engine::Engine(boost::asio::io_service &io_service, const std::string &host, const std::string &port, const std::string &gameModulePath) : _reg(), _network(io_service, port)
 {
     loadModules("./modules/rtype.so", MODULE_TYPE::GAME);
 
@@ -44,8 +44,8 @@ void Engine::loadModules(std::string libName, MODULE_TYPE type)
     void *lib = library.loadLibrary();
     switch (type) {
         case MODULE_TYPE::GAME: {
-            create_d_game newgameModuleName = (create_d_game)library.getFunction(lib, "createLibrary");
-            _game = newgameModuleName();
+            create_d_game newGame = (create_d_game)library.getFunction(lib, "createLibrary");
+            _game = newGame();
             break;
         }
     }
@@ -82,6 +82,7 @@ ServerData Engine::buildServerData(size_t id, uint16_t inputs[10])
             }
         }
     }
+
     return data;
 }
 

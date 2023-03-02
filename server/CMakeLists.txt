@@ -41,7 +41,6 @@ FetchContent_Declare(
 
 FetchContent_MakeAvailable(googletest)
 
-target_link_libraries(r-type_server PRIVATE sfml-graphics sfml-window sfml-system)
 target_compile_features(r-type_server PRIVATE cxx_std_17)
 
 if (WIN32 AND BUILD_SHARED_LIBS)

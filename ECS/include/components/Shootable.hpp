@@ -7,15 +7,15 @@
 
 #pragma once
 
-#include <SFML/Graphics.hpp>
+
 
 struct Shootable {
     Shootable() = default;
 
     void set_component() {
-        _clock.restart();
+        _clock = std::chrono::high_resolution_clock::now();
         _canShoot = true;
     }
     bool _canShoot;
-    sf::Clock _clock;
+    std::chrono::time_point<std::chrono::high_resolution_clock> _clock;
 };

@@ -39,7 +39,7 @@ class Engine {
          * @param io_service core I/O functionality for users of the asynchronous I/O objects
          * @param port listening port
          */
-        Engine(boost::asio::io_service &io_service, const std::string &host, const std::string &port, const std::string &graphicLibrary);
+        Engine(boost::asio::io_service &io_service, const std::string &host, const std::string &port, const std::string &graphicModulePath);
         ~Engine();
 
 

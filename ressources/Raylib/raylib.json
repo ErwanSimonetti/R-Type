@@ -1,0 +1,46 @@
+{
+    "asset": [
+        {
+            "type": 0,
+            "texture" : "ressources/Raylib/shipTexture.png",
+            "animation" : "ressources/Raylib/shipAnim.iqm",
+            "model": "ressources/Raylib/ship.iqm"
+        },
+        {
+            "type": 1,
+            "texture" : "ressources/Raylib/palette.png",
+            "animation" : "",
+            "model": "ressources/Raylib/water.obj"
+        },
+        {
+            "type": 2,
+            "texture" : "ressources/Raylib/palette.png",
+            "animation" : "",
+            "model": "ressources/Raylib/flag.obj"
+        },
+        {
+            "type": 3,
+            "texture" : "ressources/Raylib/palette.png",
+            "animation" : "",
+            "model": "ressources/Raylib/grass.obj"
+        },
+        {
+            "type": 4,
+            "texture" : "ressources/Raylib/palette.png",
+            "animation" : "",
+            "model": "ressources/Raylib/ladder.obj"
+        },
+        {
+            "type": 5,
+            "texture" : "ressources/Raylib/palette.png",
+            "animation" : "",
+            "model": "ressources/Raylib/tree.obj"
+        },
+        {
+            "type": 6,
+            "texture" : "ressources/Raylib/palette.png",
+            "animation" : "",
+            "model": "ressources/Raylib/water.obj"
+        }
+    ]
+}

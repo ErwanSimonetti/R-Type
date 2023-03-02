@@ -17,7 +17,6 @@ LoadLibrary::~LoadLibrary()
 
 void *LoadLibrary::loadLibrary()
 {
-    std::cout << _libName.c_str() << std::endl;
     void *handle = dlopen(_libName.c_str(), RTLD_LAZY);
     if (handle == nullptr) {
         std::cerr << "Failed to load shared library: " << dlerror() << std::endl;

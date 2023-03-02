@@ -7,12 +7,10 @@
 
 #include "Engine.hpp"
 
-Engine::Engine(boost::asio::io_service &io_service, const std::string &host, const std::string &port, const std::string &graphicLibrary, const std::string &gameModuleName) : _reg(), _network(io_service, host, port)
+Engine::Engine(boost::asio::io_service &io_service, const std::string &host, const std::string &port, const std::string &graphicModulePath, const std::string &gameModulePath) : _reg(), _network(io_service, host, port)
 {
-    loadModules(graphicLibrary, MODULE_TYPE::GRAPHIC);
-    loadModules(gameModuleName, MODULE_TYPE::GAME);
-
-
+    loadModules(gameModulePath, MODULE_TYPE::GAME);
+    _graphicPath = graphicModulePath;
     _reg.register_component<Position>();
     _reg.register_component<Velocity>();
     _reg.register_component<Drawable>();
@@ -28,15 +26,14 @@ Engine::Engine(boost::asio::io_service &io_service, const std::string &host, con
     _reg.add_system<Position, Velocity, Controllable>(position_system);
     _reg.add_system<Shootable>(shoot_system);
     _reg.add_system<Animatable, Position, Parallax>(parallax_system);
-    _reg.add_system<Animatable, Drawable>(std::bind(&IGraphic::animation_system, _graphic, std::placeholders::_1, std::placeholders::_2));
-    _reg.add_system<Position, Drawable>(std::bind(&IGraphic::draw_system, _graphic, std::placeholders::_1, std::placeholders::_2));
 }
 
 Engine::~Engine()
 {
 }
 
-registry &Engine::get_registry()
+
+registry &Engine::get_registry() 
 {
     return _reg;
 }
@@ -48,13 +45,15 @@ void Engine::loadModules(std::string libName, MODULE_TYPE type)
     void *lib = library.loadLibrary();
     switch (type) {
         case MODULE_TYPE::GRAPHIC: {
-            create_d_graphic newGraphicLibrary = (create_d_graphic)library.getFunction(lib, "createLibrary");  
-            _graphic = newGraphicLibrary();
+            create_d_graphic newGraphic = (create_d_graphic)library.getFunction(lib, "createLibrary");  
+            _graphic = newGraphic();
+            _reg.add_system<Animatable, Drawable>(std::bind(&IGraphic::animation_system, _graphic, std::placeholders::_1, std::placeholders::_2));
+            _reg.add_system<Position, Drawable>(std::bind(&IGraphic::draw_system, _graphic, std::placeholders::_1, std::placeholders::_2));
             break;
         }
         case MODULE_TYPE::GAME: {
-            create_d_game newgameModuleName = (create_d_game)library.getFunction(lib, "createLibrary");
-            _game = newgameModuleName();
+            create_d_game newGame = (create_d_game)library.getFunction(lib, "createLibrary");
+            _game = newGame();
             break;
         }
     }
@@ -82,6 +81,7 @@ ClientData Engine::buildClientData(Events events)
         clientData.inputs[index] = it;
         index++;
     }
+
     return clientData;
 }
 
@@ -89,12 +89,6 @@ void Engine::sendData(ClientData data)
 {
     char *buffer = _network.getProtocol().serialiseData<ClientData>(data);
     _network.udpSend<ClientData>(buffer, _network.getServerEndpoint());
-}
-
-void Engine::runNetwork() 
-{
-    _network.UDPReceiveClient(std::bind(&Engine::updateRegistry, this, std::placeholders::_1), true);
-    _network.getIOService().run();
 }
 
 void Engine::updateRegistry(ServerData data)
@@ -113,8 +107,8 @@ void Engine::updateRegistry(ServerData data)
 
 void Engine::runGame() 
 {
+    loadModules(_graphicPath, MODULE_TYPE::GRAPHIC);
     Events evt;
-
     while (1) {
         _reg.run_systems();
         evt = _graphic->run_graphic(_reg);
@@ -142,7 +136,13 @@ void Engine::connectToServer()
     sendData(clientData);
 }
 
-void Engine::run() 
+void Engine::runNetwork() 
+{
+    _network.UDPReceiveClient(std::bind(&Engine::updateRegistry, this, std::placeholders::_1), true);
+    _network.getIOService().run();
+}
+
+void Engine::run()
 {
     _game->initGame(_reg);
     connectToServer();

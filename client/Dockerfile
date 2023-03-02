@@ -27,8 +27,22 @@ RUN apt-get update && \
     udev \
     libx11-dev \
     libdrm-dev \
+    libxrandr-dev \
+    libxinerama-dev \
+    libxrandr-dev \
+    libxi-dev \
+    libboost-all-dev \
+    libjsoncpp-dev \
+    libasound2-dev \
+    libxcursor-dev \
+    mesa-common-dev \
+    libxi-dev \
+    xorg-dev \
     libboost-all-dev \
     libjsoncpp-dev
+
+RUN git clone https://github.com/raysan5/raylib.git && \
+    cd raylib && mkdir build && cd build && cmake -DCMAKE_POSITION_INDEPENDENT_CODE=ON .. && make && make install
 
 # Copy client files
 COPY client/ /app/client
