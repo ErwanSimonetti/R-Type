@@ -38,7 +38,7 @@ COPY ressources/ /app/ressources
 COPY modules/ /app/modules
 COPY utils /app/utils
 
-CMD cd modules && make
+RUN cd app/modules && make
 
 # Launch game
 CMD cd app/client && ./make_client && cd ../ && ./r-type_client ${GRAPHIC} ${GAME}
