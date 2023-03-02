@@ -23,7 +23,7 @@ namespace Protocol
 {
     class ProtocolServer : public IProtocol {
         public:
-            ProtocolServer(MyNetwork &net, std::unordered_map<int, std::function<void(void)>> &functionEngine) :
+            ProtocolServer(MyNetwork &net, std::unordered_map<int, std::any> &functionEngine) :
                 _net(net),
                 _functionEngine(functionEngine)
             {
@@ -66,8 +66,9 @@ namespace Protocol
                     std::cout << "Nb of Endpoints == " << _net.getEndpoints().size() << std::endl;
                     if (_net.isNewEndpoint(endpoint))
                         _net.addEndpoint(endpoint);
-                    _functionEngine[1]();
-                    this->sendConnectionStatus(ConnectionStatus{true, 0}, endpoint);
+                    std::any func_any_0 = _functionEngine[1];
+                    entity newEnt = std::any_cast<std::function<entity()>>(func_any_0)();
+                    this->sendConnectionStatus(ConnectionStatus{true, static_cast<int16_t>(newEnt)}, endpoint);
                 }
             }
 
@@ -98,7 +99,7 @@ namespace Protocol
 
             std::unordered_map<int, std::function<void(char *, size_t, boost::asio::ip::udp::endpoint)>> _idToType;
             MyNetwork &_net;
-            std::unordered_map<int, std::function<void(void)>> &_functionEngine;
+            std::unordered_map<int, std::any> &_functionEngine;
     };
 }
 
