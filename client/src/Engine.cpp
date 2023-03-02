@@ -7,10 +7,10 @@
 
 #include "Engine.hpp"
 
-Engine::Engine(boost::asio::io_service &io_service, const std::string &host, const std::string &port, const std::string &graphicLibrary) : _reg(), _network(io_service, host, port)
+Engine::Engine(boost::asio::io_service &io_service, const std::string &host, const std::string &port, const std::string &graphicLibrary, const std::string &gameLibrary) : _reg(), _network(io_service, host, port)
 {
     loadModules(graphicLibrary, MODULE_TYPE::GRAPHIC);
-    loadModules("./modules/rtype.so", MODULE_TYPE::GAME);
+    loadModules(gameLibrary, MODULE_TYPE::GAME);
 
 
     _reg.register_component<Position>();

@@ -24,7 +24,8 @@ RUN apt-get update && apt-get install -y \
     doxygen \
     cmake protobuf-compiler \
     udev \
-    libboost-all-dev
+    libboost-all-dev\
+    libjsoncpp-dev
 
 COPY server/ /app/server
 COPY ECS/ /app/ECS
