@@ -10,6 +10,7 @@
 Engine::Engine(boost::asio::io_service &io_service, const std::string &host, const std::string &port, const std::string &graphicLibrary, const std::string &gameLibrary) : _reg(), _network(io_service, host, port)
 {
     loadModules(gameLibrary, MODULE_TYPE::GAME);
+    _graphicPath = graphicLibrary;
 
     _reg.register_component<Position>();
     _reg.register_component<Velocity>();
@@ -110,7 +111,7 @@ void Engine::updateRegistry(ServerData data)
 
 void Engine::runGame() 
 {
-    loadModules("./modules/sfml.so", MODULE_TYPE::GRAPHIC);
+    loadModules(_graphicPath, MODULE_TYPE::GRAPHIC);
     Events evt;
     while (1) {
         _reg.run_systems();

@@ -64,6 +64,10 @@ INC_RTYPE		=	$(INC_GAMES) -I games/RTYPE_game/include -fPIC -shared
 
 all:		sfml raylib rtype
 
+graphic:	sfml raylib
+
+game:		rtype
+
 sfml:		$(NAME_SFML)
 
 rtype:		$(NAME_RTYPE)

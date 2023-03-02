@@ -27,8 +27,20 @@ RUN apt-get update && \
     udev \
     libx11-dev \
     libdrm-dev \
+    libxrandr-dev \
+    libxinerama-dev \
+    libxrandr-dev \
+    libxi-dev \
     libboost-all-dev \
-    libjsoncpp-dev
+    libjsoncpp-dev \
+    libasound2-dev \
+    libxcursor-dev \
+    mesa-common-dev \
+    libxi-dev \
+    xorg-dev
+
+RUN git clone https://github.com/raysan5/raylib.git && \
+    cd raylib && mkdir build && cd build && cmake -DCMAKE_POSITION_INDEPENDENT_CODE=ON .. && make && make install
 
 # Copy client files
 COPY client/ /app/client
@@ -38,7 +50,7 @@ COPY ressources/ /app/ressources
 COPY modules/ /app/modules
 COPY utils /app/utils
 
-CMD cd modules && make
+run cd app/modules && make
 
 # Launch game
 CMD cd app/client && ./make_client && cd ../ && ./r-type_client ${GRAPHIC} ${GAME}

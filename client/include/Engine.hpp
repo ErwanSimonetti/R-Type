@@ -109,6 +109,8 @@ class Engine {
 
     protected:
     private:
+
+        std::string _graphicPath;
         /**
          * @brief registry object 
          **/
