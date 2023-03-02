@@ -7,9 +7,9 @@
 
 #include "Engine.hpp"
 
-Engine::Engine(boost::asio::io_service &io_service, const std::string &host, const std::string &port) : _reg(), _network(io_service, host, port)
+Engine::Engine(boost::asio::io_service &io_service, const std::string &host, const std::string &port, const std::string &graphicLibrary) : _reg(), _network(io_service, host, port)
 {
-    loadModules("./modules/sfml.so", MODULE_TYPE::GRAPHIC);
+    loadModules(graphicLibrary, MODULE_TYPE::GRAPHIC);
     loadModules("./modules/rtype.so", MODULE_TYPE::GAME);
 
 

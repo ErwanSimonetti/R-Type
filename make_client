@@ -1,7 +1,0 @@
-#!/bin/sh
-
-BINARY_CLIENT="./r-type_client"
-CMAKE_DIRECTORY_CLIENT="./client/build"
-
-rm -rf ./client/build
-mkdir $CMAKE_DIRECTORY_CLIENT && cd $CMAKE_DIRECTORY_CLIENT && cmake .. && cmake --build . && cd ../..

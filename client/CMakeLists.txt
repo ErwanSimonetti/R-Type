@@ -28,36 +28,20 @@ if(DEFINED TEST_ENABLE AND "${TEST_ENABLE}" STREQUAL "yes")
     add_subdirectory("${CMAKE_SOURCE_DIR}/tests")
 endif()
 
-set(Boost_USE_STATIC_LIBS OFF) 
-set(Boost_USE_MULTITHREADED ON)  
-set(Boost_USE_STATIC_RUNTIME OFF) 
-# find_package(Boost 1.45.0 COMPONENTS system asio array) 
-
-# if(Boost_FOUND)
-#     include_directories(${Boost_INCLUDE_DIRS})
-#     add_executable(r-type_client src/asio.cpp)
-#     target_link_libraries(r-type_client ${Boost_ASIO_LIBRARY} ${Boost_ARRAY_LIBRARY})
-# endif()
-
 set(CMAKE_CXX_STANDARD 17)
 set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 
 include(FetchContent)
-FetchContent_Declare(
-  SFML
-  GIT_REPOSITORY https://github.com/SFML/SFML.git
-  GIT_TAG 2.6.x  
-)
+
 FetchContent_Declare(
   googletest
   URL https://github.com/google/googletest/archive/03597a01ee50ed33e9dfd640b249b4be3799d395.zip
 )
 
 
-FetchContent_MakeAvailable(SFML)
 FetchContent_MakeAvailable(googletest)
 
-target_link_libraries(r-type_client PRIVATE sfml-graphics)
+target_link_libraries(r-type_client PRIVATE sfml-graphics sfml-window sfml-system)
 target_compile_features(r-type_client PRIVATE cxx_std_17)
 
 if (WIN32 AND BUILD_SHARED_LIBS)
