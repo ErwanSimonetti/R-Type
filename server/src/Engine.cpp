@@ -6,8 +6,9 @@
 */
 
 #include "Engine.hpp"
+#include "CLI.hpp"
 
-Engine::Engine(boost::asio::io_service &io_service, const std::string &host, const std::string &port, const std::string &gameLibrary) : _reg(), _network(io_service, port)
+Engine::Engine(boost::asio::io_service &io_service, const std::string &host, const std::string &port, const std::string &gameModulePath) : _reg(), _network(io_service, port)
 {
     loadModules("./modules/rtype.so", MODULE_TYPE::GAME);
 
@@ -43,8 +44,8 @@ void Engine::loadModules(std::string libName, MODULE_TYPE type)
     void *lib = library.loadLibrary();
     switch (type) {
         case MODULE_TYPE::GAME: {
-            create_d_game newGameLibrary = (create_d_game)library.getFunction(lib, "createLibrary");
-            _game = newGameLibrary();
+            create_d_game newgameModulePath = (create_d_game)library.getFunction(lib, "createLibrary");
+            _game = newgameModulePath();
             break;
         }
     }
@@ -82,9 +83,6 @@ ServerData Engine::buildServerData(size_t id, uint16_t inputs[10])
         }
     }
 
-    // printf("CREATE SERVER DATA:\n");
-    // printServerData(data);
-    // printf("\n");
     return data;
 }
 
@@ -115,6 +113,23 @@ void Engine::runNetwork()
     _network.getIOService().run();
 }
 
+void Engine::runServerCommandLine()
+{
+    std::string line;
+
+    std::cout << "Welcome to Server CLI !" << std::endl;
+    CLI::displayHelp();
+    while (1) {
+        std::cout << "$> ";
+        std::getline(std::cin, line);
+        if (line.empty()) {
+            std::cout << "please type a command. use `help` to see commands available." << std::endl;
+            continue;
+        }
+        CLI::launchSearchedFunction(line, _reg);
+    }
+}
+
 void Engine::runGame() 
 {
     while (1) {
@@ -128,7 +143,9 @@ void Engine::run()
 
     std::thread gameThread(&Engine::runGame, this);
     std::thread networkThread(&Engine::runNetwork, this);
+    std::thread serverCliThread(&Engine::runServerCommandLine, this);
 
     gameThread.join();
     networkThread.join();
+    serverCliThread.join();
 }

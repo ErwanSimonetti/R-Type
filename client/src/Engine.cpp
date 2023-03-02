@@ -7,11 +7,10 @@
 
 #include "Engine.hpp"
 
-Engine::Engine(boost::asio::io_service &io_service, const std::string &host, const std::string &port, const std::string &graphicLibrary, const std::string &gameLibrary) : _reg(), _network(io_service, host, port)
+Engine::Engine(boost::asio::io_service &io_service, const std::string &host, const std::string &port, const std::string &graphicModulePath, const std::string &gameModulePath) : _reg(), _network(io_service, host, port)
 {
-    loadModules(gameLibrary, MODULE_TYPE::GAME);
-    _graphicPath = graphicLibrary;
-
+    loadModules(gameModulePath, MODULE_TYPE::GAME);
+    _graphicPath = graphicModulePath;
     _reg.register_component<Position>();
     _reg.register_component<Velocity>();
     _reg.register_component<Drawable>();
@@ -46,15 +45,15 @@ void Engine::loadModules(std::string libName, MODULE_TYPE type)
     void *lib = library.loadLibrary();
     switch (type) {
         case MODULE_TYPE::GRAPHIC: {
-            create_d_graphic newGraphicLibrary = (create_d_graphic)library.getFunction(lib, "createLibrary");  
-            _graphic = newGraphicLibrary();
+            create_d_graphic newGraphic = (create_d_graphic)library.getFunction(lib, "createLibrary");  
+            _graphic = newGraphic();
             _reg.add_system<Animatable, Drawable>(std::bind(&IGraphic::animation_system, _graphic, std::placeholders::_1, std::placeholders::_2));
             _reg.add_system<Position, Drawable>(std::bind(&IGraphic::draw_system, _graphic, std::placeholders::_1, std::placeholders::_2));
             break;
         }
         case MODULE_TYPE::GAME: {
-            create_d_game newGameLibrary = (create_d_game)library.getFunction(lib, "createLibrary");
-            _game = newGameLibrary();
+            create_d_game newGame = (create_d_game)library.getFunction(lib, "createLibrary");
+            _game = newGame();
             break;
         }
     }
@@ -83,9 +82,6 @@ ClientData Engine::buildClientData(Events events)
         index++;
     }
 
-    // printf("CREATE Client DATA:\n");
-    // printClientData(clientData);
-    // printf("\n");
     return clientData;
 }
 

@@ -30,6 +30,6 @@ COPY modules /app/modules
 COPY network/ /app/network
 COPY utils /app/utils
 
-run cd app/modules && make game
+RUN cd app/modules && make game
 
 CMD cd app/server && ./make_server && cd ../ && ./r-type_server ${GAME}

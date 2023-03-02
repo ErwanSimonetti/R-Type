@@ -38,7 +38,6 @@ class Raylib : public IGraphic {
     Camera3D _camera;
     std::map<uint16_t, Asset> _models;
     Window _window;
-    // bool _initWindow;
 };
 
 extern "C" std::shared_ptr<IGraphic> createLibrary();

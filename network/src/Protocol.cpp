@@ -17,8 +17,6 @@ Protocol::~Protocol()
 
 ClientData Protocol::readClient(char *buffer) 
 {
-    // Header header;
-    // std::memcpy(&header, buffer, sizeof(Header));
     ClientData clientData;
     std::memcpy(&clientData, buffer, sizeof(ClientData));
     return clientData;
@@ -26,8 +24,6 @@ ClientData Protocol::readClient(char *buffer)
 
 ServerData Protocol::readServer(char *buffer) 
 {
-    // Header header;
-    // std::memcpy(&header, buffer, sizeof(Header));
     ServerData serverData;
     std::memcpy(&serverData, buffer, sizeof(ServerData));
     return serverData;

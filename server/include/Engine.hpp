@@ -14,7 +14,6 @@
 #include <boost/array.hpp>
 
 #include "MyNetwork.hpp"
-#include "GameEvents.hpp"
 #include "registry.hpp"
 #include "System.hpp"
 #include "GameEvents.hpp"
@@ -40,7 +39,7 @@ class Engine {
          * @param io_service core I/O functionality for users of the asynchronous I/O objects
          * @param port listening port
          */
-        Engine(boost::asio::io_service &io_service, const std::string &host, const std::string &port, const std::string &graphicLibrary);
+        Engine(boost::asio::io_service &io_service, const std::string &host, const std::string &port, const std::string &graphicModulePath);
         ~Engine();
 
 
@@ -99,6 +98,11 @@ class Engine {
          * @brief runs the whole game
          */
         void runGame();
+
+        /**
+         * @brief runs the Interactive Command Line
+         */
+        void runServerCommandLine();
 
 
     protected:

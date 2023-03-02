@@ -37,7 +37,9 @@ RUN apt-get update && \
     libxcursor-dev \
     mesa-common-dev \
     libxi-dev \
-    xorg-dev
+    xorg-dev \
+    libboost-all-dev \
+    libjsoncpp-dev
 
 RUN git clone https://github.com/raysan5/raylib.git && \
     cd raylib && mkdir build && cd build && cmake -DCMAKE_POSITION_INDEPENDENT_CODE=ON .. && make && make install
@@ -50,7 +52,7 @@ COPY ressources/ /app/ressources
 COPY modules/ /app/modules
 COPY utils /app/utils
 
-run cd app/modules && make
+RUN cd app/modules && make
 
 # Launch game
 CMD cd app/client && ./make_client && cd ../ && ./r-type_client ${GRAPHIC} ${GAME}

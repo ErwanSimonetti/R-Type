@@ -8,6 +8,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR})
 set(SOURCE_FILES 
   src/main.cpp
   src/Engine.cpp
+  src/CLI.cpp
   ../ECS/src/FollowPath.cpp
   ../ECS/src/System.cpp
   ../ECS/src/registry.cpp
