@@ -146,7 +146,7 @@ void Engine::runServerCommandLine()
             std::cout << "please type a command. use `help` to see commands available." << std::endl;
             continue;
         }
-        CLI::launchSearchedFunction(line, _reg);
+        CLI::launchSearchedFunction(line, _reg, _network);
     }
 }
 

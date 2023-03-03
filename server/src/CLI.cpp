@@ -10,6 +10,7 @@
 #include <functional>
 #include <bits/stdc++.h>
 #include "registry.hpp"
+#include "MyNetwork.hpp"
 #include "entity.hpp"
 #include "CLI.hpp"
 
@@ -144,7 +145,7 @@ namespace CLI
         {"kill", killEntity},
     };
 
-    void launchSearchedFunction(std::string &line, registry &reg)
+    void launchSearchedFunction(std::string &line, registry &reg, MyNetwork &network)
     {
         std::istringstream iss(line);
         std::string args;
