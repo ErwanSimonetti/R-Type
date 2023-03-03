@@ -11,10 +11,10 @@
 #include <iostream>
 #include <cstring>
 
-struct Header {
-    uint16_t dataType;
-    uint16_t dataSize;
-};
+// struct Header {
+//     uint16_t dataType;
+//     uint16_t dataSize;
+// };
 
 struct ClientData {
     int16_t entity;

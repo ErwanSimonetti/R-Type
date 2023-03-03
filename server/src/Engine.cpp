@@ -95,7 +95,7 @@ void Engine::sendData(ServerData data)
     ServerData serverData = _network.getProtocol().readServer(buffer);
 
     for (int it = 0; it < _network.getEndpoints().size(); it++) {
-        _network.udpSend<ServerData>(buffer, _network.getEndpoints().at(it));
+        _network.udpSend<ServerData>(buffer, _network.getEndpoints().at(it)._endpoint);
     }
 }
 
