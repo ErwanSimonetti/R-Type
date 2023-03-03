@@ -90,7 +90,9 @@ ClientData Engine::buildClientData(Events events)
 
 void Engine::sendData(ClientData data) 
 {
-    char *buffer = _network.getProtocol().serialiseData<ClientData>(data);
+    char buffer[1024];
+    std::memcpy(buffer, _network.getProtocol().serialiseData<Header>(Header{3}), sizeof(Header));
+    std::memcpy(buffer + sizeof(Header), _network.getProtocol().serialiseData<ClientData>(data), sizeof(ClientData));
     _network.udpSend(buffer, sizeof(buffer), _network.getServerEndpoint());
 }
 
