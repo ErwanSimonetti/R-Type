@@ -91,9 +91,9 @@ ServerData Engine::buildServerData(size_t id, uint16_t inputs[10])
 
 void Engine::sendData(ServerData data) 
 {
-    char *buffer = _network.getProtocol().serialiseData<ServerData>(data);
-    ServerData serverData = _network.getProtocol().readServer(buffer);
-
+    char buffer[1024];
+    std::memcpy(buffer, _network.getProtocol().serialiseData<Header>(Header{3}), sizeof(Header));
+    std::memcpy(buffer + sizeof(Header), _network.getProtocol().serialiseData<ServerData>(data), sizeof(ServerData));
     _network.udpSendToAllClients(buffer, sizeof(buffer));
 }
 
