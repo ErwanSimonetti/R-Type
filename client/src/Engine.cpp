@@ -93,15 +93,19 @@ void Engine::sendData(ClientData data)
     _network.udpSend(buffer, sizeof(buffer), _network.getServerEndpoint());
 }
 
-void Engine::updateRegistry(ServerData data)
+void Engine::updateRegistry(char *data)
 {
     GameData gameData[4];
+    Header* headerDeserialized = reinterpret_cast<Header*>(data);
 
-    for (int i = 0; i < 4; i++) {
-        gameData[i].entity = data.entities[i];
-        gameData[i].posX = data.posX[i];
-        gameData[i].posY = data.posY[i];
-        memcpy(gameData[i].inputs, data.inputs[i], sizeof(uint16_t) * 10);
+    if (headerDeserialized->_id == 3) {
+        ServerData* dataDeserialized = reinterpret_cast<ServerData*>(data + sizeof(Header));
+        for (int i = 0; i < 4; i++) {
+            gameData[i].entity = dataDeserialized->entities[i];
+            gameData[i].posX = dataDeserialized->posX[i];
+            gameData[i].posY = dataDeserialized->posY[i];
+            memcpy(gameData[i].inputs, dataDeserialized->inputs[i], sizeof(uint16_t) * 10);
+        }
     }
 
     _game->updateRegistry(_reg, gameData);
