@@ -94,15 +94,16 @@ void Engine::sendData(ServerData data)
     _network.udpSendToAllClients(buffer, sizeof(buffer));
 }
 
-void Engine::updateRegistry(ClientData data)
+void Engine::updateRegistry(char *data)
 {
     GameData gameData;
+    ClientData* dataDeserialized = reinterpret_cast<ClientData*>(data);
 
-    gameData.entity = data.entity;
-    memcpy(gameData.inputs, data.inputs, sizeof(uint16_t) * 10);
+    gameData.entity = dataDeserialized->entity;
+    memcpy(gameData.inputs, dataDeserialized->inputs, sizeof(uint16_t) * 10);
 
     _game->updateRegistry(_reg, gameData);
-    sendData(buildServerData(data.entity, data.inputs));
+    sendData(buildServerData(dataDeserialized->entity, dataDeserialized->inputs));
 }
 
 void Engine::runNetwork() 
