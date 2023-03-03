@@ -25,7 +25,6 @@ std::vector<entity> OtherGame::getPLayers() const
     return _players;
 }
 
-void OtherGame::gravity_system(registry &r, )
 void OtherGame::create_static(registry &r, entity newEntity, const uint16_t posX, const uint16_t posY, OBJECT type)
 {
     r.emplace_component<Position>(newEntity, posX, posY);
@@ -87,7 +86,7 @@ void OtherGame::handleInputs(registry &r, size_t entity, const uint16_t inputs[1
             break;
         case KEYBOARD::SPACE: {
             if (entity < jumps.size()) {
-                auto &jump = r.get_components<jumpable>()[entity];
+                auto &jump = r.get_components<Jump>()[entity];
                 if (jump && jump.value()._canJump == true) {
                     jump.value()._canJump = false;
                     jump.value()._clock = std::chrono::high_resolution_clock::now();
