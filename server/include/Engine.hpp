@@ -20,6 +20,7 @@
 #include "GameEvents.hpp"
 #include "IGame.hpp"
 #include "LoadLibrary.hpp"
+#include "Protocol.hpp"
 
 using create_d_game = std::shared_ptr<IGame> (*)();
 
@@ -67,16 +68,16 @@ class Engine {
          * 
          * @param data struct corresponding to each player's data
          */
-        void sendData(ServerData data);
+        void sendData(char *message);
 
         /**
          * @brief Function used to update the registery with data received from the server
          * 
          * @param data struct corresponding to every player's data
          */
-        void updateRegistry(ClientData data);
+        void updateRegistry(char *message, int id);
 
-        ServerData buildServerData(size_t id, uint16_t inputs[10]);
+        // ServerData buildServerData(size_t id, uint16_t inputs[10]);
 
         /**
          * @brief Runs network threads

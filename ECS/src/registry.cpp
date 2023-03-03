@@ -30,8 +30,6 @@ entity registry::spawn_entity()
         id_entity = findSmallestUnusedValue(_entities);
     entity new_entity(id_entity);
     _entities.emplace_back(new_entity);
-    std::cout << "spawn entity nb == " << new_entity << std::endl;
-    std::cout << "get nb entities == " << _entities.size() << std::endl;
     return new_entity;
 }
 

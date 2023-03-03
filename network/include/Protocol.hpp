@@ -11,17 +11,18 @@
 #include <iostream>
 #include <cstring>
 
-struct Header {
-    uint16_t dataType;
-    uint16_t dataSize;
-};
+// struct Header {
+//     uint16_t dataType;
+//     uint16_t dataSize;
+// };
 
-struct ClientDataSimplified {
+struct ClientData
+{
     int16_t entity;
     uint16_t inputs[10];
 };
 
-struct ClientData
+struct ClientDataComplicated
 {
     int16_t entity;
     int16_t directionsX;
@@ -29,16 +30,6 @@ struct ClientData
     uint16_t hasShot;
     uint16_t posX;
     uint16_t posY;
-};
-
-struct ServerData
-{
-    int16_t entities[4];
-    uint16_t posX[4];
-    uint16_t posY[4];
-    int16_t directionsX[4];
-    int16_t directionsY[4];
-    uint16_t hasShot[4];
 };
 
 struct ServerData {
@@ -75,10 +66,10 @@ class Protocol {
         ~Protocol();
 
         template <class Data>
-        char *serialiseData(Data data) {
+        char *serialiseData(Data data)
+        {
             char *buffer = new char[sizeof(Data)];
             std::memcpy(buffer, &data, sizeof(Data));
-
             return buffer;
         };
 

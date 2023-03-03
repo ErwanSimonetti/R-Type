@@ -91,16 +91,9 @@ ClientData Engine::buildClientData(Events events)
 
 void Engine::sendData(ClientData data) 
 {
-    std::cout << "Data as been send" << std::endl;
-    std::cout << "directionsX == " << data.directionsX << std::endl;
-    std::cout << "directionsY == " << data.directionsY << std::endl;
-    std::cout << "Entity      == " << data.entity << std::endl;
-    std::cout << "hasshot     == " << data.hasShot << std::endl;
-    std::cout << "PosX        == " << data.posX << std::endl;
-    std::cout << "PosY        == " << data.posY << std::endl;
     char buffer[1024];
-    std::memcpy(buffer, Protocol::serialiseData<Header>(Header{2}), sizeof(Header));
-    std::memcpy(buffer + sizeof(Header), Protocol::serialiseData<ClientData>(data), sizeof(ClientData));
+    std::memcpy(buffer, _network.serialiseData<Header>(Header{2}), sizeof(Header));
+    std::memcpy(buffer + sizeof(Header), _network.serialiseData<ClientData>(data), sizeof(ClientData));
     _network.udpSend(buffer, _network.getServerEndpoint(), sizeof(buffer));
 
 }
@@ -114,16 +107,7 @@ void Engine::runNetwork()
 
 void Engine::updateRegistry(char *message)
 {
-    GameData gameData[4];
 
-    for (int i = 0; i < 4; i++) {
-        gameData[i].entity = data.entities[i];
-        gameData[i].posX = data.posX[i];
-        gameData[i].posY = data.posY[i];
-        memcpy(gameData[i].inputs, data.inputs[i], sizeof(uint16_t) * 10);
-    }
-
-    // _game->updateRegistry(_reg, gameData);
 }
 
 void Engine::runGame() 
@@ -146,21 +130,10 @@ void Engine::runGame()
 
 void Engine::connectToServer()
 {
-    ClientData clientData;
-
-    clientData.entity = -1;
-    for (int i = 0; i < 10; i++) {
-        clientData.inputs[i] = 0;
-    }
-
-    _network.UDPReceiveClient(std::bind(&Protocol::IProtocol::read, _proto, std::placeholders::_1, std::placeholders::_2), false);
-    sendData(clientData);
-}
-
-void Engine::runNetwork() 
-{
-    _network.UDPReceiveClient(std::bind(&Engine::updateRegistry, this, std::placeholders::_1), true);
-    _network.getIOService().run();
+    char buffer[1024];
+    std::memcpy(buffer, _network.serialiseData<Header>(Header{1}), sizeof(Header));
+    std::cout << "Send access ask connection to " << _network.getServerEndpoint() << std::endl;
+    _network.udpSend(buffer, _network.getServerEndpoint(), sizeof(buffer));
 }
 
 void Engine::run()

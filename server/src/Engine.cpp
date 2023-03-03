@@ -7,6 +7,7 @@
 
 #include "Engine.hpp"
 #include "CLI.hpp"
+#include "Header.hpp"
 
 Engine::Engine(boost::asio::io_service &io_service, const std::string &host, const std::string &port, const std::string &gameModulePath) :
     _reg(),
@@ -53,63 +54,72 @@ void Engine::loadModules(std::string libName, MODULE_TYPE type)
     }
 }
 
-ServerData Engine::buildServerData(size_t id, uint16_t inputs[10]) 
-{
-    // ServerData data;
+// ServerData Engine::buildServerData(size_t id, uint16_t inputs[10]) 
+// {
+//     // ServerData data;
 
-    auto &positions = _reg.get_components<Position>();
-    auto &velocities = _reg.get_components<Velocity>();
-    for (int i = 0; i < 4; i++) {
-        data.posX[i] = 0;
-        data.posY[i] = 0;
-        for (int j = 0; j < 10; j++) {
-            data.inputs[i][j] = 0;
-        }
+//     auto &positions = _reg.get_components<Position>();
+//     auto &velocities = _reg.get_components<Velocity>();
+//     for (int i = 0; i < 4; i++) {
+//         data.posX[i] = 0;
+//         data.posY[i] = 0;
+//         for (int j = 0; j < 10; j++) {
+//             data.inputs[i][j] = 0;
+//         }
 
-        if (i >= _game->getPLayers().size()) {
-            data.entities[i] = -1;
-            continue;
-        }
+//         if (i >= _game->getPLayers().size()) {
+//             data.entities[i] = -1;
+//             continue;
+//         }
         
-        data.entities[i] = _game->getPLayers().at(i);
-        auto const &pos = positions[_game->getPLayers().at(i)];
-        if (pos) {
-            data.posX[i] = pos.value()._x;
-            data.posY[i] = pos.value()._y;
-        }
+//         data.entities[i] = _game->getPLayers().at(i);
+//         auto const &pos = positions[_game->getPLayers().at(i)];
+//         if (pos) {
+//             data.posX[i] = pos.value()._x;
+//             data.posY[i] = pos.value()._y;
+//         }
 
-        if (_game->getPLayers().at(i) == id) {
-            for (int j = 0; j < 10; j++) {
-                data.inputs[i][j] = inputs[j];
-            }
-        }
-    }
-    return data;
-}
+//         if (_game->getPLayers().at(i) == id) {
+//             for (int j = 0; j < 10; j++) {
+//                 data.inputs[i][j] = inputs[j];
+//             }
+//         }
+//     }
+//     return data;
+// }
 
-void Engine::sendData(ServerData data) 
+void Engine::sendData(char *message) 
 {
-    char *buffer = Protocol::serialiseData<ServerData>(data);
+    // char *buffer = Protocol::serialiseData<ServerData>(data);
 
     for (int it = 0; it < _network.getEndpoints().size(); it++) {
-        _network.udpSend<ServerData>(buffer, _network.getEndpoints().at(it));
+        if (_network.getEndpoints().at(it)._isAccepted)
+            _network.udpSend(message, _network.getEndpoints().at(it)._endpoint, sizeof(message));
     }
 }
 
-void Engine::updateRegistry(ClientData data)
+void Engine::updateRegistry(char *message, int id)
 {
-    GameData gameData;
+    char buffer[1024];
 
-    gameData.entity = data.entity;
-    memcpy(gameData.inputs, data.inputs, sizeof(uint16_t) * 10);
+    if (id == 1) {
 
-    _game->updateRegistry(_reg, gameData);
-    sendData(buildServerData(data.entity, data.inputs));
+        _network.udpSendToAllClients(buffer, sizeof(buffer));
+    }
 }
+
+void MyNetwork::sendConnectionStatus(const ConnectionStatus &coStatus)
+{
+    char buffer[1024];
+    std::memcpy(buffer, serialiseData<Header>(Header{1}), sizeof(Header));
+    std::memcpy(buffer + sizeof(Header), serialiseData<ConnectionStatus>(coStatus), sizeof(ConnectionStatus));
+    udpSendToAllClients(buffer, sizeof(buffer));
+}
+
 
 void Engine::runNetwork() 
 {
-    _network.UDPReceiveServer(std::bind(&Protocol::IProtocol::read, _proto, std::placeholders::_1, std::placeholders::_2));
+    _network.UDPReceiveServer(std::bind(&Engine::updateRegistry, this, std::placeholders::_1, std::placeholders::_2));
     _network.getIOService().run();
 }
 
@@ -133,11 +143,7 @@ void Engine::runServerCommandLine()
 void Engine::runGame() 
 {
     while (1) {
-        {
-            sleep(1);
-            std::cout << "Nb of entities == " <<  _reg.get_entities().size() << std::endl;
-            _reg.run_systems();
-        }
+        _reg.run_systems();
     }
 }
 
