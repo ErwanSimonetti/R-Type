@@ -12,7 +12,7 @@ MyNetwork::MyNetwork(boost::asio::io_service &io_service, const std::string& hos
     _io_services(io_service), _socket(io_service, boost::asio::ip::udp::v4())
 {
     boost::asio::ip::udp::endpoint serverEndpoint(boost::asio::ip::address::from_string(host), std::stoi(port));
-    _endpoints.emplace_back(serverEndpoint);
+    _endpoints.emplace_back(EndpointInformation{serverEndpoint, false});
     _shouldCallback = false;
 }
 
@@ -27,17 +27,26 @@ MyNetwork::~MyNetwork()
 {
 }
 
+bool MyNetwork::isNewEndpoint(boost::asio::ip::udp::endpoint endpoint)
+{
+    for (size_t i = 0; i < _endpoints.size(); i++) {
+        if (endpoint == _endpoints.at(i)._endpoint) {
+            std::cerr << "User already connected : " << endpoint << std::endl;
+            return false;
+        }
+    }
+    std::cerr << "New user:" << endpoint << "connected"  << std::endl;
+    return true;    
+}
+
 void MyNetwork::addEndpoint(boost::asio::ip::udp::endpoint endpoint)
 {
-    if ((std::find(_endpoints.begin(), _endpoints.end(), endpoint) == _endpoints.end())) {
-        std::cout << "New user:" << endpoint << " connected\n";
-        _endpoints.emplace_back(endpoint);
-    }
+    _endpoints.emplace_back(EndpointInformation{endpoint, true});
 }
 
 boost::asio::ip::udp::endpoint MyNetwork::getServerEndpoint()
 {
-    return _endpoints.at(0);
+    return _endpoints.at(0)._endpoint;
 }
 
 boost::asio::io_service &MyNetwork::getIOService() 
@@ -50,7 +59,7 @@ Protocol &MyNetwork::getProtocol()
     return _protocol;
 }
 
-std::vector<boost::asio::ip::udp::endpoint> &MyNetwork::getEndpoints()
+std::vector<EndpointInformation> &MyNetwork::getEndpoints()
 {
     return _endpoints;
 }
@@ -83,3 +92,39 @@ void MyNetwork::UDPReceiveServer(std::function<void(ClientData)> func)
         UDPReceiveServer(func);
     });
 };
+
+void MyNetwork::kickPlayer(boost::asio::ip::udp::endpoint endpoint, bool isBan)
+{
+    for (int i = 0; i < _endpoints.size(); i++) {
+        if (endpoint == _endpoints.at(i)._endpoint) {
+            _endpoints.erase(_endpoints.begin() + i);
+            if (isBan) {
+                _endpointsBannedPlayer.emplace_back(endpoint);
+            }
+        }
+    }
+}
+
+void MyNetwork::kickPlayer(const std::string &endpoint, bool isBan)
+{
+    for (int i = 0; i < _endpoints.size(); i++) {
+        if (endpoint == _endpoints.at(i)._endpoint.address().to_string()) {
+            if (isBan) {
+                _endpointsBannedPlayer.push_back(_endpoints.at(i)._endpoint);
+            }
+            _endpoints.erase(_endpoints.begin() + i);
+        }
+    }
+}
+
+bool MyNetwork::isLobbyFull()
+{
+    if (getEndpoints().size() == 4)
+        return true;
+    return false;
+}
+
+bool MyNetwork::isClientAccepted()
+{
+    return _isClientAccepted;
+}
