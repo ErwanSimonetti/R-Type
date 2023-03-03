@@ -13,7 +13,7 @@
 #include <string>
 
 namespace CLI {
-    void launchSearchedFunction(std::string &line, registry &reg);
+    void launchSearchedFunction(std::string &line, registry &reg, MyNetwork &network);
     void displayHelp();
 };
 
