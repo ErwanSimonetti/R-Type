@@ -42,15 +42,6 @@ class MyNetwork {
             } 
         }
 
-        template <class Data>
-        char *serialiseData(Data data)
-        {
-            char *buffer = new char[sizeof(Data)];
-            std::memcpy(buffer, &data, sizeof(Data));
-            return buffer;
-        };
-
-
         void UDPReceiveClient(std::function<void(ServerData)> func, bool shouldCallback);
         void UDPReceiveServer(std::function<void(ClientData)> func);
 
