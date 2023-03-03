@@ -22,6 +22,8 @@
 #include "Parallax.hpp"
 #include "FollowPath.hpp"
 #include "Shootable.hpp"
+#include "Particulable.hpp"
+#include "Sound.hpp"
 #include "GameEvents.hpp"
 
 /**

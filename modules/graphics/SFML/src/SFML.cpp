@@ -16,7 +16,7 @@ SFML::SFML()
 {
     _window = std::make_shared<sf::RenderWindow>(sf::VideoMode(1920, 1080), "R-TYPE");
     _window->setFramerateLimit(30);
-
+    
     constructFromJson();
     set_sprite();
 }
@@ -48,10 +48,26 @@ void SFML::constructFromJson()
 {
     ReadJson reader("ressources/SFML/sfml.json");
     int nbAsset = reader.getNumberOfElement("asset");
+    int nbSound = reader.getNumberOfElement("sound");
 
     for (int i = 0; i < nbAsset; i++) {
         createAsset(reader.IntValueFromArray("asset", i, "type"), reader.readValueFromArray("asset", i, "texture"), \
         reader.IntValueFromArray("asset", i, "width"), reader.IntValueFromArray("asset", i, "height"), reader.IntValueFromArray("asset", i, "size"));
+    }
+
+    for (int i = 0; i < nbSound; i++) {
+        if (reader.IntValueFromArray("sound", i, "type") == 1) {
+            if(_music.openFromFile(reader.readValueFromArray("sound", i, "music"))) {
+                _music.play();
+            }
+        } else {
+            sf::SoundBuffer buffer;
+            if (buffer.loadFromFile(reader.readValueFromArray("sound", i, "music"))) {
+                sf::Sound sound;
+                sound.setBuffer(buffer);
+                _sound.insert(std::pair<uint16_t, sf::Sound>(reader.IntValueFromArray("sound", i, "type"), sound));
+            }
+        }
     }
 }
 
@@ -69,8 +85,20 @@ void SFML::initialize_rect(Drawable &draw){
     draw._rect = std::make_shared<spriteRect>(spriteRect{_assets.at(draw._type)._bounds.left, _assets.at(draw._type)._bounds.top, _assets.at(draw._type)._bounds.width, _assets.at(draw._type)._bounds.height});
 }
 
+void SFML::sound_system(sparse_array<SoundEffect> &sounds)
+{
+    for(size_t i = 0; i < sounds.size(); ++i) {
+        auto &sound = sounds[i];
+        if (sound) {
+            if (sound.value()._play) {
+                _sound.find(sound.value()._type)->second.play();
+                sound.value()._play = false;
+            }
+        }
+    }
+}
 
-void SFML::draw_system(sparse_array<Position> const &positions, sparse_array<Drawable> &drawables) {
+void SFML::draw_system(sparse_array<Position> const &positions, sparse_array<Drawable> &drawables, sparse_array<Particulable> &particles) {
     for (size_t i = 0; i < drawables.size() && i < positions.size(); ++ i) {
         auto &draw = drawables[i];
         auto &pos = positions[i];
@@ -85,7 +113,6 @@ void SFML::draw_system(sparse_array<Position> const &positions, sparse_array<Dra
             _window->draw(_assets.find(draw.value()._type)->second._sprite);
         }
     }
-
 }
 
 void SFML::animation_system(sparse_array<Animatable> &animatables, sparse_array<Drawable> &drawables) 
