@@ -15,7 +15,7 @@ extern "C" std::shared_ptr<IGraphic> createLibrary()
 Raylib::Raylib() : _window(1920, 1080, "R-TYPE")
 {
     createCamera();
-    constructFromJson();
+    constructFromJson();   
 }
 
 Raylib::~Raylib()
@@ -27,10 +27,21 @@ void Raylib::constructFromJson()
 {
     ReadJson reader("ressources/Raylib/raylib.json");
     int nbAsset = reader.getNumberOfElement("asset");
+    int nbSound = reader.getNumberOfElement("sound");
 
     for (int i = 0; i < nbAsset; i++)
         createModel(reader.IntValueFromArray("asset", i, "type"), reader.readValueFromArray("asset", i, "texture"), \
             reader.readValueFromArray("asset", i, "model"), reader.readValueFromArray("asset", i, "animation"));
+
+    for (int i = 0; i < nbSound; i++) {
+        if (reader.IntValueFromArray("sound", i, "type") == 1) {
+            _music = LoadMusicStream(reader.readValueFromArray("sound", i, "music").c_str());
+            PlayMusicStream(_music);
+        } else {
+            Sound newSound = LoadSound(reader.readValueFromArray("sound", i, "music").c_str());
+            _sound.insert(std::pair<uint16_t, Sound>(reader.IntValueFromArray("sound", i, "type"), newSound));
+        }
+    }
 }
 
 void Raylib::createCamera()
@@ -54,6 +65,20 @@ void Raylib::createModel(uint16_t type, std::string texture, std::string model, 
     asset.animation = LoadModelAnimations(animation.c_str(), &animsmodel);
     asset.size = {0.10f, 0.10f, 0.10f};
     _models.insert(std::pair<uint16_t, Asset>(type, asset));
+}
+
+void Raylib::sound_system(sparse_array<SoundEffect> &sounds)
+{
+    UpdateMusicStream(_music);
+    for(size_t i = 0; i < sounds.size(); ++i) {
+        auto &sound = sounds[i];
+        if (sound) {
+            if (sound.value()._play) {
+                PlaySound(_sound.find(sound.value()._type)->second);
+                sound.value()._play = false;
+            }
+        }
+    }
 }
 
 void Raylib::animation_system(sparse_array<Animatable> &animatables, sparse_array<Drawable> &drawables)
@@ -90,14 +115,11 @@ Events get_event() {
     return newEvent;
 }
 
- void Raylib::draw_system(sparse_array<Position> const &positions, sparse_array<Drawable> &drawables) 
+ void Raylib::draw_system(sparse_array<Position> const &positions, sparse_array<Drawable> &drawables, sparse_array<Particulable> &particles) 
  {
-    // UpdateCamera(&_camera, CAMERA_FIRST_PERSON);
-
     _window.startDrawing();
     _window.clearWindow();
     _window.start3DMode(_camera);
-
 
     for (size_t i = 0; i < drawables.size() && i < positions.size(); ++ i) {
         auto &draw = drawables[i];
@@ -111,11 +133,33 @@ Events get_event() {
     }
     DrawGrid(10, 1.0f); 
     _window.stop3DMode();
+	draw_particles(positions, drawables, particles);
     _window.endDrawing();
 
  }
 
+ void Raylib::draw_particles(sparse_array<Position> const &positions, sparse_array<Drawable> &drawables, sparse_array<Particulable> &particles)
+ {
+    for (size_t i = 0; i < drawables.size() && i < positions.size() && i < particles.size(); ++ i) {
+        auto &draw = drawables[i];
+        auto &pos = positions[i];
+        auto &part = particles[i];
+        if (draw && pos && part) {
+            if (part.value()._play == true) {
+                Vector2 m_pos =(Vector2){(float)pos.value()._x, (float)pos.value()._y};
+                _particles.emplace_back(ParticleSystem{m_pos});
+                part.value()._play = false;
+            }
+         _particles.erase(std::remove_if( _particles.begin(), _particles.end(), []( ParticleSystem& sys ){ 
+            sys.update();
+		    sys.draw();
+		    return sys.system.size() <= 0; 
+            }),  _particles.end());
+        }
+    }
+ }
+
 
 Events Raylib::run_graphic(registry &reg) {
-    // return get_event();
+    return get_event();
 }

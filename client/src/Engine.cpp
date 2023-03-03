@@ -23,6 +23,8 @@ Engine::Engine(boost::asio::io_service &io_service, const std::string &host, con
     _reg.register_component<Shootable>();
     _reg.register_component<Stats>();
     _reg.register_component<DrawableText>();
+    _reg.register_component<Particulable>();
+    _reg.register_component<SoundEffect>();
 
     _reg.add_system<Position, Hitbox>(collision_system);
     _reg.add_system<Position, Velocity, Controllable>(position_system);
@@ -53,7 +55,8 @@ void Engine::loadModules(std::string libName, MODULE_TYPE type)
             create_d_graphic newGraphic = (create_d_graphic)library.getFunction(lib, "createLibrary");  
             _graphic = newGraphic();
             _reg.add_system<Animatable, Drawable>(std::bind(&IGraphic::animation_system, _graphic, std::placeholders::_1, std::placeholders::_2));
-            _reg.add_system<Position, Drawable, DrawableText>(std::bind(&IGraphic::draw_system, _graphic, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
+            _reg.add_system<Position, Drawable, Particulable, DrawableText>(std::bind(&IGraphic::draw_system, _graphic, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3, std::placeholders::_4));
+            _reg.add_system<SoundEffect>(std::bind(&IGraphic::sound_system, _graphic, std::placeholders::_1));
             break;
         }
         case MODULE_TYPE::GAME: {

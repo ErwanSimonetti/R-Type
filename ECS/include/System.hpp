@@ -24,6 +24,8 @@
 #include "Shootable.hpp"
 #include "Stats.hpp"
 #include "DrawableText.hpp"
+#include "Particulable.hpp"
+#include "Sound.hpp"
 #include "GameEvents.hpp"
 
 /**

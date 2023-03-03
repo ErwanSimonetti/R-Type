@@ -42,5 +42,16 @@
             "animation" : "",
             "model": "ressources/Raylib/water.obj"
         }
+    ],
+    
+    "sound" : [
+        {
+            "type": 1,
+            "music": "ressources/SFML/rtypeMusic.ogg"
+        },
+        {
+            "type": 2,
+            "music": "ressources/SFML/jump.ogg"
+        }
     ]
 }

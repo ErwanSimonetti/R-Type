@@ -48,6 +48,17 @@
             "width" : 1920,
             "height": 734,
             "size": 1920
+        }
+    ],
+    
+    "sound" : [
+        {
+            "type": 1,
+            "music": "ressources/SFML/rtypeMusic.ogg"
         },
+        {
+            "type": 2,
+            "music": "ressources/SFML/jump.ogg"
+        }
     ]
 }
