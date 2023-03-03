@@ -79,7 +79,7 @@ void MyNetwork::UDPReceiveClient(std::function<void(ServerData)> func, bool shou
     });
 };
 
-void MyNetwork::UDPReceiveServer(std::function<void(ClientData)> func) 
+void MyNetwork::UDPReceiveServer(std::function<void(char *)> func) 
 {
     std::memset(_recvBuffer, '\0', 1024);
     boost::asio::ip::udp::endpoint endpoint;
@@ -89,7 +89,7 @@ void MyNetwork::UDPReceiveServer(std::function<void(ClientData)> func)
             UDPReceiveServer(func);
         if (isNewEndpoint(_endpoint)) 
             addEndpoint(_endpoint);
-        func(_protocol.readClient(_recvBuffer));
+        func(_recvBuffer);
         UDPReceiveServer(func);
     });
 };
