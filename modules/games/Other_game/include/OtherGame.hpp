@@ -11,7 +11,7 @@
 #include "IGame.hpp"
 #include <memory>
 
-class OtherGame {
+class OtherGame : public IGame {
     public:
         OtherGame();
         ~OtherGame();
@@ -53,8 +53,9 @@ class OtherGame {
         void create_player(registry &r, entity newEntity, bool isControllable, const int16_t velX, const int16_t velY, const uint16_t posX, const uint16_t posY);
 
         void create_static(registry &r, entity newEntity, const uint16_t posX, const uint16_t posY, OBJECT type);
-
+        
     protected:
+        void handleInputs(registry &r, size_t entity, const uint16_t inputs[10]);
     private:
         /**
          * @brief players vector 

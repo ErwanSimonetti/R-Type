@@ -113,7 +113,7 @@ bool isCollision(Position& a, Hitbox& aHitbox, Position& b, Hitbox& bHitbox)
 
 void collision_system(registry &r, sparse_array<Position> &positions, sparse_array<Hitbox> &hitboxes)
 {
-    for (int i = 0; i < positions.size() && i < hitboxes.size(); ++i) {;
+    for (int i = 0; i < positions.size() && i < hitboxes.size(); ++i) {
         for (int j = i + 1; j < positions.size() && j < hitboxes.size(); ++j) {
             auto &hbxI = hitboxes[i];
             auto &hbxJ = hitboxes[j];
@@ -128,6 +128,22 @@ void collision_system(registry &r, sparse_array<Position> &positions, sparse_arr
                         r.kill_entity(entity(j));
                 }
             }
+        }
+    }
+}
+
+void jump_system(registry &r, sparse_array<Position> &positions, sparse_array<Velocity> &velocities, sparse_array<Jump> &jumps, sparse_array<Gravity> &gravities)
+{
+    for (int i = 0; i < positions.size() && i < jumps.size() && i < gravities.size() && i < velocities.size(); ++i) {
+        auto &pos = positions[i];
+        auto &jump = jumps[i];
+        auto &gravity = gravities[i];
+        auto &vel = velocities[i];
+        if (pos && jump && gravity && vel && jump.value()._canJump == false) {
+            if (pos.value()._y > jump.value()._jumpHeight) {
+                vel.value().set_component(vel.value()._vX, -vel.value()._speedY);
+            }
+            vel.value().set_component(vel.value()._vX, vel.value()._speedY + gravity.value()._force);
         }
     }
 }

@@ -7,8 +7,6 @@
 
 #pragma once
 
-
-
 struct Shootable {
     Shootable() = default;
 
