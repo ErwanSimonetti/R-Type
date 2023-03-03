@@ -100,13 +100,17 @@ void Engine::sendData(ServerData data)
 void Engine::updateRegistry(char *data)
 {
     GameData gameData;
-    ClientData* dataDeserialized = reinterpret_cast<ClientData*>(data);
+    Header* headerDeserialized = reinterpret_cast<Header*>(data);
 
-    gameData.entity = dataDeserialized->entity;
-    memcpy(gameData.inputs, dataDeserialized->inputs, sizeof(uint16_t) * 10);
+    if (headerDeserialized->_id == 3) {
+        ClientData* dataDeserialized = reinterpret_cast<ClientData*>(data + sizeof(Header));
 
-    _game->updateRegistry(_reg, gameData);
-    sendData(buildServerData(dataDeserialized->entity, dataDeserialized->inputs));
+        gameData.entity = dataDeserialized->entity;
+        memcpy(gameData.inputs, dataDeserialized->inputs, sizeof(uint16_t) * 10);
+
+        _game->updateRegistry(_reg, gameData);
+        sendData(buildServerData(dataDeserialized->entity, dataDeserialized->inputs));
+    }
 }
 
 void Engine::runNetwork() 
