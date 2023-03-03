@@ -91,9 +91,7 @@ void Engine::sendData(ServerData data)
     char *buffer = _network.getProtocol().serialiseData<ServerData>(data);
     ServerData serverData = _network.getProtocol().readServer(buffer);
 
-    for (int it = 0; it < _network.getEndpoints().size(); it++) {
-        _network.udpSend<ServerData>(buffer, _network.getEndpoints().at(it)._endpoint);
-    }
+    _network.udpSendToAllClients(buffer, sizeof(buffer));
 }
 
 void Engine::updateRegistry(ClientData data)

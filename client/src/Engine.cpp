@@ -88,7 +88,7 @@ ClientData Engine::buildClientData(Events events)
 void Engine::sendData(ClientData data) 
 {
     char *buffer = _network.getProtocol().serialiseData<ClientData>(data);
-    _network.udpSend<ClientData>(buffer, _network.getServerEndpoint());
+    _network.udpSend(buffer, sizeof(buffer), _network.getServerEndpoint());
 }
 
 void Engine::updateRegistry(ServerData data)

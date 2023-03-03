@@ -87,7 +87,8 @@ void MyNetwork::UDPReceiveServer(std::function<void(ClientData)> func)
     [this, func] (boost::system::error_code ec, std::size_t recvd_bytes) {
         if (ec || recvd_bytes <= 0)
             UDPReceiveServer(func);
-        addEndpoint(_endpoint);
+        if (isNewEndpoint(_endpoint)) 
+            addEndpoint(_endpoint);
         func(_protocol.readClient(_recvBuffer));
         UDPReceiveServer(func);
     });
