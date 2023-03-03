@@ -182,6 +182,11 @@ void Rtype::updateRegistry(registry &r, const GameData data[4])
     }
 }
 
+void updateGame(registry &r, char *message, int header)
+{
+    std::cout << "message for receive game" << std::endl;
+}
+
 // server receive
 void Rtype::updateRegistry(registry &r, const GameData &data)
 {

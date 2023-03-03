@@ -102,20 +102,13 @@ void Engine::updateRegistry(char *message, int id)
 {
     char buffer[1024];
 
-    if (id == 1) {
-
+    if (id == 1 and _network.isClientAccepted()) {
+        _game->updateGame(_reg, message, id);
         _network.udpSendToAllClients(buffer, sizeof(buffer));
+    } else {
+        _game->updateGame(_reg, message, id);
     }
 }
-
-void MyNetwork::sendConnectionStatus(const ConnectionStatus &coStatus)
-{
-    char buffer[1024];
-    std::memcpy(buffer, serialiseData<Header>(Header{1}), sizeof(Header));
-    std::memcpy(buffer + sizeof(Header), serialiseData<ConnectionStatus>(coStatus), sizeof(ConnectionStatus));
-    udpSendToAllClients(buffer, sizeof(buffer));
-}
-
 
 void Engine::runNetwork() 
 {

@@ -63,6 +63,8 @@ class IGame {
          */
         virtual void updateRegistry(registry &r, const GameData data[4]) = 0;
 
+        virtual void updateGame(registry &r, char *message, int header) = 0;
+
     protected:
     private:
 };

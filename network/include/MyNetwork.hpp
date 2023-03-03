@@ -46,25 +46,28 @@ class MyNetwork {
             return buffer;
         };
 
-        void UDPReceiveClient(std::function<void(char *)> func, bool shouldCallback);
-        void UDPReceiveServer(std::function<void(char *)> func);
+        void UDPReceiveClient(std::function<void(char *, int)> func, bool shouldCallback);
+        void UDPReceiveServer(std::function<void(char *, int)> func);
 
         void addEndpoint(boost::asio::ip::udp::endpoint endpoint, const bool& status);
         bool isNewEndpoint(boost::asio::ip::udp::endpoint endpoint);
+        void kickPlayer(boost::asio::ip::udp::endpoint endpoint, bool isBan);
+        void kickPlayer(const std::string &endpoint, bool isBan);
         void manageMessageReceive(char *message, boost::asio::ip::udp::endpoint endpointSender, std::function<void(char *, int)> func);
         boost::asio::ip::udp::endpoint getServerEndpoint();
         boost::asio::io_service &getIOService();
         std::vector<EndpointInformation> &getEndpoints();
         bool isLobbyFull();
+        bool isClientAccepted();
         bool _isSuspendClient;
         bool _shouldCallback;
 
     protected:
     private:
         void checkRequestOfConnection(char* buffer, boost::asio::ip::udp::endpoint endpoint, int lenghtValue);
-        void sendConnectionStatus(const ConnectionStatus &coStatus);
 
         std::vector<EndpointInformation> _endpoints;
+        std::vector<boost::asio::ip::udp::endpoint> _endpointsBannedPlayer;
         boost::asio::ip::udp::endpoint _endpoint;
         boost::asio::ip::udp::endpoint _receiverEndpoint;
         boost::asio::ip::udp::socket _socket;

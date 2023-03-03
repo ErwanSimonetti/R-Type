@@ -89,6 +89,8 @@ class Rtype : public IGame {
 
         void create_static(registry &r, entity newEntity, const uint16_t posX, const uint16_t posY, OBJECT type);
 
+        void updateGame(registry &r, char *message, int header);
+
     protected:
         void handleInputs(registry &r, size_t entity, const uint16_t inputs[10]);
     private:

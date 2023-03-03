@@ -18,6 +18,7 @@ MyNetwork::MyNetwork(boost::asio::io_service &io_service, const std::string& hos
     _endpoints.emplace_back(EndpointInformation{serverEndpoint, false});
     _shouldCallback = false;
     _isSuspendClient = false;
+    _isClientAccepted = false;
 }
 
 // server
@@ -65,7 +66,7 @@ std::vector<EndpointInformation> &MyNetwork::getEndpoints()
     return _endpoints;
 }
 
-void MyNetwork::UDPReceiveClient(std::function<void(char *)> func, bool shouldCallback) 
+void MyNetwork::UDPReceiveClient(std::function<void(char *, int)> func, bool shouldCallback) 
 {
     std::memset(_recvBuffer, '\0', 1024);
     _shouldCallback = shouldCallback;
@@ -73,7 +74,7 @@ void MyNetwork::UDPReceiveClient(std::function<void(char *)> func, bool shouldCa
     [this, func] (boost::system::error_code ec, std::size_t recvd_bytes) {
         if (ec || recvd_bytes <= 0 && _shouldCallback)
             UDPReceiveClient(func, _shouldCallback);
-        func(_recvBuffer);
+        func(_recvBuffer, 0);
         if (_shouldCallback)
             UDPReceiveClient(func, _shouldCallback);
     });
@@ -94,6 +95,30 @@ void MyNetwork::UDPReceiveServer(std::function<void(char *, int)> func)
     });
 };
 
+void MyNetwork::kickPlayer(boost::asio::ip::udp::endpoint endpoint, bool isBan)
+{
+    for (int i = 0; i < _endpoints.size(); i++) {
+        if (endpoint == _endpoints.at(i)._endpoint) {
+            _endpoints.erase(_endpoints.begin() + i);
+            if (isBan) {
+                _endpointsBannedPlayer.emplace_back(endpoint);
+            }
+        }
+    }
+}
+
+void MyNetwork::kickPlayer(const std::string &endpoint, bool isBan)
+{
+    for (int i = 0; i < _endpoints.size(); i++) {
+        if (endpoint == _endpoints.at(i)._endpoint.address().to_string()) {
+            _endpoints.erase(_endpoints.begin() + i);
+            if (isBan) {
+                // _endpointsBannedPlayer.push_back();
+            }
+        }
+    }
+}
+
 bool MyNetwork::isLobbyFull()
 {
     if (getEndpoints().size() == 4)
@@ -101,28 +126,29 @@ bool MyNetwork::isLobbyFull()
     return false;
 }
 
-void MyNetwork::manageMessageReceive(char *message, boost::asio::ip::udp::endpoint endpointSender, std::function<void(char *)> func)
+bool MyNetwork::isClientAccepted()
+{
+    return _isClientAccepted;
+}
+
+void MyNetwork::manageMessageReceive(char *message, boost::asio::ip::udp::endpoint endpointSender, std::function<void(char *, int)> func)
 {
     Header* ptr1 = reinterpret_cast<Header*>(message);
     std::cout << "Receive header == " << ptr1->_id << std::endl;
     if (ptr1->_id == 1) {
-        if (getEndpoints().size() > 3)
+        if (getEndpoints().size() > 3) {
+            _isClientAccepted = false;
             return;
-        if (isNewEndpoint(endpointSender))
+        }
+        if (isNewEndpoint(endpointSender)) {
             addEndpoint(endpointSender, true);
+            _isClientAccepted = true;
+        }
     }
-    func(message);
+    func(message, ptr1->_id);
 }
 
 void MyNetwork::checkRequestOfConnection(char* buffer, boost::asio::ip::udp::endpoint endpoint, int lenghtValue)
 {
     NewPlayer* ptr1 = reinterpret_cast<NewPlayer*>(buffer + lenghtValue);
-}
-
-void MyNetwork::sendConnectionStatus(const ConnectionStatus &coStatus)
-{
-    char buffer[1024];
-    std::memcpy(buffer, serialiseData<Header>(Header{1}), sizeof(Header));
-    std::memcpy(buffer + sizeof(Header), serialiseData<ConnectionStatus>(coStatus), sizeof(ConnectionStatus));
-    udpSendToAllClients(buffer, sizeof(buffer));
 }
