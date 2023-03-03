@@ -10,8 +10,9 @@
 #ifndef SYSTEM_HPP_
 #define SYSTEM_HPP_
 
-#include "sparse_array.hpp"
+#include "GameEvents.hpp"
 #include "registry.hpp"
+
 #include "Velocity.hpp"
 #include "Position.hpp"
 #include "Controllable.hpp"
@@ -22,7 +23,8 @@
 #include "Parallax.hpp"
 #include "FollowPath.hpp"
 #include "Shootable.hpp"
-#include "GameEvents.hpp"
+#include "Jump.hpp"
+#include "Gravity.hpp"
 
 /**
  * @brief logging system displaying all nodes with their position & velocity
@@ -69,5 +71,6 @@ void collision_system(registry &r, sparse_array<Position> &positions, sparse_arr
 void parallax_system(registry &r, sparse_array<Animatable> &animatable, sparse_array<Position> &positions, sparse_array<Parallax> &parallax);
 void animation_system(registry &r, sparse_array<Animatable> &animatable, sparse_array<Drawable> &drawable);
 void shoot_system(registry &r, sparse_array<Shootable> &shootable);
+void jump_system(registry &r, sparse_array<Position> &positions, sparse_array<Velocity> &velocities, sparse_array<Jump> &jumps, sparse_array<Gravity> &gravities);
 
 #endif /* !SYSTEM_HPP_ */
