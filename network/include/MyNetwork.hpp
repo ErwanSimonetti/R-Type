@@ -42,7 +42,7 @@ class MyNetwork {
             } 
         }
 
-        void UDPReceiveClient(std::function<void(ServerData)> func, bool shouldCallback);
+        void UDPReceiveClient(std::function<void(char *)> func, bool shouldCallback);
         void UDPReceiveServer(std::function<void(char *)> func);
 
         void addEndpoint(boost::asio::ip::udp::endpoint endpoint);
