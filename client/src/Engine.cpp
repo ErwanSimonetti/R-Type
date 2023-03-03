@@ -107,13 +107,12 @@ void Engine::sendData(ClientData data)
 
 void Engine::runNetwork() 
 {
-    _proto->askConnection();
     _network.UDPReceiveClient(std::bind(&Engine::updateRegistry, this, std::placeholders::_1), true);
     _network.getIOService().run();
     std::cout << "Thread NETWORK exiting..." << std::endl;
 }
 
-void Engine::updateRegistry(ServerData data)
+void Engine::updateRegistry(char *message)
 {
     GameData gameData[4];
 
@@ -124,7 +123,7 @@ void Engine::updateRegistry(ServerData data)
         memcpy(gameData[i].inputs, data.inputs[i], sizeof(uint16_t) * 10);
     }
 
-    _game->updateRegistry(_reg, gameData);
+    // _game->updateRegistry(_reg, gameData);
 }
 
 void Engine::runGame() 

@@ -16,9 +16,10 @@ struct Header {
     uint16_t dataSize;
 };
 
-struct ClientData {
+struct ClientDataSimplified {
     int16_t entity;
     uint16_t inputs[10];
+};
 
 struct ClientData
 {
@@ -45,6 +46,16 @@ struct ServerData {
     uint16_t posX[4];
     uint16_t posY[4];
     uint16_t inputs[4][10];
+};
+
+struct EntityInformation
+{
+    int16_t entities;
+    uint16_t posX;
+    uint16_t posY;
+    int16_t directionsX;
+    int16_t directionsY;
+    uint16_t hasShot;
 };
 
 struct ConnectionStatus

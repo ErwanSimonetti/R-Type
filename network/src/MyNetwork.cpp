@@ -46,11 +46,6 @@ void MyNetwork::addEndpoint(boost::asio::ip::udp::endpoint endpoint)
     _endpoints.emplace_back(endpoint);
 }
 
-void MyNetwork::setProtocol(std::shared_ptr<Protocol::IProtocol> iproto)
-{
-    _protocol = iproto;
-}
-
 boost::asio::ip::udp::endpoint MyNetwork::getServerEndpoint()
 {
     return _endpoints.at(0);
@@ -71,7 +66,7 @@ std::vector<boost::asio::ip::udp::endpoint> &MyNetwork::getEndpoints()
     return _endpoints;
 }
 
-void MyNetwork::UDPReceiveClient(std::function<void(char *, boost::asio::ip::udp::endpoint)> func, bool shouldCallback) 
+void MyNetwork::UDPReceiveClient(std::function<void(char *)> func, bool shouldCallback) 
 {
     std::memset(_recvBuffer, '\0', 1024);
     _shouldCallback = shouldCallback;
@@ -79,13 +74,13 @@ void MyNetwork::UDPReceiveClient(std::function<void(char *, boost::asio::ip::udp
     [this, func] (boost::system::error_code ec, std::size_t recvd_bytes) {
         if (ec || recvd_bytes <= 0 && _shouldCallback)
             UDPReceiveClient(func, _shouldCallback);
-        func(_recvBuffer, _receiverEndpoint);
+        func(_recvBuffer);
         if (_shouldCallback)
             UDPReceiveClient(func, _shouldCallback);
     });
 };
 
-void MyNetwork::UDPReceiveServer(std::function<void(char *, boost::asio::ip::udp::endpoint endpoint)> func) 
+void MyNetwork::UDPReceiveServer(std::function<void(char *)> func) 
 {
     std::memset(_recvBuffer, '\0', 1024);
     _socket.async_receive_from(boost::asio::buffer(_recvBuffer), _endpoint,
@@ -94,8 +89,13 @@ void MyNetwork::UDPReceiveServer(std::function<void(char *, boost::asio::ip::udp
         {
             if (ec || recvd_bytes <= 0)
                 UDPReceiveServer(func);
-            func(_recvBuffer, _endpoint);
+            func(_recvBuffer);
             UDPReceiveServer(func);
         }
     });
 };
+
+void MyNetwork::manageMessageReceive(char *message, boost::asio::ip::udp::endpoint endpointSender)
+{
+
+}

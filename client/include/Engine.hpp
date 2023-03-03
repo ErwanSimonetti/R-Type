@@ -89,7 +89,7 @@ class Engine {
          * 
          * @param data struct corresponding to every player's data
          */
-        void updateRegistry(ServerData data);
+        void updateRegistry(char *message);
     
         /**
          * @brief Runs network threads

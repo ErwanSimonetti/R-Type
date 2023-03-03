@@ -12,8 +12,6 @@
 #include <iostream>
 #include <vector>
 
-#include "IProtocol.hpp"
-
 class MyNetwork {
     public:
         MyNetwork(boost::asio::io_service &io_service, const std::string& host, const std::string& port);
@@ -27,15 +25,14 @@ class MyNetwork {
             });
         }
 
-        void UDPReceiveClient(std::function<void(char *, boost::asio::ip::udp::endpoint)> func, bool shouldCallback);
-        void UDPReceiveServer(std::function<void(char *, boost::asio::ip::udp::endpoint)> func);
+        void UDPReceiveClient(std::function<void(char *)> func, bool shouldCallback);
+        void UDPReceiveServer(std::function<void(char *)> func);
 
         void addEndpoint(boost::asio::ip::udp::endpoint endpoint);
         bool isNewEndpoint(boost::asio::ip::udp::endpoint endpoint);
-        void setProtocol(std::shared_ptr<Protocol::IProtocol> iproto);
+        void manageMessageReceive(char *message, boost::asio::ip::udp::endpoint endpointSender);
         boost::asio::ip::udp::endpoint getServerEndpoint();
         boost::asio::io_service &getIOService();
-        // Protocol &getProtocol();
         std::vector<boost::asio::ip::udp::endpoint> &getEndpoints();
         bool _isSuspendClient;
         bool _shouldCallback;
@@ -45,7 +42,6 @@ class MyNetwork {
         std::vector<boost::asio::ip::udp::endpoint> _endpoints;
         boost::asio::ip::udp::endpoint _endpoint;
         boost::asio::ip::udp::endpoint _receiverEndpoint;
-        std::shared_ptr<Protocol::IProtocol> _protocol;
         boost::asio::ip::udp::socket _socket;
         boost::asio::io_service &_io_services;
         char _recvBuffer[1024];
