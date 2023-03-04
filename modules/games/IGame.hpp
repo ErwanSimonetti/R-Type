@@ -61,7 +61,7 @@ class IGame {
          * @param r the registery comming from the Game Engine
          * @param data struct corresponding to every players's datas
          */
-        virtual void updateRegistry(registry &r, const GameData data[4]) = 0;
+        virtual void updateRegistry(registry &r, const std::vector<GameData> &data) = 0;
 
     protected:
     private:

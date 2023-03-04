@@ -159,9 +159,9 @@ void Rtype::handleInputs(registry &r, size_t entity, const uint16_t inputs[10])
 }
 
 // client receive
-void Rtype::updateRegistry(registry &r, const GameData data[4])
+void Rtype::updateRegistry(registry &r, const std::vector<GameData> &data)
 {
-    for (int i = 0; i < 4; i++) {
+    for (int i = 0; i < data.size(); i++) {
         if (data[i].entity == -1) {
             continue;
         }

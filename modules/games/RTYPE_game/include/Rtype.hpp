@@ -39,7 +39,7 @@ class Rtype : public IGame {
          */
         void updateRegistry(registry &r, const GameData &data);
 
-        void updateRegistry(registry &r, const GameData data[4]);
+        void updateRegistry(registry &r, const std::vector<GameData> &data);
         
         /** 
          * @brief Function used to create a friendly "character" entity, giving it an id, and various parameters 

@@ -100,19 +100,20 @@ void Engine::sendData(ClientData data)
 
 void Engine::updateRegistry(char *data)
 {
-    GameData gameData[4];
     Header* headerDeserialized = reinterpret_cast<Header*>(data);
+    std::vector<GameData> gameData;
 
     if (headerDeserialized->_id == 3) {
         ServerData* dataDeserialized = reinterpret_cast<ServerData*>(data + sizeof(Header));
         for (int i = 0; i < 4; i++) {
-            gameData[i].entity = dataDeserialized->entities[i];
-            gameData[i].posX = dataDeserialized->posX[i];
-            gameData[i].posY = dataDeserialized->posY[i];
-            memcpy(gameData[i].inputs, dataDeserialized->inputs[i], sizeof(uint16_t) * 10);
+            GameData temp;
+            temp.entity = dataDeserialized->entities[i];
+            temp.posX = dataDeserialized->posX[i];
+            temp.posY = dataDeserialized->posY[i];
+            memcpy(temp.inputs, dataDeserialized->inputs[i], sizeof(uint16_t) * 10);
+            gameData.emplace_back(temp);
         }
     }
-
     _game->updateRegistry(_reg, gameData);
 }
 
