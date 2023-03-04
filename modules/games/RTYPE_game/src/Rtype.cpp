@@ -21,7 +21,7 @@ Rtype::~Rtype()
 {
 }
 
-std::vector<entity> Rtype::getPLayers() const 
+std::vector<entity> Rtype::getPlayers() const 
 {
     return _players;
 }
