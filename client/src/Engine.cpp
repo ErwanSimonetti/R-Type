@@ -89,11 +89,11 @@ void Engine::sendData(ClientData data)
 {
     std::vector<char> buffer;
     Header header{3};
-    buffer.reserve(sizeof(Header) + sizeof(ClientData));
-
     const char* headerBytes = _network.getProtocol().serialiseData<Header>(header);
-    buffer.insert(buffer.end(), headerBytes, headerBytes + sizeof(Header));
     const char* dataBytes = _network.getProtocol().serialiseData<ClientData>(data);
+
+    buffer.reserve(sizeof(Header) + sizeof(ClientData));
+    buffer.insert(buffer.end(), headerBytes, headerBytes + sizeof(Header));
     buffer.insert(buffer.end(), dataBytes, dataBytes + sizeof(ClientData));
     _network.udpSend(buffer.data(), buffer.size(), _network.getServerEndpoint());
 }
