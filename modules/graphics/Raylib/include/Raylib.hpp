@@ -30,7 +30,7 @@ class Raylib : public IGraphic {
         ~Raylib();
         void draw_particles(sparse_array<Position> const &positions, sparse_array<Drawable> &drawables, sparse_array<Particulable> &particles);
         void sound_system(sparse_array<SoundEffect> &sound);
-        void draw_system(sparse_array<Position> const &positions, sparse_array<Drawable> &drawables, sparse_array<Particulable> &particles);
+        void draw_system(sparse_array<Position> const &positions, sparse_array<Drawable> &drawables, sparse_array<Particulable> &particles, sparse_array<DrawableText> &drawableText);
         void animation_system(sparse_array<Animatable> &animatables, sparse_array<Drawable> &drawables);
         void createModel(uint16_t type, std::string texture, std::string model, std::string animation);
         Events run_graphic(registry &r);
