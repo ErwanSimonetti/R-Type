@@ -55,7 +55,7 @@ void Engine::loadModules(std::string libName, MODULE_TYPE type)
             create_d_graphic newGraphic = (create_d_graphic)library.getFunction(lib, "createLibrary");  
             _graphic = newGraphic();
             _reg.add_system<Animatable, Drawable>(std::bind(&IGraphic::animation_system, _graphic, std::placeholders::_1, std::placeholders::_2));
-            _reg.add_system<Position, Drawable, Particulable, DrawableText>(std::bind(&IGraphic::draw_system, _graphic, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3, std::placeholders::_4));
+            _reg.add_system<Position, Drawable, Particulable, DrawableText>(std::bind(&IGraphic::draw_system, _graphic, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3, std::placeholders::_4)); 
             _reg.add_system<SoundEffect>(std::bind(&IGraphic::sound_system, _graphic, std::placeholders::_1));
             break;
         }
