@@ -9,6 +9,8 @@
 #include <map>
 #include <functional>
 #include <bits/stdc++.h>
+
+#include "DeleteEntities.hpp"
 #include "registry.hpp"
 #include "MyNetwork.hpp"
 #include "entity.hpp"
@@ -135,7 +137,7 @@ namespace CLI
             std::cerr << "failed to kill entity '" << idToKill << "'." << std::endl;
     }
 
-    void listPlayers(MyNetwork &network, const std::string &args)
+    void listPlayers(MyNetwork &network, registry &reg, const std::string &args)
     {
         std::vector<EndpointInformation> endpoints = network.getEndpoints();
 
@@ -149,7 +151,7 @@ namespace CLI
         }
     }
 
-    void kickPlayer(MyNetwork &network, const std::string &args)
+    void kickPlayer(MyNetwork &network, registry &reg, const std::string &args)
     {
         EndpointInformation endpointPlayer;
         std::istringstream iss(args);
@@ -175,15 +177,19 @@ namespace CLI
             return;
         }
         network.getEndpoints().at(idToKick)._isAccepted = false; // FIXME(Erwan): done to kick player : currently changing this boolean does nothing
-        if (network.getEndpoints().at(idToKick)._isAccepted == false)
+        if (network.getEndpoints().at(idToKick)._isAccepted == false) {
             std::cout << "player '" << idToKick << "' kicked successfully" << std::endl;
+            std::cout << "Adress:'" << network.getEndpoints().at(idToKick)._endpoint.address() << "' has been kicked successfully" << std::endl;
+            reg.kill_entity(entity(idToKick));
+            CLI::sendDestroyEntityMessage(4, idToKick, network);
+        }
         if (network.getEndpoints().at(idToKick)._isAccepted == true)
             std::cout << "failed to kick player '" << idToKick << "'" << std::endl;
     }
 
     typedef std::map<std::string, std::function<void()>> script_map;
     typedef std::map<std::string, std::function<void(registry &, std::string &)>> script_map_registry;
-    typedef std::map<std::string, std::function<void(MyNetwork &, std::string &)>> script_map_network;    
+    typedef std::map<std::string, std::function<void(MyNetwork &, registry &reg, std::string &)>> script_map_network;    
 
     script_map functionsNoArgs = {
         {"help", displayHelp},
@@ -216,9 +222,22 @@ namespace CLI
         else if (functionsRegistry.find(command) != functionsRegistry.end())
             functionsRegistry[command](reg, args);
         else if (functionsNetwork.find(command) != functionsNetwork.end())
-            functionsNetwork[command](network, args);
+            functionsNetwork[command](network, reg, args);
         else
             std::cout << "command not recognized : '" << command << 
             "'. use `help` to see commands available." << std::endl;
+    }
+
+    void sendDestroyEntityMessage(const int &headerValue, const int &idEntity, MyNetwork &network)
+    {
+        std::vector<char> buffer;
+        Header header{headerValue};
+        const char* headerBytes = network.getProtocol().serialiseData<Header>(header);
+        const char* dataBytes = network.getProtocol().serialiseData<DeleteEntities>(DeleteEntities{idEntity});
+
+        buffer.reserve(sizeof(Header) + sizeof(DeleteEntities));
+        buffer.insert(buffer.end(), headerBytes, headerBytes + sizeof(Header));
+        buffer.insert(buffer.end(), dataBytes, dataBytes + sizeof(DeleteEntities));
+        network.udpSendToAllClients(buffer.data(), buffer.size());
     }
 }

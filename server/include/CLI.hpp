@@ -14,6 +14,7 @@
 
 namespace CLI {
     void launchSearchedFunction(std::string &line, registry &reg, MyNetwork &network);
+    void sendDestroyEntityMessage(const int &headerValue, const int &idEntity, MyNetwork &network);
     void displayHelp();
 };
 
