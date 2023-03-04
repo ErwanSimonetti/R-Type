@@ -142,8 +142,10 @@ void jump_system(registry &r, sparse_array<Position> &positions, sparse_array<Ve
         if (pos && jump && gravity && vel && jump.value()._canJump == false) {
             if (pos.value()._y > jump.value()._jumpHeight) {
                 vel.value().set_component(vel.value()._vX, -vel.value()._speedY);
+            } else {
+                vel.value().set_component(vel.value()._vX, vel.value()._speedY);
             }
-            vel.value().set_component(vel.value()._vX, vel.value()._speedY + gravity.value()._force);
+            vel.value().set_component(vel.value()._vX, vel.value()._vY + gravity.value()._force);
         }
     }
 }

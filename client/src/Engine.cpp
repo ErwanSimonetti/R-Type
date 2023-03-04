@@ -11,6 +11,7 @@ Engine::Engine(boost::asio::io_service &io_service, const std::string &host, con
 {
     loadModules(gameModulePath, MODULE_TYPE::GAME);
     _graphicPath = graphicModulePath;
+
     _reg.register_component<Position>();
     _reg.register_component<Velocity>();
     _reg.register_component<Drawable>();
@@ -21,11 +22,14 @@ Engine::Engine(boost::asio::io_service &io_service, const std::string &host, con
     _reg.register_component<Parallax>();
     _reg.register_component<FollowPath>();
     _reg.register_component<Shootable>();
+    _reg.register_component<Jump>();
+    _reg.register_component<Gravity>();
 
     _reg.add_system<Position, Hitbox>(collision_system);
     _reg.add_system<Position, Velocity, Controllable>(position_system);
     _reg.add_system<Shootable>(shoot_system);
     _reg.add_system<Animatable, Position, Parallax>(parallax_system);
+    _reg.add_system<Position, Velocity, Jump, Gravity>(jump_system);
 }
 
 Engine::~Engine()

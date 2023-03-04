@@ -50,9 +50,9 @@ class OtherGame : public IGame {
          * @param posX uint16_t corresponding to the vertical position
          * @param posY uint16_t corresponding to the horizontal position
          **/
-        void create_player(registry &r, entity newEntity, bool isControllable, const int16_t velX, const int16_t velY, const uint16_t posX, const uint16_t posY);
+        void create_player(registry &r, entity newEntity, bool isControllable, const int16_t velX, const int16_t velY, const int16_t posX, const int16_t posY, const int16_t posZ);
 
-        void create_static(registry &r, entity newEntity, const uint16_t posX, const uint16_t posY, OBJECT type);
+        void create_static(registry &r, entity newEntity, const int16_t posX, const int16_t posY, const int16_t posZ, uint16_t type);
         
     protected:
         void handleInputs(registry &r, size_t entity, const uint16_t inputs[10]);

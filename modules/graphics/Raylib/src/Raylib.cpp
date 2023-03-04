@@ -36,11 +36,11 @@ void Raylib::constructFromJson()
 void Raylib::createCamera()
 {
     _camera = { 0 };
-    _camera.position = (Vector3){ 4.0f, 20.0f, 0.0f };  // Camera position
-    _camera.target = (Vector3){ 0.0f, 0.0f, 0.0f };    // Camera looking at point
-    _camera.up = (Vector3){ 0.0f, 1.0f, 0.0f };         // Camera up vector (rotation towards target)
-    _camera.fovy = 45.0f;                               // Camera field-of-view Y
-    _camera.projection = CAMERA_PERSPECTIVE;  
+    _camera.position = (Vector3){ 5.0f, 120.0f, 200.0f };   // Camera position
+    _camera.target = (Vector3){ 0.0f, 0.0f, 0.0f };         // Camera looking at point
+    _camera.up = (Vector3){ 0.0f, 1.0f, 0.0f };             // Camera up vector (rotation towards target)
+    _camera.fovy = 45.0f;                                   // Camera field-of-view Y
+    _camera.projection = CAMERA_PERSPECTIVE;
 }
 
 void Raylib::createModel(uint16_t type, std::string texture, std::string model, std::string animation) 
@@ -52,7 +52,7 @@ void Raylib::createModel(uint16_t type, std::string texture, std::string model, 
     asset.model.transform = MatrixRotateXYZ({ 0.0f, 0.0f, 0.0f });
     unsigned int animsmodel = 0;
     asset.animation = LoadModelAnimations(animation.c_str(), &animsmodel);
-    asset.size = {0.10f, 0.10f, 0.10f};
+    asset.size = {10.00f, 10.00f, 10.00f};
     _models.insert(std::pair<uint16_t, Asset>(type, asset));
 }
 
@@ -67,16 +67,16 @@ void Raylib::animation_system(sparse_array<Animatable> &animatables, sparse_arra
             auto model = _models.find(draw.value()._type)->second;
             if (!model.animation || !IsModelReady(model.model)) {
                 continue;
-        }
+            }
             auto currentTime = std::chrono::high_resolution_clock::now();
             auto elapsedTime = std::chrono::duration_cast<std::chrono::milliseconds>(currentTime - anim.value()._clock);
-                if ( anim.value()._refreshPoint == nullptr || *anim.value()._refreshPoint >= _models.find(draw.value()._type)->second.animation[0].frameCount) 
-                    anim.value()._refreshPoint = std::make_shared<int>(0);
+            if ( anim.value()._refreshPoint == nullptr || *anim.value()._refreshPoint >= _models.find(draw.value()._type)->second.animation[anim.value()._animationIndex].frameCount) 
+                anim.value()._refreshPoint = std::make_shared<int>(0);
 
-                if (elapsedTime.count() >= 30) {
-                        *anim.value()._refreshPoint += 1;
-                        UpdateModelAnimation(_models.find(draw.value()._type)->second.model, _models.find(draw.value()._type)->second.animation[0], *anim.value()._refreshPoint);
-                        anim.value()._clock = currentTime;
+            if (elapsedTime.count() >= 30) {
+                    *anim.value()._refreshPoint += 1;
+                    UpdateModelAnimation(_models.find(draw.value()._type)->second.model, _models.find(draw.value()._type)->second.animation[anim.value()._animationIndex], *anim.value()._refreshPoint);
+                    anim.value()._clock = currentTime;
             }
         }
     }
@@ -84,9 +84,11 @@ void Raylib::animation_system(sparse_array<Animatable> &animatables, sparse_arra
 
 Events get_event() {
     Events newEvent;
-    for (auto &it: KeyboardMap)
+    for (auto &it: KeyboardMap) {
         if (IsKeyDown(it.first)) 
             newEvent.inputs.emplace_back(it.second);
+    }
+    newEvent.inputs.emplace_back(KEYBOARD::NONE);
     return newEvent;
 }
 
@@ -105,11 +107,13 @@ Events get_event() {
         if (draw && pos) {
             if (!_models.count(draw.value()._type))
                 continue;
-            DrawModelEx(_models.find(draw.value()._type)->second.model , (Vector3){ pos.value()._x , 0.0f, pos.value()._y }, (Vector3){ 0.0f, 0.0f, 0.0f }, 0.0f, (Vector3){ 1.0f, 1.0f, 1.0f }, WHITE);
+            _models.find(draw.value()._type)->second.model.transform = MatrixRotateXYZ((Vector3){ 
+                DEG2RAD*draw.value()._rotation.x, DEG2RAD*draw.value()._rotation.y, DEG2RAD*draw.value()._rotation.z });
+
+            DrawModel(_models.find(draw.value()._type)->second.model , (Vector3){ float(pos.value()._x) , float(pos.value()._y), float(pos.value()._z) }, draw.value()._scale, WHITE);
         }
 
     }
-    DrawGrid(10, 1.0f); 
     _window.stop3DMode();
     _window.endDrawing();
 
@@ -117,5 +121,5 @@ Events get_event() {
 
 
 Events Raylib::run_graphic(registry &reg) {
-    // return get_event();
+    return get_event();
 }

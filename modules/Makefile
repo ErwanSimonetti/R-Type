@@ -78,7 +78,7 @@ all:		sfml raylib rtype otherg
 
 graphic:	sfml raylib
 
-game:		rtype
+game:		rtype otherg
 
 sfml:		$(NAME_SFML)
 

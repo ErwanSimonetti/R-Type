@@ -10,7 +10,7 @@
 
 Engine::Engine(boost::asio::io_service &io_service, const std::string &host, const std::string &port, const std::string &gameModulePath) : _reg(), _network(io_service, port)
 {
-    loadModules("./modules/rtype.so", MODULE_TYPE::GAME);
+    loadModules(gameModulePath, MODULE_TYPE::GAME);
 
     _reg.register_component<Position>();
     _reg.register_component<Velocity>();
@@ -22,6 +22,8 @@ Engine::Engine(boost::asio::io_service &io_service, const std::string &host, con
     _reg.register_component<Parallax>();
     _reg.register_component<FollowPath>();
     _reg.register_component<Shootable>();
+    _reg.register_component<Jump>();
+    _reg.register_component<Gravity>();
 
     _reg.add_system<Position, Velocity, Controllable>(position_system);
     _reg.add_system<Shootable>(shoot_system);
