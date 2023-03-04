@@ -35,5 +35,5 @@ struct Stats {
         return output;
     }
     int16_t _health;
-    int16_t *_score = new int16_t(0);
+    std::shared_ptr<int16_t>_score = std::make_shared<int16_t>(0);
 };

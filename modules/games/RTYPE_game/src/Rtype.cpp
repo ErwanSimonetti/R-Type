@@ -25,7 +25,7 @@ std::vector<entity> Rtype::getPLayers() const
     return _players;
 }
 
-void Rtype::create_score(registry &r, entity newEntity, int16_t parentId, int16_t *score)
+void Rtype::create_score(registry &r, entity newEntity, int16_t parentId, std::shared_ptr<int16_t>score)
 {
     r.emplace_component<DrawableText>(newEntity, score);
     r.emplace_component<Pet>(newEntity, parentId);
@@ -110,6 +110,11 @@ void Rtype::initGame(registry &r)
     create_parallax(r, r.spawn_entity(), 0, 0, 9, PARA_3);
     create_parallax(r, r.spawn_entity(), 1920, 346, 12, PARA_4);
     create_parallax(r, r.spawn_entity(), 0, 346, 12, PARA_4);
+
+    create_enemy_entity(r, r.spawn_entity(), 1, 1, 1000, 10);
+    create_enemy_entity(r, r.spawn_entity(), 1, 1, 1000, 20);
+    create_enemy_entity(r, r.spawn_entity(), 1, 1, 1000, 30);
+    create_enemy_entity(r, r.spawn_entity(), 1, 1, 1000, 40);
 }
 
 void Rtype::handleInputs(registry &r, size_t entity, const uint16_t inputs[10])

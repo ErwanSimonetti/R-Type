@@ -16,8 +16,8 @@ struct DrawableText {
 
     DrawableText() = default;
 
-    void set_component(int16_t *score) {
+    void set_component(std::shared_ptr<int16_t>score) {
         _score = score;
     }
-    int16_t *_score;
+    std::shared_ptr<int16_t> _score;
 };

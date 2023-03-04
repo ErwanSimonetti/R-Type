@@ -41,7 +41,7 @@ class Rtype : public IGame {
 
         void updateRegistry(registry &r, const GameData data[4]);
         void checkStats(sparse_array<Hitbox> &hbxs, sparse_array<Stats> &sts, sparse_array<Pet> &pets);
-        void create_score(registry &r, entity newEntity, int16_t parentId, int16_t *score);
+        void create_score(registry &r, entity newEntity, int16_t parentId, std::shared_ptr<int16_t>score);
 
         /** 
          * @brief Function used to create a friendly "character" entity, giving it an id, and various parameters 
