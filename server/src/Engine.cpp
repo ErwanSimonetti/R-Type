@@ -91,10 +91,15 @@ ServerData Engine::buildServerData(size_t id, uint16_t inputs[10])
 
 void Engine::sendData(ServerData data) 
 {
-    char buffer[1024];
-    std::memcpy(buffer, _network.getProtocol().serialiseData<Header>(Header{3}), sizeof(Header));
-    std::memcpy(buffer + sizeof(Header), _network.getProtocol().serialiseData<ServerData>(data), sizeof(ServerData));
-    _network.udpSendToAllClients(buffer, sizeof(buffer));
+    std::vector<char> buffer;
+    Header header{3};
+    const char* headerBytes = _network.getProtocol().serialiseData<Header>(header);
+    const char* dataBytes = _network.getProtocol().serialiseData<ServerData>(data);
+
+    buffer.reserve(sizeof(Header) + sizeof(ServerData));
+    buffer.insert(buffer.end(), headerBytes, headerBytes + sizeof(Header));
+    buffer.insert(buffer.end(), dataBytes, dataBytes + sizeof(ServerData));
+    _network.udpSendToAllClients(buffer.data(), buffer.size());
 }
 
 void Engine::updateRegistry(char *data)
