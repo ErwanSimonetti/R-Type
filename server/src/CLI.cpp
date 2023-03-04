@@ -176,16 +176,24 @@ namespace CLI
             std::cout << "player '" << idToKick << "' already out of game" << std::endl;
             return;
         }
-        network.getEndpoints().at(idToKick)._isAccepted = false; // FIXME(Erwan): done to kick player : currently changing this boolean does nothing
-        if (network.getEndpoints().at(idToKick)._isAccepted == false) {
-            std::cout << "player '" << idToKick << "' kicked successfully" << std::endl;
-            std::cout << "Adress:'" << network.getEndpoints().at(idToKick)._endpoint.address() << "' has been kicked successfully" << std::endl;
-            // reg.kill_entity(entity(func()[idToKick]));
-            // CLI::sendDestroyEntityMessage(4, static_cast<size_t>(func()[idToKick]), network);
-            CLI::sendHeaderExpulse(5, network, network.getEndpoints().at(idToKick)._endpoint);
+        reg.kill_entity(entity(func()[idToKick]));
+        CLI::sendDestroyEntityMessage(4, static_cast<size_t>(func()[idToKick]), network);
+        CLI::sendHeaderExpulse(5, network, network.getEndpoints().at(idToKick)._endpoint);
+        auto it =  network.getEndpoints().begin() + idToKick;
+        network.getEndpoints().erase(it);
+        std::vector<entity> players = func();
+        auto ite = find(players.begin(), players.end(), entity(func()[idToKick]));
+        if (ite != players.end()) {
+            players.erase(ite);
         }
-        if (network.getEndpoints().at(idToKick)._isAccepted == true)
-            std::cout << "failed to kick player '" << idToKick << "'" << std::endl;
+        // my_vector.erase(it);
+        // network.getEndpoints().at(idToKick)._isAccepted = false; // FIXME(Erwan): done to kick player : currently changing this boolean does nothing
+        // if (network.getEndpoints().at(idToKick)._isAccepted == false) {
+        //     std::cout << "player '" << idToKick << "' kicked successfully" << std::endl;
+        //     std::cout << "Adress:'" << network.getEndpoints().at(idToKick)._endpoint.address() << "' has been kicked successfully" << std::endl;
+        // }
+        // if (network.getEndpoints().at(idToKick)._isAccepted == true)
+        //     std::cout << "failed to kick player '" << idToKick << "'" << std::endl;
     }
 
     typedef std::map<std::string, std::function<void()>> script_map;

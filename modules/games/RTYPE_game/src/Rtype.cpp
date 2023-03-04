@@ -21,7 +21,7 @@ Rtype::~Rtype()
 {
 }
 
-std::vector<entity> Rtype::getPlayers() const 
+std::vector<entity> &Rtype::getPlayers() 
 {
     return _players;
 }
@@ -199,7 +199,6 @@ void Rtype::handleInputs(registry &r, size_t entity, const uint16_t inputs[10])
 void Rtype::updateRegistry(registry &r, const GameData data[4])
 {
     for (int i = 0; i < 4; i++) {
-        std::cout << "Update Registry\n";
         if (data[i].entity == -1) {
             continue;
         }
@@ -280,4 +279,9 @@ std::vector<GAME_EVENT> Rtype::run_gameLogic(registry &r)
     checkStats(r.get_components<Hitbox>(), r.get_components<Stats>(), r.get_components<Pet>());
     menuEvent(r, r.get_components<Cliquable>());
     return _gameEvents;
+}
+
+void Rtype::setPlayers(std::vector<entity> newPlayers)
+{
+    _players = newPlayers;
 }
