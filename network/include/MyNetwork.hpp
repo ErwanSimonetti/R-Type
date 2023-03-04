@@ -26,21 +26,8 @@ class MyNetwork {
         MyNetwork(boost::asio::io_service& io_service, const std::string &port);
         ~MyNetwork();
         
-        void udpSend(char *buffer, const std::size_t &sizeOfBuffer, boost::asio::ip::udp::endpoint endpoint) {
-            _socket.async_send_to(boost::asio::buffer(buffer, sizeOfBuffer), endpoint,
-                [this, buffer, endpoint](boost::system::error_code ec, std::size_t bytes_sent) 
-            {
-            });
-        }
-
-        void udpSendToAllClients(char *buffer, std::size_t const& sizeOfBuffer) {
-            for (int i = 0; i < _endpoints.size(); i++) {
-                _socket.async_send_to(boost::asio::buffer(buffer, 1024), _endpoints.at(i)._endpoint,
-                    [this](boost::system::error_code ec, std::size_t bytes_sent) 
-                {
-                });
-            } 
-        }
+        void udpSend(char *buffer, const std::size_t &sizeOfBuffer, boost::asio::ip::udp::endpoint endpoint);
+        void udpSendToAllClients(char *buffer, std::size_t const& sizeOfBuffer);
 
         void UDPReceiveClient(std::function<void(char *)> func, bool shouldCallback);
         void UDPReceiveServer(std::function<void(char *)> func);
