@@ -10,7 +10,7 @@
 
 Engine::Engine(boost::asio::io_service &io_service, const std::string &host, const std::string &port, const std::string &gameModulePath) : _reg(), _network(io_service, port)
 {
-    loadModules("./modules/rtype.so", MODULE_TYPE::GAME);
+    loadModules(gameModulePath, MODULE_TYPE::GAME);
 
     _reg.register_component<Position>();
     _reg.register_component<Velocity>();

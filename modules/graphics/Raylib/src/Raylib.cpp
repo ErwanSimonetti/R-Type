@@ -15,7 +15,7 @@ extern "C" std::shared_ptr<IGraphic> createLibrary()
 Raylib::Raylib() : _window(1920, 1080, "R-TYPE")
 {
     createCamera();
-    constructFromJson();   
+    constructFromJson();
 }
 
 Raylib::~Raylib()
