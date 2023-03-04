@@ -17,7 +17,11 @@
 namespace CLI
 {
     std::vector<std::string> commandsAvailable = {
-        "help", "exit", "list_entities (optionnal) <size_t> [entity1] [entity2] ...", "spawn (optionnal) <size_t> [entity]", "kill <size_t> [entity]"
+        "help", "exit",
+        "list_entities (optionnal) <size_t> [entity1] [entity2] ...",
+        "spawn (optionnal) <size_t> [entity]", "kill <size_t> [entity]",
+        "list_players (optionnal) <size_t> [entity1] [entity2] ...",
+        "kick <size_t> [player]"
     };
 
     void displayHelp()
@@ -25,7 +29,7 @@ namespace CLI
         std::cout << "- - - HELP MENU - - -" << std::endl << std::endl;
         std::cout << "commands :" << std::endl;
         for(std::size_t i = 0; i < commandsAvailable.size(); i += 1) {
-            std::cout << "\t" << commandsAvailable[i] << std::endl;
+            std::cout << "\t- " << commandsAvailable[i] << std::endl;
         }
         std::cout << std::endl;
     }
@@ -131,8 +135,55 @@ namespace CLI
             std::cerr << "failed to kill entity '" << idToKill << "'." << std::endl;
     }
 
+    void listPlayers(MyNetwork &network, const std::string &args)
+    {
+        std::vector<EndpointInformation> endpoints = network.getEndpoints();
+
+        for (size_t i = 0; i < endpoints.size(); i += 1) {
+            std::cout << "- - - endpoint '" << i << "' - - -" << std::endl;
+            std::cout << "accepted: " << endpoints.at(i)._isAccepted << std::endl;
+            std::cout << "port: " << endpoints.at(i)._endpoint.port() << std::endl;
+            std::cout << "address: " << endpoints.at(i)._endpoint.address() << std::endl;
+            if (i + 1 < endpoints.size())
+                std::cout << std::endl;
+        }
+    }
+
+    void kickPlayer(MyNetwork &network, const std::string &args)
+    {
+        EndpointInformation endpointPlayer;
+        std::istringstream iss(args);
+        std::string playerIdToKillStr;
+        int idToKick = -1;
+
+        if (args.empty()) {
+            std::cout << "expecting an argument. Use `help`to get more details." << std::endl;
+            return;
+        }
+        std::getline(iss, playerIdToKillStr, ' ');
+        if (playerIdToKillStr.empty()) {
+            std::cout << "empty arg." << std::endl;
+            return;
+        }
+        idToKick = std::stoi(playerIdToKillStr);
+        if (idToKick < 0) {
+            std::cout << "player id must be superior to 0." << std::endl;
+            return;
+        }
+        if (network.getEndpoints().at(idToKick)._isAccepted == false) {
+            std::cout << "player '" << idToKick << "' already out of game" << std::endl;
+            return;
+        }
+        network.getEndpoints().at(idToKick)._isAccepted = false; // FIXME(Erwan): done to kick player : currently changing this boolean does nothing
+        if (network.getEndpoints().at(idToKick)._isAccepted == false)
+            std::cout << "player '" << idToKick << "' kicked successfully" << std::endl;
+        if (network.getEndpoints().at(idToKick)._isAccepted == true)
+            std::cout << "failed to kick player '" << idToKick << "'" << std::endl;
+    }
+
     typedef std::map<std::string, std::function<void()>> script_map;
     typedef std::map<std::string, std::function<void(registry &, std::string &)>> script_map_registry;
+    typedef std::map<std::string, std::function<void(MyNetwork &, std::string &)>> script_map_network;    
 
     script_map functionsNoArgs = {
         {"help", displayHelp},
@@ -143,6 +194,11 @@ namespace CLI
         {"list_entities", listEntities},
         {"spawn", spawnEntity},
         {"kill", killEntity},
+    };
+
+    script_map_network functionsNetwork = {
+        {"list_players", listPlayers},
+        {"kick", kickPlayer},
     };
 
     void launchSearchedFunction(std::string &line, registry &reg, MyNetwork &network)
@@ -157,9 +213,10 @@ namespace CLI
         std::transform(command.begin(), command.end(), command.begin(), ::tolower);
         if (functionsNoArgs.find(command) != functionsNoArgs.end())
             functionsNoArgs[command]();
-        else if (functionsRegistry.find(command) != functionsRegistry.end()) {
+        else if (functionsRegistry.find(command) != functionsRegistry.end())
             functionsRegistry[command](reg, args);
-        }
+        else if (functionsNetwork.find(command) != functionsNetwork.end())
+            functionsNetwork[command](network, args);
         else
             std::cout << "command not recognized : '" << command << 
             "'. use `help` to see commands available." << std::endl;
