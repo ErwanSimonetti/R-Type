@@ -143,7 +143,7 @@ namespace CLI
             std::cout << "- - - endpoint '" << i << "' - - -" << std::endl;
             std::cout << "accepted: " << endpoints.at(i)._isAccepted << std::endl;
             std::cout << "port: " << endpoints.at(i)._endpoint.port() << std::endl;
-            std::cout << "address: " << endpoints.at(i)._endpoint.address() << std::endl;
+            std::cout << "IP address: " << endpoints.at(i)._endpoint.address() << std::endl;
             if (i + 1 < endpoints.size())
                 std::cout << std::endl;
         }
