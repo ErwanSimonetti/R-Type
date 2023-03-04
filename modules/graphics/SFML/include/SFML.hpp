@@ -8,8 +8,8 @@
 #ifndef SFML_HPP_
 #define SFML_HPP_
 
+#include "Particle.hpp"
 #include <SFML/Graphics.hpp>
-
 #include "IGraphic.hpp"
 #include "SFML_utils.hpp"
 #include <SFML/Audio.hpp>
@@ -31,6 +31,7 @@ class SFML : public IGraphic {
         void createAsset(uint16_t type, std::string texture, uint16_t width, uint16_t height, uint16_t size);
         void animation_system(sparse_array<Animatable> &animatables, sparse_array<Drawable> &drawables);
         void draw_system(sparse_array<Position> const &positions, sparse_array<Drawable> &drawables, sparse_array<Particulable> &particles, sparse_array<DrawableText> &drawableTexts);
+        void draw_particles(sparse_array<Position> const &positions, sparse_array<Drawable> &drawables, sparse_array<Particulable> &particles);
         void sound_system(sparse_array<SoundEffect> &sound);
         void initialize_rect(Drawable &draw);
         Events event_system(registry &reg);
@@ -45,6 +46,7 @@ class SFML : public IGraphic {
         std::unordered_map<uint16_t, Asset> _assets;
         std::unordered_map<uint16_t, sf::Sound> _sound;
         sf::Music _music;
+        std::vector<ParticleSystem> _particles;
 };
 
 extern "C" std::shared_ptr<IGraphic> createLibrary();

@@ -9,26 +9,28 @@
 #ifndef RAYLIBPARTICLE_HPP_
 #define RAYLIBPARTICLE_HPP_
 
-#define MAX_PARTICLE 200
+#define MAX_PARTICLE 20
 
 #include "raylib.h"
 #include <iostream>
 #include <algorithm>
+#include <SFML/Graphics.hpp>
 
 class Particle {
     public:
         
-        Particle(Vector2 &pos);
+        Particle(std::pair<int, int> &pos);
         ~Particle();
 
-        void draw();
+        void drawRaylib();
+        void drawSFML(sf::RenderWindow &window);
         void update();
 
         float _size;
-        Vector2 _velocity;
+        std::pair<int, int> _velocity;
         private:
-        Vector2 _acc;
-        Vector2 _position;
+        std::pair<int, int> _acc;
+        std::pair<int, int> _position;
 
 };
 
@@ -36,10 +38,11 @@ class ParticleSystem {
 
     public:
 		
-    ParticleSystem(Vector2& pos);
+    ParticleSystem(std::pair<int, int> & pos);
     ~ParticleSystem() = default;
 	
-    void draw();
+    void drawRaylib();
+    void drawSFML(sf::RenderWindow &window);
     
     void update();
 

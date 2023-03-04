@@ -10,7 +10,7 @@
 #include "IGraphic.hpp"
 #include "raylib.h"
 #include "raymath.h"
-#include "RaylibParticle.hpp"
+#include "Particle.hpp"
 #include "RaylibWindow.hpp"
 
 
