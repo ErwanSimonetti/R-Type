@@ -22,6 +22,8 @@
 #include "Parallax.hpp"
 #include "FollowPath.hpp"
 #include "Shootable.hpp"
+#include "Stats.hpp"
+#include "DrawableText.hpp"
 #include "Particulable.hpp"
 #include "Sound.hpp"
 #include "GameEvents.hpp"
@@ -71,5 +73,6 @@ void collision_system(registry &r, sparse_array<Position> &positions, sparse_arr
 void parallax_system(registry &r, sparse_array<Animatable> &animatable, sparse_array<Position> &positions, sparse_array<Parallax> &parallax);
 void animation_system(registry &r, sparse_array<Animatable> &animatable, sparse_array<Drawable> &drawable);
 void shoot_system(registry &r, sparse_array<Shootable> &shootable);
-
+void entity_killing_system(registry &r, sparse_array<Stats> &stats, sparse_array<Position> &positions, sparse_array<Pet> &pets);
+void update_drawable_texts_system(registry &r, sparse_array<Stats> &stats, sparse_array<DrawableText> &drawableTexts, sparse_array<Pet> &pets);
 #endif /* !SYSTEM_HPP_ */

@@ -31,5 +31,5 @@ COPY network/ /app/network
 COPY utils /app/utils
 
 RUN cd app/server && ./make_server
-RUN cd app/modules && make game
+RUN cd app/modules && rm -f *.so && make game
 CMD cd app/ && ./r-type_server ${GAME}

@@ -19,10 +19,16 @@ SFML::SFML()
     
     constructFromJson();
     set_sprite();
+    set_text();
 }
 
 SFML::~SFML()
 {
+}
+
+void SFML::set_text()
+{
+    _font.loadFromFile("./ressources/SYNNova.otf");
 }
 
 void SFML::createAsset(uint16_t type, std::string texture, uint16_t width, uint16_t height, uint16_t size)
@@ -98,7 +104,8 @@ void SFML::sound_system(sparse_array<SoundEffect> &sounds)
     }
 }
 
-void SFML::draw_system(sparse_array<Position> const &positions, sparse_array<Drawable> &drawables, sparse_array<Particulable> &particles) {
+void SFML::draw_system(sparse_array<Position> const &positions, sparse_array<Drawable> &drawables, sparse_array<Particulable> &particles, sparse_array<DrawableText> &drawableTexts)
+{
     for (size_t i = 0; i < drawables.size() && i < positions.size(); ++ i) {
         auto &draw = drawables[i];
         auto &pos = positions[i];
@@ -111,6 +118,17 @@ void SFML::draw_system(sparse_array<Position> const &positions, sparse_array<Dra
             sf::IntRect newRect = {draw.value()._rect->left, draw.value()._rect->top, draw.value()._rect->width, draw.value()._rect->height};
             _assets.find(draw.value()._type)->second._sprite.setTextureRect(newRect);
             _window->draw(_assets.find(draw.value()._type)->second._sprite);
+        }
+    }
+
+    for (size_t i = 0; i < drawableTexts.size() && i < positions.size(); ++i) {
+        auto &dbs = drawableTexts[i];
+        auto &pos = positions[i];
+        if (dbs && pos) {
+            sf::Text text("Score: " + dbs.value()._text, _font, 48);
+            text.setFillColor(sf::Color::White);
+            text.setPosition(pos.value()._x, pos.value()._y);
+            _window->draw(text);
         }
     }
 }

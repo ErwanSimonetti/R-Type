@@ -16,7 +16,6 @@
 #include "MyNetwork.hpp"
 #include "registry.hpp"
 #include "System.hpp"
-#include "GameEvents.hpp"
 #include "IGame.hpp"
 #include "LoadLibrary.hpp"
 

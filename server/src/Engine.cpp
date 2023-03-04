@@ -22,10 +22,13 @@ Engine::Engine(boost::asio::io_service &io_service, const std::string &host, con
     _reg.register_component<Parallax>();
     _reg.register_component<FollowPath>();
     _reg.register_component<Shootable>();
+    _reg.register_component<Stats>();
+    _reg.register_component<DrawableText>();
 
     _reg.add_system<Position, Velocity, Controllable>(position_system);
     _reg.add_system<Shootable>(shoot_system);
     _reg.add_system<Position, Hitbox>(collision_system);
+    _reg.add_system<Stats, Position, Pet>(entity_killing_system);
 }
 
 Engine::~Engine()

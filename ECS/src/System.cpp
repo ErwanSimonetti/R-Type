@@ -108,25 +108,48 @@ void shoot_system(registry &r, sparse_array<Shootable> &shootable)
 
 bool isCollision(Position& a, Hitbox& aHitbox, Position& b, Hitbox& bHitbox)
 {
-   return (a._x < b._x + bHitbox._width && a._x + aHitbox._width > b._x && a._y < b._y + bHitbox._height && a._y + aHitbox._height > b._y);
+   return (a._x < (b._x + bHitbox._width) && (a._x + aHitbox._width) > b._x && a._y < b._y + bHitbox._height && a._y + aHitbox._height > b._y);
 }
 
 void collision_system(registry &r, sparse_array<Position> &positions, sparse_array<Hitbox> &hitboxes)
 {
-    for (int i = 0; i < positions.size() && i < hitboxes.size(); ++i) {;
+    for (int i = 0; i < positions.size() && i < hitboxes.size(); ++i) {
         for (int j = i + 1; j < positions.size() && j < hitboxes.size(); ++j) {
             auto &hbxI = hitboxes[i];
             auto &hbxJ = hitboxes[j];
             if (positions[i] && hbxI && positions[j] && hbxJ 
                 && isCollision(positions[i].value(), hbxI.value(), positions[j].value(), hbxJ.value())) {
-                    if ((hbxI.value()._type == ENEMYSHIP && hbxI.value()._type == BULLET)
-                     || (hbxJ.value()._type == ENEMYSHIP && hbxJ.value()._type == BULLET) 
-                     && hbxI.value()._active && hbxJ.value()._active ) {
-                        hbxI.value()._active = false;
-                        hbxJ.value()._active = false;
-                        r.kill_entity(entity(i));
-                        r.kill_entity(entity(j));
+                if (hbxI.value()._active && hbxJ.value()._active) {
+                    hbxI.value()._obstacle = hbxJ.value()._type;
+                    hbxJ.value()._obstacle = hbxI.value()._type;
                 }
+            }
+        }
+    }
+}
+
+void entity_killing_system(registry &r, sparse_array<Stats> &stats, sparse_array<Position> &positions, sparse_array<Pet> &pets)
+{
+    for (int i = 0; i < stats.size() && i < positions.size() && i < pets.size(); ++i) {
+        auto &sts = stats[i];
+        auto &pos = positions[i];
+        auto &pet = pets[i];
+        if (sts && sts && sts.value()._health <= 0)
+            r.kill_entity(entity(i));
+        if (pet && pet.value()._ent == 0)
+            r.kill_entity(entity(i)); 
+    }
+}
+
+void update_drawable_texts_system(registry &r, sparse_array<Stats> &stats, sparse_array<DrawableText> &drawableTexts, sparse_array<Pet> &pets)
+{
+    for (int i = 0; i < drawableTexts.size() && i < pets.size(); ++i) {
+        auto &pet = pets[i];
+        auto &texts = drawableTexts[i];
+
+        if (pet && texts) {
+            if (pet.value()._ent < stats.size() && stats[pet.value()._ent]) {
+                texts.value()._text = std::to_string(stats[pet.value()._ent].value()._score);
             }
         }
     }

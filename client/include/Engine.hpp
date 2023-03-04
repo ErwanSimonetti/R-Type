@@ -106,7 +106,6 @@ class Engine {
          */
         void run();
 
-
     protected:
     private:
 
@@ -116,7 +115,6 @@ class Engine {
          **/
         registry _reg;
         MyNetwork _network;
-
         /**
          * @brief modules 
          **/
