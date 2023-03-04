@@ -199,6 +199,7 @@ void Rtype::handleInputs(registry &r, size_t entity, const uint16_t inputs[10])
 void Rtype::updateRegistry(registry &r, const GameData data[4])
 {
     for (int i = 0; i < 4; i++) {
+        std::cout << "Update Registry\n";
         if (data[i].entity == -1) {
             continue;
         }
