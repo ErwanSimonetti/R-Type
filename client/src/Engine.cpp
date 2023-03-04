@@ -116,6 +116,7 @@ void Engine::updateRegistry(char *data)
 {
     GameData gameData[4];
     Header* headerDeserialized = reinterpret_cast<Header*>(data);
+    std::cout << "Header received == " << headerDeserialized->_id << std::endl;
 
     if (headerDeserialized->_id == 3) {
         ServerData* dataDeserialized = reinterpret_cast<ServerData*>(data + sizeof(Header));

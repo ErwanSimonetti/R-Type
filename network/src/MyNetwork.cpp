@@ -132,10 +132,12 @@ bool MyNetwork::isClientAccepted()
 void MyNetwork::udpSendToAllClients(char *buffer, std::size_t const& sizeOfBuffer)
 {
     for (int i = 0; i < _endpoints.size(); i++) {
-        _socket.async_send_to(boost::asio::buffer(buffer, 1024), _endpoints.at(i)._endpoint,
-            [this](boost::system::error_code ec, std::size_t bytes_sent) 
-        {
-        });
+        if (_endpoints.at(i)._isAccepted) {
+            _socket.async_send_to(boost::asio::buffer(buffer, 1024), _endpoints.at(i)._endpoint,
+                [this](boost::system::error_code ec, std::size_t bytes_sent) 
+            {
+            });
+        }
     } 
 }
 
