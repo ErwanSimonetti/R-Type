@@ -140,23 +140,27 @@ Events get_event() {
 
  void Raylib::draw_particles(sparse_array<Position> const &positions, sparse_array<Drawable> &drawables, sparse_array<Particulable> &particles)
  {
+    if(IsMouseButtonPressed(MOUSE_LEFT_BUTTON)){
+            std::pair<int, int> m_pos = std::pair<int, int>((float)GetRandomValue((GetMousePosition().x-20)*10, (GetMousePosition().x+20)*10)*.1f, (float)GetMousePosition().y);
+            _particles.emplace_back(m_pos);
+    }
     for (size_t i = 0; i < drawables.size() && i < positions.size() && i < particles.size(); ++ i) {
         auto &draw = drawables[i];
         auto &pos = positions[i];
         auto &part = particles[i];
         if (draw && pos && part) {
             if (part.value()._play == true) {
-                Vector2 m_pos =(Vector2){(float)pos.value()._x, (float)pos.value()._y};
+                std::pair<int,int> m_pos =std::pair<int, int>((float)pos.value()._x, (float)pos.value()._y);
                 _particles.emplace_back(ParticleSystem{m_pos});
                 part.value()._play = false;
             }
-         _particles.erase(std::remove_if( _particles.begin(), _particles.end(), []( ParticleSystem& sys ){ 
-            sys.update();
-		    sys.draw();
-		    return sys.system.size() <= 0; 
-            }),  _particles.end());
         }
     }
+    _particles.erase(std::remove_if( _particles.begin(), _particles.end(), []( ParticleSystem& sys ){ 
+       sys.update();
+	   sys.drawRaylib();
+	   return sys.system.size() <= 0; 
+       }),  _particles.end());
  }
 
 
