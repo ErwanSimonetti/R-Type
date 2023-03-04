@@ -30,6 +30,7 @@ Engine::Engine(boost::asio::io_service &io_service, const std::string &host, con
     _reg.add_system<Animatable, Position, Parallax>(parallax_system);
     // _reg.add_system<Position, Velocity, FollowPath>(followPathSystem);
     _reg.add_system<Stats, Position, Pet>(entity_killing_system);
+    _reg.add_system<Stats, DrawableText, Pet>(update_drawable_texts_system);
 }
 
 Engine::~Engine()

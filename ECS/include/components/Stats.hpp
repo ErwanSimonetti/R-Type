@@ -20,7 +20,7 @@ struct Stats {
      */
     void set_component(int health, int16_t score) {
         _health = health;
-        *_score = score;
+        _score = score;
     }
 
     /**
@@ -35,5 +35,5 @@ struct Stats {
         return output;
     }
     int16_t _health;
-    std::shared_ptr<int16_t>_score = std::make_shared<int16_t>(0);
+    int16_t _score;
 };

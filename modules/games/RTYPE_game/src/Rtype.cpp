@@ -25,9 +25,8 @@ std::vector<entity> Rtype::getPLayers() const
     return _players;
 }
 
-void Rtype::create_score(registry &r, entity newEntity, int16_t parentId, std::shared_ptr<int16_t>score, const int16_t posX, const int16_t posY)
+void Rtype::create_score(registry &r, entity newEntity, int16_t parentId, std::string score, const int16_t posX, const int16_t posY)
 {
-    std::cout << "new score: " << newEntity << "\n";
     r.emplace_component<DrawableText>(newEntity, score);
     r.emplace_component<Pet>(newEntity, parentId);
     r.emplace_component<Position>(newEntity, posX, posY);
@@ -182,7 +181,7 @@ void Rtype::updateRegistry(registry &r, const GameData data[4])
             std::cout << "Our Player\n";
             entity newEntity = r.spawn_entity_by_id(data[i].entity);
             create_player(r, newEntity, true, 5, 5, data[i].posX, data[i].posY);
-            create_score(r, r.spawn_entity(), newEntity, r.get_components<Stats>()[newEntity].value()._score, 1700, 50);
+            create_score(r, r.spawn_entity(), newEntity, "0", 1600, 30);
             _players.emplace_back(newEntity);
             continue;
         }
@@ -202,7 +201,7 @@ void Rtype::updateRegistry(registry &r, const GameData &data)
     if (!r.is_entity_alive(data.entity)) {
         entity newEntity = r.spawn_entity();
         create_player(r, newEntity, true, 5, 5, 10, 10);
-        create_score(r, r.spawn_entity(), newEntity, r.get_components<Stats>()[newEntity].value()._score, 1850, 50);
+        create_score(r, r.spawn_entity(), newEntity, "0", 1600, 30);
 
         return;
     }
@@ -223,12 +222,13 @@ void Rtype::checkStats(sparse_array<Hitbox> &hbxs, sparse_array<Stats> &sts, spa
         if (hbx && hbx.value()._type == BULLET && hbx.value()._obstacle == ENEMYSHIP) {
             if (pet && sts[pet.value()._ent].has_value()) {
                 int16_t ent = pet.value()._ent;
-                sts[ent].value().set_component(sts[ent].value()._health, *sts[ent].value()._score + 5);
+                sts[ent].value().set_component(sts[ent].value()._health, sts[ent].value()._score + 5);
                 pet.value().set_component(0);
             }
         }
     }
 }
+
 void Rtype::run_gameLogic(registry &r, const Events &events) 
 {
     checkStats(r.get_components<Hitbox>(), r.get_components<Stats>(), r.get_components<Pet>());

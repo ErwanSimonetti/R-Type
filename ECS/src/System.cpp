@@ -128,14 +128,29 @@ void collision_system(registry &r, sparse_array<Position> &positions, sparse_arr
     }
 }
 
-void entity_killing_system(registry &r, sparse_array<Stats> &stats, sparse_array<Position> &positions, sparse_array<Pet> &pets) {
+void entity_killing_system(registry &r, sparse_array<Stats> &stats, sparse_array<Position> &positions, sparse_array<Pet> &pets)
+{
     for (int i = 0; i < stats.size() && i < positions.size() && i < pets.size(); ++i) {
         auto &sts = stats[i];
         auto &pos = positions[i];
         auto &pet = pets[i];
-        if (sts && sts.has_value() && sts.value()._health <= 0)
+        if (sts && sts && sts.value()._health <= 0)
             r.kill_entity(entity(i));
         if (pet && pet.value()._ent == 0)
             r.kill_entity(entity(i)); 
+    }
+}
+
+void update_drawable_texts_system(registry &r, sparse_array<Stats> &stats, sparse_array<DrawableText> &drawableTexts, sparse_array<Pet> &pets)
+{
+    for (int i = 0; i < drawableTexts.size() && i < pets.size(); ++i) {
+        auto &pet = pets[i];
+        auto &texts = drawableTexts[i];
+
+        if (pet && texts) {
+            if (pet.value()._ent < stats.size() && stats[pet.value()._ent]) {
+                texts.value()._text = std::to_string(stats[pet.value()._ent].value()._score);
+            }
+        }
     }
 }

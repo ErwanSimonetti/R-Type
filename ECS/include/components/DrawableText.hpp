@@ -8,7 +8,6 @@
 #include <SFML/Graphics.hpp>
 #include <unordered_map>
 #include <memory>
-#include "ECS_Utils.hpp"
 
 #pragma once
 
@@ -16,8 +15,8 @@ struct DrawableText {
 
     DrawableText() = default;
 
-    void set_component(std::shared_ptr<int16_t>score) {
-        _score = score;
+    void set_component(std::string text) {
+        _text = text;
     }
-    std::shared_ptr<int16_t> _score;
+    std::string _text;
 };

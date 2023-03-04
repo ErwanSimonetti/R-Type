@@ -9,7 +9,6 @@
 
 #include <cstring>
 
-#include "ECS_Utils.hpp"
 #include "../entity.hpp"
 
 struct Hitbox {

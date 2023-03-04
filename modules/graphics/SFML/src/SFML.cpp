@@ -95,7 +95,7 @@ void SFML::draw_system(sparse_array<Position> const &positions, sparse_array<Dra
         auto &dbs = drawableTexts[i];
         auto &pos = positions[i];
         if (dbs && pos) {
-            sf::Text text("Score: " + std::to_string(*dbs.value()._score), _font, 48);
+            sf::Text text("Score: " + dbs.value()._text, _font, 48);
             text.setFillColor(sf::Color::White);
             text.setPosition(pos.value()._x, pos.value()._y);
             _window->draw(text);
