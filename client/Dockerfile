@@ -37,9 +37,17 @@ RUN apt-get update && \
     libxcursor-dev \
     mesa-common-dev \
     libxi-dev \
+    libogg-dev \
     xorg-dev \
     libboost-all-dev \
-    libjsoncpp-dev
+    libjsoncpp-dev \
+    libopenal1 \
+    alsa-base \
+    alsa-utils \
+    libsndfile1-dev \
+    libglfw3-dev \
+    libvorbis-dev \
+    libopenal-dev 
 
 RUN git clone https://github.com/raysan5/raylib.git && \
     cd raylib && mkdir build && cd build && cmake -DCMAKE_POSITION_INDEPENDENT_CODE=ON .. && make && make install
@@ -55,4 +63,6 @@ COPY utils /app/utils
 RUN cd app/modules && rm -f *.so && make
 
 # Launch game
-CMD cd app/client && ./make_client && cd ../ && ./r-type_client ${GRAPHIC} ${GAME}
+RUN cd app/client && ./make_client
+RUN cd app/modules && rm -f *.so &&  make
+CMD cd app/ && ./r-type_client ${GRAPHIC} ${GAME}
