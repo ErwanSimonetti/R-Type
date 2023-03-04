@@ -80,8 +80,6 @@ void OtherGame::handleInputs(registry &r, size_t entity, const uint16_t inputs[1
     int left = 0;
     int right = 0;
 
-    bool stopLoop = false;
-
     auto &jumps = r.get_components<Jump>();
     auto &anims = r.get_components<Animatable>();
     auto &drawables = r.get_components<Drawable>();
@@ -107,7 +105,6 @@ void OtherGame::handleInputs(registry &r, size_t entity, const uint16_t inputs[1
             break;
         }
         case KEYBOARD::NONE:
-            stopLoop = true;
             break;
         default:
             std::cout << "Unused input; " << inputs[i] << "\n";
@@ -119,17 +116,13 @@ void OtherGame::handleInputs(registry &r, size_t entity, const uint16_t inputs[1
         auto &anim = anims[entity];
         if (anim) {
             if (left == 0 && right == 0) {
-                if (anim.value()._animationIndex != 1)
-                     anim.value()._refreshPoint = std::make_shared<int>(0);
                 anim.value()._animationIndex = 1;
             }
             else {
-                if (anim.value()._animationIndex != 0)
-                     anim.value()._refreshPoint = std::make_shared<int>(0);
                 anim.value()._animationIndex = 0;
             }
         }
-    } 
+    }
 
     if (entity < drawables.size()) {
         auto &draw = drawables[entity];

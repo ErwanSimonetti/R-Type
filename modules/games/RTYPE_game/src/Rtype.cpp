@@ -108,8 +108,6 @@ void Rtype::handleInputs(registry &r, size_t entity, const uint16_t inputs[10])
     int up = 0;
     int down = 0;
 
-    bool stopLoop = false;
-
     auto &shootables = r.get_components<Shootable>();
 
     for (int i = 0; i < 10; i++) {
@@ -140,7 +138,6 @@ void Rtype::handleInputs(registry &r, size_t entity, const uint16_t inputs[10])
             break;
         }
         case KEYBOARD::NONE:
-            stopLoop = true;
             break;
         default:
             break;

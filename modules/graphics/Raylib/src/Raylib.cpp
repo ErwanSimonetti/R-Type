@@ -63,22 +63,21 @@ void Raylib::loadModuleSystem(registry &_reg)
 
 void Raylib::animation_system(Animatable &anim, Drawable &draw)
 {
-            if (!_models.count(draw._type) )
-                return;
-            auto model = _models.find(draw._type)->second;
-            if (!model.animation || !IsModelReady(model.model)) {
-                return;
-            }
-            auto currentTime = std::chrono::high_resolution_clock::now();
-            auto elapsedTime = std::chrono::duration_cast<std::chrono::milliseconds>(currentTime - anim._clock);
-            if ( anim._refreshPoint == nullptr || *anim._refreshPoint >= _models.find(draw._type)->second.animation[anim._animationIndex].frameCount) 
-                anim._refreshPoint = std::make_shared<int>(0);
-
-            if (elapsedTime.count() >= 30) {
-                    *anim._refreshPoint += 1;
-                    UpdateModelAnimation(_models.find(draw._type)->second.model, _models.find(draw._type)->second.animation[anim._animationIndex], *anim._refreshPoint);
-                    anim._clock = currentTime;
-            }
+    if (!_models.count(draw._type) )
+        return;
+    auto model = _models.find(draw._type)->second;
+    if (!model.animation || !IsModelReady(model.model)) {
+        return;
+    }
+    auto currentTime = std::chrono::high_resolution_clock::now();
+    auto elapsedTime = std::chrono::duration_cast<std::chrono::milliseconds>(currentTime - anim._clock);
+    if (anim._refreshPoint == nullptr || *anim._refreshPoint >= _models.find(draw._type)->second.animation[anim._animationIndex].frameCount) 
+        anim._refreshPoint = std::make_shared<int>(0);
+    if (elapsedTime.count() >= 30) {
+        *anim._refreshPoint += 1;
+        anim._clock = currentTime;
+    }
+    UpdateModelAnimation(_models.find(draw._type)->second.model, _models.find(draw._type)->second.animation[anim._animationIndex], *anim._refreshPoint);
 }
 
 Events get_event() {
@@ -86,15 +85,14 @@ Events get_event() {
     for (auto &it: KeyboardMap) {
         if (IsKeyDown(it.first)) 
             newEvent.inputs.emplace_back(it.second);
+        if (IsKeyReleased(it.first)) 
+            newEvent.inputs.emplace_back(KEYBOARD::NONE);
     }
-    newEvent.inputs.emplace_back(KEYBOARD::NONE);
     return newEvent;
 }
 
- void Raylib::draw_system(sparse_array<Position> const &positions, sparse_array<Drawable> &drawables, sparse_array<Animatable> &animables) 
- {
-    // UpdateCamera(&_camera, CAMERA_FIRST_PERSON);
-
+void Raylib::draw_system(sparse_array<Position> const &positions, sparse_array<Drawable> &drawables, sparse_array<Animatable> &animables) 
+{
     _window.startDrawing();
     _window.clearWindow();
     _window.start3DMode(_camera);
@@ -117,7 +115,6 @@ Events get_event() {
     }
     _window.stop3DMode();
     _window.endDrawing();
-
  }
 
 
