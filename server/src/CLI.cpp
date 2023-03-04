@@ -137,7 +137,7 @@ namespace CLI
             std::cerr << "failed to kill entity '" << idToKill << "'." << std::endl;
     }
 
-    void listPlayers(MyNetwork &network, registry &reg, const std::string &args)
+    void listPlayers(MyNetwork &network, registry &reg, const std::string &args, std::function<std::vector<entity>()> func)
     {
         std::vector<EndpointInformation> endpoints = network.getEndpoints();
 
@@ -151,7 +151,7 @@ namespace CLI
         }
     }
 
-    void kickPlayer(MyNetwork &network, registry &reg, const std::string &args)
+    void kickPlayer(MyNetwork &network, registry &reg, const std::string &args, std::function<std::vector<entity>()> func)
     {
         EndpointInformation endpointPlayer;
         std::istringstream iss(args);
@@ -180,8 +180,9 @@ namespace CLI
         if (network.getEndpoints().at(idToKick)._isAccepted == false) {
             std::cout << "player '" << idToKick << "' kicked successfully" << std::endl;
             std::cout << "Adress:'" << network.getEndpoints().at(idToKick)._endpoint.address() << "' has been kicked successfully" << std::endl;
-            reg.kill_entity(entity(idToKick));
-            CLI::sendDestroyEntityMessage(4, idToKick, network);
+            // reg.kill_entity(entity(func()[idToKick]));
+            // CLI::sendDestroyEntityMessage(4, static_cast<size_t>(func()[idToKick]), network);
+            CLI::sendHeaderExpulse(5, network, network.getEndpoints().at(idToKick)._endpoint);
         }
         if (network.getEndpoints().at(idToKick)._isAccepted == true)
             std::cout << "failed to kick player '" << idToKick << "'" << std::endl;
@@ -189,7 +190,7 @@ namespace CLI
 
     typedef std::map<std::string, std::function<void()>> script_map;
     typedef std::map<std::string, std::function<void(registry &, std::string &)>> script_map_registry;
-    typedef std::map<std::string, std::function<void(MyNetwork &, registry &reg, std::string &)>> script_map_network;    
+    typedef std::map<std::string, std::function<void(MyNetwork &, registry &reg, std::string &, std::function<std::vector<entity>()> func)>> script_map_network;    
 
     script_map functionsNoArgs = {
         {"help", displayHelp},
@@ -207,7 +208,7 @@ namespace CLI
         {"kick", kickPlayer},
     };
 
-    void launchSearchedFunction(std::string &line, registry &reg, MyNetwork &network)
+    void launchSearchedFunction(std::string &line, registry &reg, MyNetwork &network, std::function<std::vector<entity>()> func)
     {
         std::istringstream iss(line);
         std::string args;
@@ -222,7 +223,7 @@ namespace CLI
         else if (functionsRegistry.find(command) != functionsRegistry.end())
             functionsRegistry[command](reg, args);
         else if (functionsNetwork.find(command) != functionsNetwork.end())
-            functionsNetwork[command](network, reg, args);
+            functionsNetwork[command](network, reg, args, func);
         else
             std::cout << "command not recognized : '" << command << 
             "'. use `help` to see commands available." << std::endl;
@@ -239,5 +240,16 @@ namespace CLI
         buffer.insert(buffer.end(), headerBytes, headerBytes + sizeof(Header));
         buffer.insert(buffer.end(), dataBytes, dataBytes + sizeof(DeleteEntities));
         network.udpSendToAllClients(buffer.data(), buffer.size());
+    }
+
+    void sendHeaderExpulse(const int &headerValue, MyNetwork &network, boost::asio::ip::udp::endpoint endpoint)
+    {
+        std::vector<char> buffer;
+        Header header{headerValue};
+        const char* headerBytes = network.getProtocol().serialiseData<Header>(header);
+
+        buffer.reserve(sizeof(Header) + sizeof(DeleteEntities));
+        buffer.insert(buffer.end(), headerBytes, headerBytes + sizeof(Header));
+        network.udpSend(buffer.data(), buffer.size(), endpoint);
     }
 }

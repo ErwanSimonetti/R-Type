@@ -16,7 +16,7 @@ class Rtype : public IGame {
         Rtype();
         ~Rtype();
 
-        std::vector<entity> getPLayers() const;
+        std::vector<entity> getPlayers() const;
         
         /**
          * @brief Function used to create all starting assets needed fro the game
@@ -88,6 +88,8 @@ class Rtype : public IGame {
         void create_parallax(registry &r, entity newEntity, const uint16_t posX, const uint16_t posY, const uint16_t speed, const OBJECT obj);
 
         void create_static(registry &r, entity newEntity, const uint16_t posX, const uint16_t posY, OBJECT type);
+
+        std::vector<entity> getPlayers();
 
     protected:
         void handleInputs(registry &r, size_t entity, const uint16_t inputs[10]);
