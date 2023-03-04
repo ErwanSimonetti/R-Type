@@ -6,8 +6,8 @@
 */
 
 
-#ifndef RAYLIBPARTICULE_HPP_
-#define RAYLIBPARTICULE_HPP_
+#ifndef RAYLIBPARTICLE_HPP_
+#define RAYLIBPARTICLE_HPP_
 
 #define MAX_PARTICLE 200
 
@@ -46,4 +46,4 @@ class ParticleSystem {
     std::vector<Particle> system;
 };
 
-#endif /* !RAYLIBPARTICULE_HPP_ */
+#endif /* !RAYLIBPARTICLE_HPP_ */

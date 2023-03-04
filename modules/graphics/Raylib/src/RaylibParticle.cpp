@@ -22,13 +22,10 @@ Particle::~Particle()
 
 
 void Particle::draw(){
-    // DrawCircle(position.x, position.y, size, RED);
     Color color = {0, 204, 102, 255};
     Color color2 = {87, 168, 98, 255};
 	DrawRectangle(_position.x, _position.y, _size, _size, ORANGE);
     DrawCircleLines(_position.x, _position.y, _size, color);
-    // DrawCircleLines(_position.x+0.5f, _position.y+0.5f, _size/2, MAROON);
-    // DrawCircleLines(_position.x, _position.y, _size/2, MAROON);
 }
 void Particle::update(){
     if (_velocity.x < 10 && _velocity.y < 10 && _velocity.x > -10 && _velocity.y > -10) {
