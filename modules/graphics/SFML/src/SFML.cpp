@@ -25,6 +25,12 @@ SFML::~SFML()
 {
 }
 
+void SFML::loadModuleSystem(registry &reg)
+{
+    reg.add_system<Animatable, Drawable>(std::bind(&SFML::animation_system, this, std::placeholders::_1, std::placeholders::_2));
+    reg.add_system<Position, Drawable, Animatable>(std::bind(&SFML::draw_system, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
+}
+
 void SFML::createAsset(uint16_t type, std::string texture, uint16_t width, uint16_t height, uint16_t size)
 {
     Asset newAsset;
@@ -70,7 +76,7 @@ void SFML::initialize_rect(Drawable &draw){
 }
 
 
-void SFML::draw_system(sparse_array<Position> const &positions, sparse_array<Drawable> &drawables) {
+void SFML::draw_system(sparse_array<Position> const &positions, sparse_array<Drawable> &drawables, sparse_array<Animatable> &animables) {
     for (size_t i = 0; i < drawables.size() && i < positions.size(); ++ i) {
         auto &draw = drawables[i];
         auto &pos = positions[i];

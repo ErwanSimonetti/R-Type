@@ -29,12 +29,13 @@ class SFML : public IGraphic {
         ~SFML();
         void createAsset(uint16_t type, std::string texture, uint16_t width, uint16_t height, uint16_t size);
         void animation_system(sparse_array<Animatable> &animatables, sparse_array<Drawable> &drawables);
-        void draw_system(sparse_array<Position> const &positions, sparse_array<Drawable> &drawables);
+        void draw_system(sparse_array<Position> const &positions, sparse_array<Drawable> &drawables, sparse_array<Animatable> &animables);
         void initialize_rect(Drawable &draw);
         Events event_system(registry &reg);
         Events run_graphic(registry &r);
         void constructFromJson();
         void set_sprite();
+        void loadModuleSystem(registry &reg);
 
     protected:
     private:

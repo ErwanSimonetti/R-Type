@@ -56,30 +56,29 @@ void Raylib::createModel(uint16_t type, std::string texture, std::string model, 
     _models.insert(std::pair<uint16_t, Asset>(type, asset));
 }
 
-void Raylib::animation_system(sparse_array<Animatable> &animatables, sparse_array<Drawable> &drawables)
+void Raylib::loadModuleSystem(registry &_reg)
 {
-    for (size_t i = 0; i < animatables.size() && i < drawables.size(); ++ i) {
-        auto &anim = animatables[i];
-        auto &draw = drawables[i];
-        if (anim && draw) {
-            if (!_models.count(draw.value()._type) )
-                continue;
-            auto model = _models.find(draw.value()._type)->second;
+    _reg.add_system<Position, Drawable, Animatable>(std::bind(&Raylib::draw_system, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
+}
+
+void Raylib::animation_system(Animatable &anim, Drawable &draw)
+{
+            if (!_models.count(draw._type) )
+                return;
+            auto model = _models.find(draw._type)->second;
             if (!model.animation || !IsModelReady(model.model)) {
-                continue;
+                return;
             }
             auto currentTime = std::chrono::high_resolution_clock::now();
-            auto elapsedTime = std::chrono::duration_cast<std::chrono::milliseconds>(currentTime - anim.value()._clock);
-            if ( anim.value()._refreshPoint == nullptr || *anim.value()._refreshPoint >= _models.find(draw.value()._type)->second.animation[anim.value()._animationIndex].frameCount) 
-                anim.value()._refreshPoint = std::make_shared<int>(0);
+            auto elapsedTime = std::chrono::duration_cast<std::chrono::milliseconds>(currentTime - anim._clock);
+            if ( anim._refreshPoint == nullptr || *anim._refreshPoint >= _models.find(draw._type)->second.animation[anim._animationIndex].frameCount) 
+                anim._refreshPoint = std::make_shared<int>(0);
 
             if (elapsedTime.count() >= 30) {
-                    *anim.value()._refreshPoint += 1;
-                    UpdateModelAnimation(_models.find(draw.value()._type)->second.model, _models.find(draw.value()._type)->second.animation[anim.value()._animationIndex], *anim.value()._refreshPoint);
-                    anim.value()._clock = currentTime;
+                    *anim._refreshPoint += 1;
+                    UpdateModelAnimation(_models.find(draw._type)->second.model, _models.find(draw._type)->second.animation[anim._animationIndex], *anim._refreshPoint);
+                    anim._clock = currentTime;
             }
-        }
-    }
 }
 
 Events get_event() {
@@ -92,7 +91,7 @@ Events get_event() {
     return newEvent;
 }
 
- void Raylib::draw_system(sparse_array<Position> const &positions, sparse_array<Drawable> &drawables) 
+ void Raylib::draw_system(sparse_array<Position> const &positions, sparse_array<Drawable> &drawables, sparse_array<Animatable> &animables) 
  {
     // UpdateCamera(&_camera, CAMERA_FIRST_PERSON);
 
@@ -101,15 +100,17 @@ Events get_event() {
     _window.start3DMode(_camera);
 
 
-    for (size_t i = 0; i < drawables.size() && i < positions.size(); ++ i) {
+    for (size_t i = 0; i < drawables.size() && i < positions.size() && i < animables.size(); ++ i) {
         auto &draw = drawables[i];
         auto &pos = positions[i];
+        auto &anim = animables[i];
         if (draw && pos) {
             if (!_models.count(draw.value()._type))
                 continue;
             _models.find(draw.value()._type)->second.model.transform = MatrixRotateXYZ((Vector3){ 
-                DEG2RAD*draw.value()._rotation.x, DEG2RAD*draw.value()._rotation.y, DEG2RAD*draw.value()._rotation.z });
-
+                DEG2RAD*draw.value()._rotation.angleX, DEG2RAD*draw.value()._rotation.angleY, DEG2RAD*draw.value()._rotation.angleZ });
+            if (anim && draw)
+                animation_system(anim.value(), draw.value());
             DrawModel(_models.find(draw.value()._type)->second.model , (Vector3){ float(pos.value()._x) , float(pos.value()._y), float(pos.value()._z) }, draw.value()._scale, WHITE);
         }
 

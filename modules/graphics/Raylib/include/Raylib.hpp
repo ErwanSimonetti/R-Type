@@ -26,9 +26,10 @@ class Raylib : public IGraphic {
     public:
         Raylib();
         ~Raylib();
-        void draw_system(sparse_array<Position> const &positions, sparse_array<Drawable> &drawables);
-        void animation_system(sparse_array<Animatable> &animatables, sparse_array<Drawable> &drawables);
+        void draw_system(sparse_array<Position> const &positions, sparse_array<Drawable> &drawables, sparse_array<Animatable> &animables);
+        void animation_system(Animatable &animatables, Drawable &drawables);
         void createModel(uint16_t type, std::string texture, std::string model, std::string animation);
+        void loadModuleSystem(registry &reg);
         Events run_graphic(registry &r);
         void constructFromJson();
         void createCamera();

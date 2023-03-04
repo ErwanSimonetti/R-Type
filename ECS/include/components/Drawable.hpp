@@ -19,7 +19,7 @@ struct spriteRect {
 };
 
 struct rotation {
-    float agnleX;
+    float angleX;
     float angleY;
     float angleZ;
 };

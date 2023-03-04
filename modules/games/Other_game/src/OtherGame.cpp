@@ -115,14 +115,19 @@ void OtherGame::handleInputs(registry &r, size_t entity, const uint16_t inputs[1
         }
     }
 
-
     if (entity < anims.size()) {
         auto &anim = anims[entity];
         if (anim) {
-            if (left == 0 && right == 0)
+            if (left == 0 && right == 0) {
+                if (anim.value()._animationIndex != 1)
+                     anim.value()._refreshPoint = std::make_shared<int>(0);
                 anim.value()._animationIndex = 1;
-            else
+            }
+            else {
+                if (anim.value()._animationIndex != 0)
+                     anim.value()._refreshPoint = std::make_shared<int>(0);
                 anim.value()._animationIndex = 0;
+            }
         }
     } 
 
@@ -130,9 +135,9 @@ void OtherGame::handleInputs(registry &r, size_t entity, const uint16_t inputs[1
         auto &draw = drawables[entity];
         if (draw) {
             if (left != 0)
-                draw.value()._rotation.z = -90;
+                draw.value()._rotation.angleZ = -90;
             if (right != 0)
-                draw.value()._rotation.z = 90;
+                draw.value()._rotation.angleZ = 90;
         }
     }
 
@@ -145,7 +150,6 @@ void OtherGame::handleInputs(registry &r, size_t entity, const uint16_t inputs[1
     }
 }
 
-// client receive
 void OtherGame::updateRegistry(registry &r, const GameData data[4])
 {
     for (int i = 0; i < 4; i++) {
