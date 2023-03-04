@@ -87,10 +87,15 @@ ClientData Engine::buildClientData(Events events)
 
 void Engine::sendData(ClientData data) 
 {
-    char buffer[1024];
-    std::memcpy(buffer, _network.getProtocol().serialiseData<Header>(Header{3}), sizeof(Header));
-    std::memcpy(buffer + sizeof(Header), _network.getProtocol().serialiseData<ClientData>(data), sizeof(ClientData));
-    _network.udpSend(buffer, sizeof(buffer), _network.getServerEndpoint());
+    std::vector<char> buffer;
+    Header header{3};
+    buffer.reserve(sizeof(Header) + sizeof(ClientData));
+
+    const char* headerBytes = _network.getProtocol().serialiseData<Header>(header);
+    buffer.insert(buffer.end(), headerBytes, headerBytes + sizeof(Header));
+    const char* dataBytes = _network.getProtocol().serialiseData<ClientData>(data);
+    buffer.insert(buffer.end(), dataBytes, dataBytes + sizeof(ClientData));
+    _network.udpSend(buffer.data(), buffer.size(), _network.getServerEndpoint());
 }
 
 void Engine::updateRegistry(char *data)

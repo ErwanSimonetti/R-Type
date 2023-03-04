@@ -31,7 +31,6 @@ bool MyNetwork::isNewEndpoint(boost::asio::ip::udp::endpoint endpoint)
 {
     for (size_t i = 0; i < _endpoints.size(); i++) {
         if (endpoint == _endpoints.at(i)._endpoint) {
-            std::cerr << "User already connected : " << endpoint << std::endl;
             return false;
         }
     }
@@ -128,4 +127,22 @@ bool MyNetwork::isLobbyFull()
 bool MyNetwork::isClientAccepted()
 {
     return _isClientAccepted;
+}
+
+void MyNetwork::udpSendToAllClients(char *buffer, std::size_t const& sizeOfBuffer)
+{
+    for (int i = 0; i < _endpoints.size(); i++) {
+        _socket.async_send_to(boost::asio::buffer(buffer, 1024), _endpoints.at(i)._endpoint,
+            [this](boost::system::error_code ec, std::size_t bytes_sent) 
+        {
+        });
+    } 
+}
+
+void MyNetwork::udpSend(char *buffer, const std::size_t &sizeOfBuffer, boost::asio::ip::udp::endpoint endpoint)
+{
+    _socket.async_send_to(boost::asio::buffer(buffer, sizeOfBuffer), endpoint,
+        [this, buffer, endpoint](boost::system::error_code ec, std::size_t bytes_sent) 
+    {
+    });
 }
