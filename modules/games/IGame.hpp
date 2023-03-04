@@ -30,7 +30,14 @@ class IGame {
          * 
          * @return std::vector<entity>
          */
-        virtual std::vector<entity> getPlayers() const = 0;
+        virtual std::vector<entity> &getPlayers() = 0;
+
+        /**
+         * @brief Get the Players object
+         * 
+         * @return std::vector<entity> 
+         */
+        virtual void setPlayers(std::vector<entity> newPlayers) = 0;
 
         /**
          * @brief Function used to create all starting assets needed fro the game

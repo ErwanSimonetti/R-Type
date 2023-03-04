@@ -37,8 +37,10 @@ class Rtype : public IGame {
         Rtype();
         ~Rtype();
 
-        std::vector<entity> getPlayers() const;
+        std::vector<entity> &getPlayers();
         
+        void setPlayers(std::vector<entity> newPlayers);
+ 
         /**
          * @brief Function used to create all starting assets needed fro the game
          * 
@@ -112,8 +114,6 @@ class Rtype : public IGame {
 
         void create_static(registry &r, entity newEntity, const uint16_t posX, const uint16_t posY, int16_t type);
         void createButton(registry &r, entity newEntity, int16_t posX, int16_t posY, int16_t type, uint16_t event);
-
-        std::vector<entity> getPlayers();
 
     protected:
         void handleInputs(registry &r, size_t entity, const uint16_t inputs[10]);

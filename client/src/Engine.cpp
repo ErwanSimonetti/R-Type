@@ -6,6 +6,7 @@
 */
 
 #include "Engine.hpp"
+#include "DeleteEntities.hpp"
 
 Engine::Engine(boost::asio::io_service &io_service, const std::string &host, const std::string &port, const std::string &graphicModulePath, const std::string &gameModulePath) : _reg(), _network(io_service, host, port)
 {
@@ -115,7 +116,6 @@ void Engine::sendData(ClientData data)
 void Engine::updateRegistry(char *data)
 {
     Header* headerDeserialized = reinterpret_cast<Header*>(data);
-    std::cout << "Header received == " << headerDeserialized->_id << std::endl;
 
     if (headerDeserialized->_id == 3) {
         ServerData* dataDeserialized = reinterpret_cast<ServerData*>(data + sizeof(Header));
@@ -127,8 +127,17 @@ void Engine::updateRegistry(char *data)
             memcpy(gameData[i].inputs, dataDeserialized->inputs[i], sizeof(uint16_t) * 10);
         }
         _game->updateRegistry(_reg, gameData);
+    } else if (headerDeserialized->_id == 4) {
+        DeleteEntities* dataDeserialized = reinterpret_cast<DeleteEntities*>(data + sizeof(Header));
+        std::vector<entity> players = _game->getPlayers();
+        auto it = find(players.begin(), players.end(), entity(dataDeserialized->_id));
+        if (it != players.end()) {
+            players.erase(it);
+        }
+        // _game->setPlayers(players);
+        _reg.kill_entity(entity(dataDeserialized->_id));
     } else if (headerDeserialized->_id == 5) {
-
+        exit(0);
     }
 
 }
