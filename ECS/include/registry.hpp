@@ -13,7 +13,6 @@
 #include <functional>
 #include <vector>
 #include <unordered_map>
-#include <memory>
 
 #include "entity.hpp"
 #include "sparse_array.hpp"
