@@ -108,7 +108,7 @@ void shoot_system(registry &r, sparse_array<Shootable> &shootable)
 
 bool isCollision(Position& a, Hitbox& aHitbox, Position& b, Hitbox& bHitbox)
 {
-   return (a._x < b._x + bHitbox._width && a._x + aHitbox._width > b._x && a._y < b._y + bHitbox._height && a._y + aHitbox._height > b._y);
+   return (a._x < (b._x + bHitbox._width) && (a._x + aHitbox._width) > b._x && a._y < b._y + bHitbox._height && a._y + aHitbox._height > b._y);
 }
 
 void collision_system(registry &r, sparse_array<Position> &positions, sparse_array<Hitbox> &hitboxes)
@@ -119,7 +119,7 @@ void collision_system(registry &r, sparse_array<Position> &positions, sparse_arr
             auto &hbxJ = hitboxes[j];
             if (positions[i] && hbxI && positions[j] && hbxJ 
                 && isCollision(positions[i].value(), hbxI.value(), positions[j].value(), hbxJ.value())) {
-                    if (hbxI.value()._active && hbxJ.value()._active) {
+                if (hbxI.value()._active && hbxJ.value()._active) {
                     hbxI.value()._obstacle = hbxJ.value()._type;
                     hbxJ.value()._obstacle = hbxI.value()._type;
                 }
@@ -135,7 +135,7 @@ void entity_killing_system(registry &r, sparse_array<Stats> &stats, sparse_array
         auto &pet = pets[i];
         if (sts && sts.has_value() && sts.value()._health <= 0)
             r.kill_entity(entity(i));
-        if (pet && pet.value()._ent == NULL)
+        if (pet && pet.value()._ent == 0)
             r.kill_entity(entity(i)); 
     }
 }

@@ -15,17 +15,17 @@
 struct Hitbox {
     Hitbox() = default;
  
-    void set_component(uint16_t width, uint16_t height, OBJECT type) {
+    void set_component(uint16_t width, uint16_t height, int16_t type) {
         _width = width;
         _height = height;
         _type = type;
         _active = true;
-        _obstacle = EMPTY;
+        _obstacle = -1;
     }
 
     uint16_t _width;
     uint16_t _height;
-    OBJECT _type;
-    OBJECT _obstacle;
+    int16_t _type;
+    int16_t _obstacle;
     bool _active;
 };

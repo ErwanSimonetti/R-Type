@@ -90,12 +90,14 @@ void SFML::draw_system(sparse_array<Position> const &positions, sparse_array<Dra
             _window->draw(_assets.find(draw.value()._type)->second._sprite);
         }
     }
-    for (size_t i = 0; i < drawableTexts.size(); ++i) {
+
+    for (size_t i = 0; i < drawableTexts.size() && i < positions.size(); ++i) {
         auto &dbs = drawableTexts[i];
-        if (dbs) {
+        auto &pos = positions[i];
+        if (dbs && pos) {
             sf::Text text("Score: " + std::to_string(*dbs.value()._score), _font, 48);
             text.setFillColor(sf::Color::White);
-            text.setPosition(100, 30);
+            text.setPosition(pos.value()._x, pos.value()._y);
             _window->draw(text);
         }
     }

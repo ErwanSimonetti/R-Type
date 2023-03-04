@@ -13,6 +13,7 @@
 #include <functional>
 #include <vector>
 #include <unordered_map>
+#include <memory>
 
 #include "entity.hpp"
 #include "sparse_array.hpp"
@@ -51,7 +52,7 @@ class registry
          * @return sparse_array<Component>& get reference on the table
          */
         template <class Component>
-        Component* get_component_at(int position) {
+        std::shared_ptr<Component> get_component_at(int position) {
             auto iter = _components_arrays.find(std::type_index(typeid(Component)));
             if (iter == _components_arrays.end()) {
                 return nullptr;

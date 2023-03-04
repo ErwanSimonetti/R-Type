@@ -25,13 +25,15 @@ std::vector<entity> Rtype::getPLayers() const
     return _players;
 }
 
-void Rtype::create_score(registry &r, entity newEntity, int16_t parentId, std::shared_ptr<int16_t>score)
+void Rtype::create_score(registry &r, entity newEntity, int16_t parentId, std::shared_ptr<int16_t>score, const int16_t posX, const int16_t posY)
 {
+    std::cout << "new score: " << newEntity << "\n";
     r.emplace_component<DrawableText>(newEntity, score);
     r.emplace_component<Pet>(newEntity, parentId);
+    r.emplace_component<Position>(newEntity, posX, posY);
 }
 
-void Rtype::create_static(registry &r, entity newEntity, const uint16_t posX, const uint16_t posY, OBJECT type)
+void Rtype::create_static(registry &r, entity newEntity, const uint16_t posX, const uint16_t posY, int16_t type)
 {
     r.emplace_component<Position>(newEntity, posX, posY);
     r.emplace_component<Hitbox>(newEntity, posX+45, posY+45, type);
@@ -42,7 +44,7 @@ void Rtype::create_entity(registry &r, entity newEntity, const int16_t velX, con
 {
     r.emplace_component<Position>(newEntity, posX, posY);
     r.emplace_component<Velocity>(newEntity, velX, velY);
-    r.emplace_component<Hitbox>(newEntity, posX+45, posY+45, SHIP);
+    r.emplace_component<Hitbox>(newEntity, 45, 45, SHIP);
     r.emplace_component<Drawable>(newEntity, SHIP);
     r.emplace_component<Animatable>(newEntity, 90);
 }
@@ -54,10 +56,8 @@ void Rtype::create_player(registry &r, entity newEntity, bool isControllable, co
     r.emplace_component<Animatable>(newEntity, 90);
     r.emplace_component<Position>(newEntity, posX, posY);
     r.emplace_component<Velocity>(newEntity, velX, velY);
-    r.emplace_component<Hitbox>(newEntity, posX+45, posY+45, SHIP);
+    r.emplace_component<Hitbox>(newEntity, 45, 45, SHIP);
     r.emplace_component<Stats>(newEntity, 3, 0);
-    Stats *stat = r.get_component_at<Stats>(newEntity);
-    create_score(r, r.spawn_entity(), newEntity, stat->_score);
 
     if (isControllable) {
         r.emplace_component<Controllable>(newEntity);
@@ -68,16 +68,15 @@ void Rtype::create_player(registry &r, entity newEntity, bool isControllable, co
 void Rtype::create_enemy_entity(registry &r, entity newEntity, const int16_t velX, const int16_t velY, const uint16_t posX, const uint16_t posY)
 {    
     r.emplace_component<Position>(newEntity, posX, posY);
-    r.emplace_component<Velocity>(newEntity, velX, velY);
+    r.emplace_component<Velocity>(newEntity, 0, 0);
     r.emplace_component<Drawable>(newEntity, ENEMYSHIP);
-    r.emplace_component<Hitbox>(newEntity, posX+45, posY+45, ENEMYSHIP);
+    r.emplace_component<Hitbox>(newEntity, 45, 45, ENEMYSHIP);
     r.emplace_component<Animatable>(newEntity, 90);
-    r.emplace_component<FollowPath>(newEntity, "middle_diagonal");
     r.emplace_component<Stats>(newEntity, 5, 0);
 
 }
 
-void Rtype::create_parallax(registry &r, entity newEntity, const uint16_t posX, const uint16_t posY, const uint16_t speed, const OBJECT obj) 
+void Rtype::create_parallax(registry &r, entity newEntity, const uint16_t posX, const uint16_t posY, const uint16_t speed, const int16_t obj) 
 {
     r.emplace_component<Position>(newEntity, posX, posY);
     r.emplace_component<Drawable>(newEntity, obj);
@@ -90,7 +89,7 @@ void Rtype::create_projectile(registry &r, entity newEntity, int16_t parentId, c
     int16_t posX =r.get_components<Position>()[parentId].value()._x;
     int16_t posY =r.get_components<Position>()[parentId].value()._y;
     r.emplace_component<Position>(newEntity, posX, posY);
-    r.emplace_component<Hitbox>(newEntity, posX+10, posY+10, BULLET);
+    r.emplace_component<Hitbox>(newEntity, 10, 10, BULLET);
     r.emplace_component<Velocity>(newEntity, velX, velY);
     r.emplace_component<Drawable>(newEntity, BULLET);
     r.emplace_component<Pet>(newEntity, entity(parentId));
@@ -111,10 +110,8 @@ void Rtype::initGame(registry &r)
     create_parallax(r, r.spawn_entity(), 1920, 346, 12, PARA_4);
     create_parallax(r, r.spawn_entity(), 0, 346, 12, PARA_4);
 
-    create_enemy_entity(r, r.spawn_entity(), 1, 1, 1000, 10);
-    create_enemy_entity(r, r.spawn_entity(), 1, 1, 1000, 20);
-    create_enemy_entity(r, r.spawn_entity(), 1, 1, 1000, 30);
-    create_enemy_entity(r, r.spawn_entity(), 1, 1, 1000, 40);
+    create_enemy_entity(r, r.spawn_entity(), 1, 1, 500, 10);
+    create_enemy_entity(r, r.spawn_entity(), 1, 1, 500, 500);
 }
 
 void Rtype::handleInputs(registry &r, size_t entity, const uint16_t inputs[10])
@@ -184,7 +181,8 @@ void Rtype::updateRegistry(registry &r, const GameData data[4])
         if (_players.size() == 0 && (i == 3 || data[i + 1].entity == -1)) {
             std::cout << "Our Player\n";
             entity newEntity = r.spawn_entity_by_id(data[i].entity);
-            create_player(r, newEntity, true, 3, 3, data[i].posX, data[i].posY);
+            create_player(r, newEntity, true, 5, 5, data[i].posX, data[i].posY);
+            create_score(r, r.spawn_entity(), newEntity, r.get_components<Stats>()[newEntity].value()._score, 1700, 50);
             _players.emplace_back(newEntity);
             continue;
         }
@@ -202,7 +200,10 @@ void Rtype::updateRegistry(registry &r, const GameData data[4])
 void Rtype::updateRegistry(registry &r, const GameData &data)
 {
     if (!r.is_entity_alive(data.entity)) {
-        create_player(r, r.spawn_entity(), true, 3, 3, 10, 10);
+        entity newEntity = r.spawn_entity();
+        create_player(r, newEntity, true, 5, 5, 10, 10);
+        create_score(r, r.spawn_entity(), newEntity, r.get_components<Stats>()[newEntity].value()._score, 1850, 50);
+
         return;
     }
     for (int i = 0; i < _players.size(); i++) {
@@ -217,13 +218,13 @@ void Rtype::checkStats(sparse_array<Hitbox> &hbxs, sparse_array<Stats> &sts, spa
         auto &hbx = hbxs[i];
         auto &stat = sts[i];
         auto &pet = pets[i];
-        if (stat.has_value() && hbx.has_value() && hbx.value()._type == ENEMYSHIP && hbx.value()._obstacle == BULLET)
+        if (stat && hbx && hbx.value()._type == ENEMYSHIP && hbx.value()._obstacle == BULLET)
             stat.value().set_component(stat.value()._health - 1, 0);
-        if (hbx.has_value() && hbx.value()._type == BULLET && hbx.value()._obstacle == ENEMYSHIP) {
-            if (pet.has_value() && sts[pet.value()._ent].has_value()) {
+        if (hbx && hbx.value()._type == BULLET && hbx.value()._obstacle == ENEMYSHIP) {
+            if (pet && sts[pet.value()._ent].has_value()) {
                 int16_t ent = pet.value()._ent;
                 sts[ent].value().set_component(sts[ent].value()._health, *sts[ent].value()._score + 5);
-                pet.value().set_component(NULL);
+                pet.value().set_component(0);
             }
         }
     }
