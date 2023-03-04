@@ -67,19 +67,19 @@ ServerData Engine::buildServerData(size_t id, uint16_t inputs[10])
             data.inputs[i][j] = 0;
         }
 
-        if (i >= _game->getPLayers().size()) {
+        if (i >= _game->getPlayers().size()) {
             data.entities[i] = -1;
             continue;
         }
         
-        data.entities[i] = _game->getPLayers().at(i);
-        auto const &pos = positions[_game->getPLayers().at(i)];
+        data.entities[i] = _game->getPlayers().at(i);
+        auto const &pos = positions[_game->getPlayers().at(i)];
         if (pos) {
             data.posX[i] = pos.value()._x;
             data.posY[i] = pos.value()._y;
         }
 
-        if (_game->getPLayers().at(i) == id) {
+        if (_game->getPlayers().at(i) == id) {
             for (int j = 0; j < 10; j++) {
                 data.inputs[i][j] = inputs[j];
             }
@@ -137,7 +137,7 @@ void Engine::runServerCommandLine()
             std::cout << "please type a command. use `help` to see commands available." << std::endl;
             continue;
         }
-        CLI::launchSearchedFunction(line, _reg, _network);
+        CLI::launchSearchedFunction(line, _reg, _network, std::bind(&Engine::getPlayers, this));
     }
 }
 
@@ -159,4 +159,9 @@ void Engine::run()
     gameThread.join();
     networkThread.join();
     serverCliThread.join();
+}
+
+std::vector<entity> Engine::getPlayers()
+{
+    return _game->getPlayers();
 }

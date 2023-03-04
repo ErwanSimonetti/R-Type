@@ -104,6 +104,8 @@ class Engine {
         void runServerCommandLine();
 
 
+        std::vector<entity> getPlayers();
+
     protected:
     private:
 

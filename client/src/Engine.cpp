@@ -76,7 +76,7 @@ ClientData Engine::buildClientData(Events events)
         return clientData;
     }
 
-    clientData.entity = _game->getPLayers().at(0);
+    clientData.entity = _game->getPlayers().at(0);
     for (int i = 0; i < 10; i++) {
         clientData.inputs[i] = 0;
     }
