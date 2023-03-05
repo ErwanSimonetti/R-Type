@@ -26,6 +26,14 @@ SFML::~SFML()
 {
 }
 
+void SFML::loadModuleSystem(registry &reg)
+{
+    reg.add_system<Animatable, Drawable>(std::bind(&SFML::animation_system, this, std::placeholders::_1, std::placeholders::_2));
+    reg.add_system<Position, Drawable, Particulable, DrawableText>(std::bind(&SFML::draw_system, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3, std::placeholders::_4)); 
+    reg.add_system<SoundEffect>(std::bind(&SFML::sound_system, this, std::placeholders::_1));
+    reg.add_system<Cliquable, Drawable>(std::bind(&SFML::clique_system, this, std::placeholders::_1, std::placeholders::_2));
+}
+
 void SFML::set_text()
 {
     _font.loadFromFile("./ressources/SYNNova.otf");

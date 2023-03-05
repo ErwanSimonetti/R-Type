@@ -61,20 +61,34 @@ OBJ_RTYPE		=	$(SRC_RTYPE:.cpp=.o)
 
 INC_RTYPE		=	$(INC_GAMES) -I games/RTYPE_game/include -fPIC -shared
 
+# OTHERG
+
+NAME_OTHERG		=	otherg.so
+
+SRC_OTHERG		=	games/Other_game/src/OtherGame.cpp \
+					../ECS/src/registry.cpp \
+					../ECS/src/FollowPath.cpp \
+
+OBJ_OTHERG		=	$(SRC_OTHERG:.cpp=.o)
+
+INC_OTHERG		=	$(INC_GAMES) -I games/Other_game/include -fPIC -shared
+
 
 #---------- RULES ----------#
 
-all:		sfml raylib rtype
+all:		sfml raylib rtype otherg
 
 graphic:	sfml raylib
 
-game:		rtype
+game:		rtype otherg
 
 sfml:		$(NAME_SFML)
 
 rtype:		$(NAME_RTYPE)
 
 raylib:		$(NAME_RAYLIB)
+
+otherg:		$(NAME_OTHERG)
 
 clean: 
 	rm *.so
@@ -85,8 +99,13 @@ re: clean all
 $(NAME_SFML):	
 	$(CXX) $(SRC_SFML) -o $(NAME_SFML) $(INC) $(INC_SFML) $(LDFLAGS_SFML)
 
+$(NAME_RAYLIB): 
+	$(CXX) $(SRC_RAYLIB) -o $(NAME_RAYLIB) $(INC) $(INC_RAYLIB) $(LDFLAGS_RAYLIB)
+
 $(NAME_RTYPE):
 	$(CXX) $(SRC_RTYPE) -o $(NAME_RTYPE) $(INC) $(INC_RTYPE)
 
-$(NAME_RAYLIB): 
-	$(CXX) $(SRC_RAYLIB) -o $(NAME_RAYLIB) $(INC) $(INC_RAYLIB) $(LDFLAGS_RAYLIB)
+$(NAME_OTHERG):
+	$(CXX) $(SRC_OTHERG) -o $(NAME_OTHERG) $(INC) $(INC_OTHERG)
+
+

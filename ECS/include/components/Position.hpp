@@ -19,10 +19,12 @@ struct Position {
      * 
      * @param x axes
      * @param y axes
+     * @param z axes
      */
-    void set_component(const int16_t &x, const int16_t &y) {
+    void set_component(const int16_t &x, const int16_t &y, const int16_t &z = 0) {
         _x = x;
         _y = y;
+        _z = z;
     }
 
     /**
@@ -38,4 +40,5 @@ struct Position {
     }
     int16_t _x;
     int16_t _y;
+    int16_t _z;
 };

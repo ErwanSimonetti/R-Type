@@ -10,7 +10,10 @@
 Engine::Engine(boost::asio::io_service &io_service, const std::string &host, const std::string &port, const std::string &graphicModulePath, const std::string &gameModulePath) : _reg(), _network(io_service, host, port)
 {
     loadModules(gameModulePath, MODULE_TYPE::GAME);
+
     _graphicPath = graphicModulePath;
+
+    _clock = std::chrono::high_resolution_clock::now();
     _reg.register_component<Position>();
     _reg.register_component<Velocity>();
     _reg.register_component<Drawable>();
@@ -21,18 +24,22 @@ Engine::Engine(boost::asio::io_service &io_service, const std::string &host, con
     _reg.register_component<Parallax>();
     _reg.register_component<FollowPath>();
     _reg.register_component<Shootable>();
+    _reg.register_component<Jump>();
+    _reg.register_component<Gravity>();
     _reg.register_component<Stats>();
     _reg.register_component<DrawableText>();
     _reg.register_component<Particulable>();
     _reg.register_component<SoundEffect>();
     _reg.register_component<Cliquable>();
 
-    _reg.add_system<Position, Hitbox>(collision_system);
-    _reg.add_system<Position, Velocity, Controllable>(position_system);
+    _reg.add_system<Velocity, Hitbox, Gravity>(gravity_system);
+    _reg.add_system<Position, Velocity, Hitbox>(collision_system);
+    _reg.add_system<Position, Velocity, Hitbox, Jump, Gravity>(jump_system);
+    _reg.add_system<Position, Velocity, Controllable, Hitbox>(position_system);
     _reg.add_system<Shootable>(shoot_system);
+    _reg.add_system<Stats, Position, Pet>(entity_killing_system);
     _reg.add_system<Animatable, Position, Parallax>(parallax_system);
     // _reg.add_system<Position, Velocity, FollowPath>(followPathSystem);
-    _reg.add_system<Stats, Position, Pet>(entity_killing_system);
     _reg.add_system<Stats, DrawableText, Pet>(update_drawable_texts_system);
 }
 
@@ -55,10 +62,7 @@ void Engine::loadModules(std::string libName, MODULE_TYPE type)
         case MODULE_TYPE::GRAPHIC: {
             create_d_graphic newGraphic = (create_d_graphic)library.getFunction(lib, "createLibrary");  
             _graphic = newGraphic();
-            _reg.add_system<Animatable, Drawable>(std::bind(&IGraphic::animation_system, _graphic, std::placeholders::_1, std::placeholders::_2));
-            _reg.add_system<Position, Drawable, Particulable, DrawableText>(std::bind(&IGraphic::draw_system, _graphic, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3, std::placeholders::_4)); 
-            _reg.add_system<SoundEffect>(std::bind(&IGraphic::sound_system, _graphic, std::placeholders::_1));
-            _reg.add_system<Cliquable, Drawable>(std::bind(&IGraphic::clique_system, _graphic, std::placeholders::_1, std::placeholders::_2));
+            _graphic->loadModuleSystem(_reg);
             break;
         }
         case MODULE_TYPE::GAME: {
@@ -132,11 +136,15 @@ void Engine::runGame()
     Events evt;
     std::vector<GAME_EVENT> gameEvents;
     while (1) {
-        _reg.run_systems();
-
+        auto currentTime = std::chrono::high_resolution_clock::now();
+        auto elapsedTime = std::chrono::duration_cast<std::chrono::milliseconds>(currentTime - _clock);
+        if (elapsedTime.count() >= 15) {
+            _reg.run_systems();
+            _clock = currentTime;
+        }
         evt = _graphic->run_graphic(_reg);
         
-        gameEvents = _game->run_gameLogic(_reg, evt);
+        gameEvents = _game->run_gameLogic(_reg);
         if (std::find(evt.gameEvents.begin(), evt.gameEvents.end(), GAME_EVENT::WINDOW_CLOSE) != evt.gameEvents.end() || \
         std::find(gameEvents.begin(), gameEvents.end(), GAME_EVENT::WINDOW_CLOSE) != gameEvents.end()) {
             _graphic->closeWindow();

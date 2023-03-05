@@ -12,6 +12,7 @@ Window::Window(const int &screenWidth, const int &screenHeight, const std::strin
     _screenWidth(screenWidth),
     _name(name)
 {
+    SetConfigFlags(FLAG_WINDOW_RESIZABLE);
     InitWindow(screenWidth, screenHeight, name.c_str());
     if (!IsWindowReady()) {
     }

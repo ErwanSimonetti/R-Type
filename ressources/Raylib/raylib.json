@@ -2,9 +2,9 @@
     "asset": [
         {
             "type": 0,
-            "texture" : "ressources/Raylib/shipTexture.png",
-            "animation" : "ressources/Raylib/shipAnim.iqm",
-            "model": "ressources/Raylib/ship.iqm"
+            "texture" : "ressources/Raylib/wizard1.png",
+            "animation" : "ressources/Raylib/wizardFinalAnim.iqm",
+            "model": "ressources/Raylib/wizardFinal.iqm"
         },
         {
             "type": 1,

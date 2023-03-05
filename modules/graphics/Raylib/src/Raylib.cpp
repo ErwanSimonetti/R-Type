@@ -47,11 +47,11 @@ void Raylib::constructFromJson()
 void Raylib::createCamera()
 {
     _camera = { 0 };
-    _camera.position = (Vector3){ 4.0f, 20.0f, 0.0f };  // Camera position
-    _camera.target = (Vector3){ 0.0f, 0.0f, 0.0f };    // Camera looking at point
-    _camera.up = (Vector3){ 0.0f, 1.0f, 0.0f };         // Camera up vector (rotation towards target)
-    _camera.fovy = 45.0f;                               // Camera field-of-view Y
-    _camera.projection = CAMERA_PERSPECTIVE;  
+    _camera.position = (Vector3){ 5.0f, 120.0f, 200.0f };   // Camera position
+    _camera.target = (Vector3){ 0.0f, 0.0f, 0.0f };         // Camera looking at point
+    _camera.up = (Vector3){ 0.0f, 1.0f, 0.0f };             // Camera up vector (rotation towards target)
+    _camera.fovy = 45.0f;                                   // Camera field-of-view Y
+    _camera.projection = CAMERA_PERSPECTIVE;
 }
 
 void Raylib::createModel(uint16_t type, std::string texture, std::string model, std::string animation) 
@@ -63,7 +63,7 @@ void Raylib::createModel(uint16_t type, std::string texture, std::string model, 
     asset.model.transform = MatrixRotateXYZ({ 0.0f, 0.0f, 0.0f });
     unsigned int animsmodel = 0;
     asset.animation = LoadModelAnimations(animation.c_str(), &animsmodel);
-    asset.size = {0.10f, 0.10f, 0.10f};
+    asset.size = {10.00f, 10.00f, 10.00f};
     _models.insert(std::pair<uint16_t, Asset>(type, asset));
 }
 
@@ -81,61 +81,66 @@ void Raylib::sound_system(sparse_array<SoundEffect> &sounds)
     }
 }
 
-void Raylib::animation_system(sparse_array<Animatable> &animatables, sparse_array<Drawable> &drawables)
+void Raylib::loadModuleSystem(registry &_reg)
 {
-    for (size_t i = 0; i < animatables.size() && i < drawables.size(); ++ i) {
-        auto &anim = animatables[i];
-        auto &draw = drawables[i];
-        if (anim && draw) {
-            if (!_models.count(draw.value()._type) )
-                continue;
-            auto model = _models.find(draw.value()._type)->second;
-            if (!model.animation || !IsModelReady(model.model)) {
-                continue;
-        }
-            auto currentTime = std::chrono::high_resolution_clock::now();
-            auto elapsedTime = std::chrono::duration_cast<std::chrono::milliseconds>(currentTime - anim.value()._clock);
-                if ( anim.value()._refreshPoint == nullptr || *anim.value()._refreshPoint >= _models.find(draw.value()._type)->second.animation[0].frameCount) 
-                    anim.value()._refreshPoint = std::make_shared<int>(0);
+    _reg.add_system<Position, Drawable, DrawableText, Particulable, Animatable>(std::bind(&Raylib::draw_system, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3, std::placeholders::_4, std::placeholders::_5));
+    _reg.add_system<SoundEffect>(std::bind(&Raylib::sound_system, this, std::placeholders::_1));
+}
 
-                if (elapsedTime.count() >= 30) {
-                        *anim.value()._refreshPoint += 1;
-                        UpdateModelAnimation(_models.find(draw.value()._type)->second.model, _models.find(draw.value()._type)->second.animation[0], *anim.value()._refreshPoint);
-                        anim.value()._clock = currentTime;
-            }
-        }
+void Raylib::animation_system(Animatable &anim, Drawable &draw)
+{
+    if (!_models.count(draw._type) )
+        return;
+    auto model = _models.find(draw._type)->second;
+    if (!model.animation || !IsModelReady(model.model)) {
+        return;
     }
+    auto currentTime = std::chrono::high_resolution_clock::now();
+    auto elapsedTime = std::chrono::duration_cast<std::chrono::milliseconds>(currentTime - anim._clock);
+    if (anim._refreshPoint == nullptr || *anim._refreshPoint >= _models.find(draw._type)->second.animation[anim._animationIndex].frameCount) 
+        anim._refreshPoint = std::make_shared<int>(0);
+    if (elapsedTime.count() >= 30) {
+        *anim._refreshPoint += 1;
+        anim._clock = currentTime;
+    }
+    UpdateModelAnimation(_models.find(draw._type)->second.model, _models.find(draw._type)->second.animation[anim._animationIndex], *anim._refreshPoint);
 }
 
 Events get_event() {
     Events newEvent;
-    for (auto &it: KeyboardMap)
+    for (auto &it: KeyboardMap) {
         if (IsKeyDown(it.first)) 
             newEvent.inputs.emplace_back(it.second);
+        if (IsKeyReleased(it.first)) 
+            newEvent.inputs.emplace_back(KEYBOARD::NONE);
+    }
     return newEvent;
 }
 
- void Raylib::draw_system(sparse_array<Position> const &positions, sparse_array<Drawable> &drawables, sparse_array<Particulable> &particles, sparse_array<DrawableText> &drawableTexts) 
+ void Raylib::draw_system(sparse_array<Position> const &positions, sparse_array<Drawable> &drawables, sparse_array<DrawableText> &drawableTexts, sparse_array<Particulable> &particles, sparse_array<Animatable> &animables) 
  {
     _window.startDrawing();
     _window.clearWindow();
     _window.start3DMode(_camera);
 
-    for (size_t i = 0; i < drawables.size() && i < positions.size(); ++ i) {
+    for (size_t i = 0; i < drawables.size() && i < positions.size() && i < animables.size(); ++ i) {
         auto &draw = drawables[i];
         auto &pos = positions[i];
+        auto &anim = animables[i];
         if (draw && pos) {
             if (!_models.count(draw.value()._type))
                 continue;
-            DrawModelEx(_models.find(draw.value()._type)->second.model , (Vector3){ pos.value()._x , 0.0f, pos.value()._y }, (Vector3){ 0.0f, 0.0f, 0.0f }, 0.0f, (Vector3){ 1.0f, 1.0f, 1.0f }, WHITE);
+            _models.find(draw.value()._type)->second.model.transform = MatrixRotateXYZ((Vector3){ 
+                DEG2RAD*draw.value()._rotation.angleX, DEG2RAD*draw.value()._rotation.angleY, DEG2RAD*draw.value()._rotation.angleZ });
+            if (anim && draw)
+                animation_system(anim.value(), draw.value());
+            DrawModel(_models.find(draw.value()._type)->second.model , (Vector3){ float(pos.value()._x) , float(pos.value()._y), float(pos.value()._z) }, draw.value()._scale, WHITE);
         }
 
     }
-    DrawGrid(10, 1.0f); 
     _window.stop3DMode();
 	draw_particles(positions, drawables, particles);
     _window.endDrawing();
-
  }
 
  void Raylib::draw_particles(sparse_array<Position> const &positions, sparse_array<Drawable> &drawables, sparse_array<Particulable> &particles)

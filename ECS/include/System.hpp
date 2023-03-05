@@ -10,8 +10,9 @@
 #ifndef SYSTEM_HPP_
 #define SYSTEM_HPP_
 
-#include "sparse_array.hpp"
+#include "GameEvents.hpp"
 #include "registry.hpp"
+
 #include "Velocity.hpp"
 #include "Position.hpp"
 #include "Controllable.hpp"
@@ -22,12 +23,13 @@
 #include "Parallax.hpp"
 #include "FollowPath.hpp"
 #include "Shootable.hpp"
+#include "Jump.hpp"
+#include "Gravity.hpp"
 #include "Stats.hpp"
 #include "DrawableText.hpp"
 #include "Particulable.hpp"
 #include "Sound.hpp"
 #include "Cliquable.hpp"
-#include "GameEvents.hpp"
 
 /**
  * @brief logging system displaying all nodes with their position & velocity
@@ -46,7 +48,7 @@ void logging_system (registry &r, sparse_array<Position> const& positions, spars
  * @param velocities velocities array in ECS
  * @param controllable controllable array in ECS
  */
-void position_system(registry &r, sparse_array<Position> &positions, sparse_array<Velocity> &velocities, const sparse_array<Controllable> &controllables);
+void position_system(registry &r, sparse_array<Position> &positions, sparse_array<Velocity> &velocities, const sparse_array<Controllable> &controllables, sparse_array<Hitbox> &hitboxes);
 
 /**
  * @brief Control system, system emplacing the event corresponding to an interaction in the Events vector.
@@ -70,10 +72,12 @@ Events control_system(registry &r, std::vector<int> &directions, sparse_array<Po
  */
 // void followPathSystem(const sparse_array<Position> &positions, sparse_array<Velocity> &velocities, sparse_array<FollowPath> &paths);
 
-void collision_system(registry &r, sparse_array<Position> &positions, sparse_array<Hitbox> &hitboxes);
+void collision_system(registry &r, sparse_array<Position> &positions, sparse_array<Velocity> &velocities,  sparse_array<Hitbox> &hitboxes);
 void parallax_system(registry &r, sparse_array<Animatable> &animatable, sparse_array<Position> &positions, sparse_array<Parallax> &parallax);
 void animation_system(registry &r, sparse_array<Animatable> &animatable, sparse_array<Drawable> &drawable);
 void shoot_system(registry &r, sparse_array<Shootable> &shootable);
+void jump_system(registry &r, sparse_array<Position> &positions, sparse_array<Velocity> &velocities, sparse_array<Hitbox> &hitboxes, sparse_array<Jump> &jumps, sparse_array<Gravity> &gravities);
 void entity_killing_system(registry &r, sparse_array<Stats> &stats, sparse_array<Position> &positions, sparse_array<Pet> &pets);
 void update_drawable_texts_system(registry &r, sparse_array<Stats> &stats, sparse_array<DrawableText> &drawableTexts, sparse_array<Pet> &pets);
+void gravity_system(registry &r, sparse_array<Velocity> &velocities, sparse_array<Hitbox> &hitboxes, sparse_array<Gravity> &gravities);
 #endif /* !SYSTEM_HPP_ */

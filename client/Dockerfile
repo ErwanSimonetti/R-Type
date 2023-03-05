@@ -47,7 +47,7 @@ RUN apt-get update && \
     libsndfile1-dev \
     libglfw3-dev \
     libvorbis-dev \
-    libopenal-dev 
+    libopenal-dev
 
 RUN git clone https://github.com/raysan5/raylib.git && \
     cd raylib && mkdir build && cd build && cmake -DCMAKE_POSITION_INDEPENDENT_CODE=ON .. && make && make install

@@ -25,6 +25,12 @@ struct Hitbox {
     uint16_t _width;
     uint16_t _height;
     int16_t _type;
+
     int16_t _obstacle;
+
+    int16_t _topHit = -1;
+    int16_t _bottomHit = -1;
+    int16_t _leftHit = -1;
+    int16_t _rightHit = -1;
     bool _active;
 };

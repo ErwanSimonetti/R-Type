@@ -40,6 +40,7 @@ class SFML : public IGraphic {
         Events run_graphic(registry &r);
         void constructFromJson();
         void set_sprite();
+        void loadModuleSystem(registry &reg);
         void set_text();
         void closeWindow();
     protected:

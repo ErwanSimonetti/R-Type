@@ -5,9 +5,6 @@
 ** DrawableText
 */
 
-#include <unordered_map>
-#include <memory>
-
 #pragma once
 
 struct DrawableText {

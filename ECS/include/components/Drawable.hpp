@@ -17,14 +17,24 @@ struct spriteRect {
     int height;
 };
 
+struct rotation {
+    float angleX;
+    float angleY;
+    float angleZ;
+};
+
 struct Drawable {
 
     Drawable() = default;
-    void set_component(const uint16_t &obj) {
+    void set_component(const uint16_t &obj, const float &scale = 1, const rotation &rotation = {0.0f, 0.0f, 0.0f}) {
         _type = obj;
         _rect = nullptr;
+        _scale = scale;
+        _rotation = rotation;
     }
 
     uint16_t _type;
+    float _scale;
+    rotation _rotation;
     std::shared_ptr<spriteRect> _rect;
 };

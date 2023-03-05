@@ -71,15 +71,25 @@ void logging_system(registry &r, sparse_array<Position> const& positions, sparse
     }
 }
 
-void position_system(registry &r, sparse_array<Position> &positions, sparse_array<Velocity> &velocities, const sparse_array<Controllable> &controllables) 
+void position_system(registry &r, sparse_array<Position> &positions, sparse_array<Velocity> &velocities, const sparse_array<Controllable> &controllables, sparse_array<Hitbox> &hitboxes) 
 {
     for (size_t i = 0; i < positions.size() && i < velocities.size(); ++ i) {
         auto &pos = positions[i];
         auto &vel = velocities[i];
 
         if (pos && vel) {
-            pos.value()._x += vel.value()._vX;
-            pos.value()._y += vel.value()._vY;
+            if (i < hitboxes.size() && hitboxes[i]) {
+                auto &hbx = hitboxes[i];
+
+                if ((vel.value()._vX > 0 && hbx.value()._rightHit <= 0) || (vel.value()._vX < 0 && hbx.value()._leftHit <= 0))
+                    pos.value()._x += vel.value()._vX;
+                
+                if ((vel.value()._vY < 0 && hbx.value()._bottomHit <= 0) || (vel.value()._vY > 0 && hbx.value()._topHit <= 0))
+                    pos.value()._y += vel.value()._vY;
+            } else {
+                pos.value()._x += vel.value()._vX;
+                pos.value()._y += vel.value()._vY;
+            }
 
             if (i < controllables.size() && controllables[i]) {
                 vel.value()._vX = 0;
@@ -111,20 +121,122 @@ bool isCollision(Position& a, Hitbox& aHitbox, Position& b, Hitbox& bHitbox)
    return (a._x < (b._x + bHitbox._width) && (a._x + aHitbox._width) > b._x && a._y < b._y + bHitbox._height && a._y + aHitbox._height > b._y);
 }
 
-void collision_system(registry &r, sparse_array<Position> &positions, sparse_array<Hitbox> &hitboxes)
+void collision_system(registry &r, sparse_array<Position> &positions, sparse_array<Velocity> &velocities,  sparse_array<Hitbox> &hitboxes)
 {
-    for (int i = 0; i < positions.size() && i < hitboxes.size(); ++i) {
+    // reset all the _obstacles to re-assign them
+    for (int i = 0; i < hitboxes.size(); ++i) {
+        auto &hbx = hitboxes[i];
+        if (!hbx)
+            continue;
+        hbx.value()._obstacle = -1;
+        hbx.value()._topHit = -1;
+        hbx.value()._bottomHit = -1;
+        hbx.value()._leftHit = -1;
+        hbx.value()._rightHit = -1;
+    }
+
+    for (int i = 0; i < positions.size() && i < velocities.size() && i < hitboxes.size(); ++i) {
+        auto &hbxI = hitboxes[i];
+        if (!hbxI)
+            continue;
         for (int j = i + 1; j < positions.size() && j < hitboxes.size(); ++j) {
-            auto &hbxI = hitboxes[i];
             auto &hbxJ = hitboxes[j];
-            if (positions[i] && hbxI && positions[j] && hbxJ 
-                && isCollision(positions[i].value(), hbxI.value(), positions[j].value(), hbxJ.value())) {
-                if (hbxI.value()._active && hbxJ.value()._active) {
-                    hbxI.value()._obstacle = hbxJ.value()._type;
-                    hbxJ.value()._obstacle = hbxI.value()._type;
-                }
+            auto posI = positions[i];
+            auto posJ = positions[j];
+            if (!posI || !posJ || !hbxJ || !velocities[i] || !velocities[j])
+                continue;
+
+            if (isCollision(posI.value(), hbxI.value(), posJ.value(), hbxJ.value()) && hbxI.value()._active && hbxJ.value()._active) {
+                hbxI.value()._obstacle = hbxJ.value()._type;
+                hbxJ.value()._obstacle = hbxI.value()._type;
+            }
+
+            posI.value()._x += 1;
+            if (isCollision(posI.value(), hbxI.value(), posJ.value(), hbxJ.value()) && hbxI.value()._active && hbxJ.value()._active) {
+                hbxI.value()._leftHit = hbxJ.value()._type;
+                hbxJ.value()._rightHit = hbxI.value()._type;
+            }
+            posI.value()._x -= 1;
+            posI.value()._y += 1;
+            if (isCollision(posI.value(), hbxI.value(), posJ.value(), hbxJ.value()) && hbxI.value()._active && hbxJ.value()._active) {
+                hbxI.value()._topHit = hbxJ.value()._type;
+                hbxJ.value()._bottomHit = hbxI.value()._type;
+            }
+            posI.value()._y -= 1;
+
+            posJ.value()._x += 1;
+            if (isCollision(posI.value(), hbxI.value(), posJ.value(), hbxJ.value()) && hbxI.value()._active && hbxJ.value()._active) {
+                hbxI.value()._rightHit = hbxJ.value()._type;
+                hbxJ.value()._leftHit = hbxI.value()._type;
+            }
+            posJ.value()._x -= 1;
+            posJ.value()._y += 1;
+            if (isCollision(posI.value(), hbxI.value(), posJ.value(), hbxJ.value()) && hbxI.value()._active && hbxJ.value()._active) {
+                hbxI.value()._bottomHit = hbxJ.value()._type;
+                hbxJ.value()._topHit = hbxI.value()._type;
+            }
+            posJ.value()._y -= 1;
+        }
+    }
+}
+
+void jump_system(registry &r, sparse_array<Position> &positions, sparse_array<Velocity> &velocities, sparse_array<Hitbox> &hitboxes, sparse_array<Jump> &jumps, sparse_array<Gravity> &gravities)
+{
+    for (int i = 0; i < positions.size() && i < jumps.size() && i < gravities.size() && i < velocities.size() && i < hitboxes.size(); ++i) {
+        auto &pos = positions[i];
+        auto &jump = jumps[i];
+        auto &gravity = gravities[i];
+        auto &vel = velocities[i];
+        auto &hitbox = hitboxes[i];
+        if (!pos || !jump || !gravity || !vel || !hitbox) {
+            continue;
+        }
+
+        if (jump.value()._stop == true) {
+            jump.value()._canJump = true;
+            jump.value()._isJumping = false;
+            jump.value()._stop = false;
+            jump.value()._hasReachedTheTop = false;
+            continue;
+        }
+
+        if (jump.value()._canJump == true)
+            continue;
+
+        if (jump.value()._canJump == false && jump.value()._isJumping == false) {
+            jump.value()._jumpHeight = pos.value()._y + jump.value()._jumpForce;
+            vel.value()._vY = gravity.value()._force;
+            vel.value()._speedY = 0;
+            jump.value()._isJumping = true;
+        }
+
+        if (pos.value()._y >= jump.value()._jumpHeight) {
+            vel.value().set_component(vel.value()._vX, -gravity.value()._force);
+            jump.value()._hasReachedTheTop = true;
+            jump.value()._stop = true;
+        } else {
+            if (hitbox.value()._topHit > 0 ) {
+                jump.value()._stop = true;
+                pos.value()._y -= 5;
             }
         }
+        if (!jump.value()._hasReachedTheTop)
+            vel.value().set_component(vel.value()._vX, gravity.value()._force * 2);
+    }
+}
+
+void gravity_system(registry &r, sparse_array<Velocity> &velocities, sparse_array<Hitbox> &hitboxes, sparse_array<Gravity> &gravities)
+{
+    for (int i = 0; i < velocities.size() && i < hitboxes.size() && i < gravities.size(); ++i) {
+        auto &vel = velocities[i];
+        auto &hbx = hitboxes[i];
+        auto &gravity = gravities[i];
+
+        if (!vel || !hbx || !gravity)
+            continue;
+
+        if (hbx.value()._obstacle <= 0)
+            vel.value()._vY = -gravity.value()._force;
     }
 }
 
@@ -137,7 +249,7 @@ void entity_killing_system(registry &r, sparse_array<Stats> &stats, sparse_array
         if (sts && sts && sts.value()._health <= 0)
             r.kill_entity(entity(i));
         if (pet && pet.value()._ent == 0)
-            r.kill_entity(entity(i)); 
+            r.kill_entity(entity(i));
     }
 }
 

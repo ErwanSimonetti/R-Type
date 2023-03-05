@@ -18,6 +18,7 @@ static std::map<KeyboardKey, KEYBOARD> KeyboardMap = {
     {KeyboardKey::KEY_DOWN, KEYBOARD::ARROW_DOWN},
     {KeyboardKey::KEY_LEFT, KEYBOARD::ARROW_LEFT},
     {KeyboardKey::KEY_RIGHT, KEYBOARD::ARROW_RIGHT},
+    {KeyboardKey::KEY_SPACE, KEYBOARD::SPACE},
     {KeyboardKey::KEY_A, KEYBOARD::A},
     {KeyboardKey::KEY_B, KEYBOARD::B},
     {KeyboardKey::KEY_C, KEYBOARD::C},

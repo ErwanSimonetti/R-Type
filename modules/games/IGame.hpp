@@ -45,7 +45,7 @@ class IGame {
          * @param r the registery comming from the Game Engine
          * @param events the events that happened
          */
-        virtual std::vector<GAME_EVENT> run_gameLogic(registry &r, const Events &events) = 0;
+        virtual std::vector<GAME_EVENT> run_gameLogic(registry &r) = 0;
 
         /**
          * @brief Function used to update the registery with data received from the server

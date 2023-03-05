@@ -17,10 +17,7 @@ class IGraphic {
     public:
         IGraphic() = default;
         ~IGraphic() = default;
-        virtual void sound_system(sparse_array<SoundEffect> &sound) = 0;
-        virtual void draw_system(sparse_array<Position> const &positions, sparse_array<Drawable> &drawables, sparse_array<Particulable> &particles, sparse_array<DrawableText> &drawableTexts) = 0;
-        virtual void animation_system(sparse_array<Animatable> &animatables, sparse_array<Drawable> &drawables) = 0;
-        virtual void clique_system(sparse_array<Cliquable> &cliquables, sparse_array<Drawable> &drawables) = 0;
+        virtual void loadModuleSystem(registry &reg) = 0;
         virtual Events run_graphic(registry &r) = 0;
         virtual void closeWindow() = 0;
     protected:
