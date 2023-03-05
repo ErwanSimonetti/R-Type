@@ -29,13 +29,24 @@ The project runs on Windows and Unix systems, using [CMake](https://cmake.org/).
 Make sure Boost is already installed on your system, or use their [man page](https://www.boost.org/doc/libs/1_67_0/doc/html/boost_asio/using.html) to install it according to your specs. 
 <br/>
 
-### Run the game
+### Run the Engine
 #
 ![linux logo](./docs/images/linlogo.png) ![apple logo](./docs/images/applogo.png)  
-On Linux and mac : 
+To launch the engine, you must use our docker container and specify the shared object libraries you want to use.  
+We have two containers: one for the client and one for the server.  
+  
+To run the server container, you need to provide a .so game
 ```sh
-$ ./make_client && ./make_server && ./r-type_server && ./r-type_client
+$ ./makeDocker server [nameOfContainer] [path: .so game]
+ex: ./makeDocker server server ./modules/rtype.so
 ```
+
+To run the client container, you need to provide a graphic librarie .so and a game .so
+```sh
+$ ./makeDocker client [nameOfContainer] [path: .so graphic] [path: .so game]
+ex: ./makeDocker client client ./modules/sfml.so ./modules/rtype.so
+```
+
 ![windows logo](./docs/images/winlogo.png)  
 On Windows :
 ```sh
