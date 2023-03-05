@@ -107,7 +107,7 @@ void SFML::sound_system(sparse_array<SoundEffect> &sounds)
  void SFML::draw_particles(sparse_array<Position> const &positions, sparse_array<Drawable> &drawables, sparse_array<Particulable> &particles)
  {
     if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
-            std::pair<int, int> m_pos = std::pair<int, int>((float)GetRandomValue((sf::Mouse::getPosition().x-20)*10, (sf::Mouse::getPosition().x+20)*10)*.1f, sf::Mouse::getPosition().y);
+            std::pair<int, int> m_pos = std::pair<int, int>(sf::Mouse::getPosition().x, sf::Mouse::getPosition().y - 50);
             _particles.emplace_back(m_pos);
     }
     for (size_t i = 0; i < drawables.size() && i < positions.size() && i < particles.size(); ++ i) {
@@ -116,7 +116,7 @@ void SFML::sound_system(sparse_array<SoundEffect> &sounds)
         auto &part = particles[i];
         if (draw && pos && part) {
             if (part.value()._play == true) {
-                std::pair<int, int> m_pos =std::pair<int, int>((float)pos.value()._x, (float)pos.value()._y);
+                std::pair<int, int> m_pos =std::pair<int, int>(pos.value()._x, pos.value()._y);
                 _particles.emplace_back(ParticleSystem{m_pos});
                 part.value()._play = false;
             }
@@ -124,7 +124,7 @@ void SFML::sound_system(sparse_array<SoundEffect> &sounds)
     }
     _particles.erase(std::remove_if( _particles.begin(), _particles.end(), [this]( ParticleSystem& sys ){ 
        sys.update();
-	   sys.drawSFML(*_window);
+	   sys.draw(*_window);
 	   return sys.system.size() <= 0; 
        }),  _particles.end());
  }
