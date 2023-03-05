@@ -150,7 +150,7 @@ Events get_event() {
         auto &part = particles[i];
         if (draw && pos && part) {
             if (part.value()._play == true) {
-                std::pair<int,int> m_pos =std::pair<int, int>((float)pos.value()._x, (float)pos.value()._y);
+                std::pair<int,int> m_pos =std::pair<int, int>(pos.value()._x, pos.value()._y);
                 _particles.emplace_back(ParticleSystem{m_pos});
                 part.value()._play = false;
             }
@@ -158,7 +158,7 @@ Events get_event() {
     }
     _particles.erase(std::remove_if( _particles.begin(), _particles.end(), []( ParticleSystem& sys ){ 
        sys.update();
-	   sys.drawRaylib();
+	   sys.draw();
 	   return sys.system.size() <= 0; 
        }),  _particles.end());
  }

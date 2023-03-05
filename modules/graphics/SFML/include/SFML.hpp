@@ -8,7 +8,7 @@
 #ifndef SFML_HPP_
 #define SFML_HPP_
 
-#include "Particle.hpp"
+#include "SFMLParticle.hpp"
 #include <SFML/Graphics.hpp>
 #include "IGraphic.hpp"
 #include "SFML_utils.hpp"

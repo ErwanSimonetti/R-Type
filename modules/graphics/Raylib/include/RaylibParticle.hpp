@@ -14,7 +14,6 @@
 #include "raylib.h"
 #include <iostream>
 #include <algorithm>
-#include <SFML/Graphics.hpp>
 
 class Particle {
     public:
@@ -22,8 +21,7 @@ class Particle {
         Particle(std::pair<int, int> &pos);
         ~Particle();
 
-        void drawRaylib();
-        void drawSFML(sf::RenderWindow &window);
+        void draw();
         void update();
 
         float _size;
@@ -40,9 +38,8 @@ class ParticleSystem {
 		
     ParticleSystem(std::pair<int, int> & pos);
     ~ParticleSystem() = default;
-	
-    void drawRaylib();
-    void drawSFML(sf::RenderWindow &window);
+
+    void draw();
     
     void update();
 

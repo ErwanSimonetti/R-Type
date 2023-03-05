@@ -22,14 +22,14 @@ NAME_SFML		=	sfml.so
 
 SRC_SFML		=	graphics/SFML/src/SFML.cpp \
 					../utils/JSON/ReadJson.cpp \
-					graphics/Particle.cpp
+					graphics/SFML/src/SFMLParticle.cpp
 					
 
 OBJ_SFML		=	$(SRC_SFML:.cpp=.o)
 
 INC_SFML		=	$(INC_GRAPHICS) -I graphics/SFML/include
 
-LDFLAGS_SFML	=	-fPIC -shared -lsfml-graphics -lsfml-system -lsfml-window -lsfml-audio -ljsoncpp -lraylib 
+LDFLAGS_SFML	=	-fPIC -shared -lsfml-graphics -lsfml-system -lsfml-window -lsfml-audio -ljsoncpp 
 
 # RAYLIB
 
@@ -37,14 +37,14 @@ NAME_RAYLIB	=	raylib.so
 
 SRC_RAYLIB	=	graphics/Raylib/src/Raylib.cpp \
 				graphics/Raylib/src/RaylibWindow.cpp \
-				graphics/Particle.cpp \
+				graphics/Raylib/src/RaylibParticle.cpp \
 				../utils/JSON/ReadJson.cpp
 
 OBJ_RAYLIB	=	$(SRC_RAYLIB:.cpp=.o)
 
 INC_RAYLIB		=	$(INC_GRAPHICS) -I graphics/Raylib/include
 
-LDFLAGS_RAYLIB	=	-fPIC -shared -lraylib -ljsoncpp -lsfml-graphics -lsfml-system -lsfml-window -lsfml-audio -ljsoncpp
+LDFLAGS_RAYLIB	=	-fPIC -shared -lraylib -ljsoncpp
 
 
 #---------- GAMES ----------#
