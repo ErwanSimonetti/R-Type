@@ -22,6 +22,8 @@ void follow_path_system(registry &r, sparse_array<Position> &positions, sparse_a
         auto &path = paths[i];
 
         if (pos && vel && path) {
+            if (path.value()._currentCheckPoints > path.value()._checkpoints.size() - 1)
+                return;
             xToReach = path.value()._checkpoints[path.value()._currentCheckPoints][0];
             yToReach = path.value()._checkpoints[path.value()._currentCheckPoints][1];
             if (pos.value()._x < xToReach)
@@ -35,10 +37,6 @@ void follow_path_system(registry &r, sparse_array<Position> &positions, sparse_a
             if (std::abs(pos.value()._x - xToReach) <= 10 && std::abs(pos.value()._y - yToReach) <= 10)
                 path.value()._currentCheckPoints += 1;
             vel.value().set_component(newXVelocity, newYVelocity);
-            if (i == 10) {
-                std::cout << "pos x FOLLOWPATH =  " << pos.value()._x << std::endl;
-                std::cout << "pos y FOLLOWPATH =  " << pos.value()._y << std::endl;
-            }
         }
     }
 }
