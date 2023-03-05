@@ -122,22 +122,6 @@ void Engine::updateRegistry(char *data, size_t dataSize)
             break;
         }
     }
-    // GameData gameData[4];
-    // Header* headerDeserialized = reinterpret_cast<Header*>(data);
-
-    // if (headerDeserialized->_id == 3) {
-    //     ServerData* dataDeserialized = reinterpret_cast<ServerData*>(data + sizeof(Header));
-    //     for (int i = 0; i < 4; i++) {
-    //         gameData[i].entity = dataDeserialized->entities[i];
-    //         gameData[i].posX = dataDeserialized->posX[i];
-    //         gameData[i].posY = dataDeserialized->posY[i];
-    //         memcpy(gameData[i].inputs, dataDeserialized->inputs[i], sizeof(uint16_t) * 10);
-    //     }
-    //     _game->updateRegistry(_reg, gameData);
-    // } else if (headerDeserialized->_id == 8) {
-    //     std::cout << "Receive ennemy" << std::endl;
-    // }
-
 }
 
 void Engine::sendData(std::vector<char> &data)
