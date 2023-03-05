@@ -1,14 +1,14 @@
-#How to contribute  
+# How to contribute  
 Welcome to our project! We're excited to have you as a contributor. Here are some guidelines to help you get started and make your contributions as valuable as possible.
 
-##Getting Started  
+## Getting Started  
 Before you start contributing, you should take the following steps:
 
 Fork the repository and clone it to your local machine.  
 Compile with your .so and the docker container [Link to compilation](../)  
 Familiarize yourself with the codebase by reading through the documentation and reviewing any open issues or pull requests.  
 
-##Making Contributions  
+## Making Contributions  
 Once you're ready to start contributing, here are some general guidelines to follow:
 
 Create a new branch for each contribution you make. This makes it easier to isolate changes and revert them if necessary.  
@@ -16,7 +16,7 @@ Keep your code clean and well-organized. Follow the existing code style and conv
 Test your changes thoroughly before submitting them. Make sure they don't introduce any new bugs or break existing functionality.  
 Submit your changes as a pull request. Provide a clear description of what you've changed and why, and be open to feedback and suggestions from other contributors.  
 
-##create a graphic .so
+## create a graphic librarie
 
 if you want to create a graphic .so and implemente your librarie, follow this instruction:  
 
@@ -81,7 +81,7 @@ You need to add your asset to a json a call the function ```constructFromJson```
         ......
 ```
 
-##create a game .so  
+## Create a game librarie
 
 If you want to create a game. so follow this steps:  
 
@@ -106,11 +106,11 @@ void create_player(registry &r, entity newEntity, bool isControllable, const int
 ```
 
 
-##Code of Conduct  
+## Code of Conduct  
 As a contributor, you're expected to follow our code of conduct at all times. This means treating others with respect, avoiding offensive or harmful language, and working to create a safe and welcoming environment for everyone. If you encounter any behavior that violates our code of conduct, please report it to the project maintainer.  
 
-##Getting Help  
+## Getting Help  
 If you have any questions or need help with anything related to the project, don't hesitate to reach out to the project maintainer or other contributors. We're here to help and support each other.
 
-##Thank You  
+## Thank You  
 We appreciate your contributions to our project, and we're excited to see what you'll bring to the table. Thank you for helping make our project the best it can be!
