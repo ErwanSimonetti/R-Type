@@ -284,5 +284,5 @@ void Rtype::createEnemies(registry &r, EnemyData &data)
 void Rtype::run_gameLogic(registry &r, const Events &events) 
 {
     checkStats(r.get_components<Hitbox>(), r.get_components<Stats>(), r.get_components<Pet>());
-    enemyShoot(r, r.get_components<Hitbox>(), r.get_components<Shootable>());
+    // enemyShoot(r, r.get_components<Hitbox>(), r.get_components<Shootable>());
 }
