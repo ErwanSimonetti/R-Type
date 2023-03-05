@@ -72,7 +72,7 @@ Events control_system(registry &r, std::vector<int> &directions, sparse_array<Po
  */
 
 void collision_system(registry &r, sparse_array<Position> &positions, sparse_array<Velocity> &velocities,  sparse_array<Hitbox> &hitboxes);
-void follow_path_system(const sparse_array<Position> &positions, sparse_array<Velocity> &velocities, sparse_array<FollowPath> &paths);
+void follow_path_system(registry &r, sparse_array<Position> &positions, sparse_array<Velocity> &velocities, sparse_array<FollowPath> &paths);
 void parallax_system(registry &r, sparse_array<Animatable> &animatable, sparse_array<Position> &positions, sparse_array<Parallax> &parallax);
 void animation_system(registry &r, sparse_array<Animatable> &animatable, sparse_array<Drawable> &drawable);
 void shoot_system(registry &r, sparse_array<Shootable> &shootable);

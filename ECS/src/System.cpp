@@ -10,7 +10,7 @@
 #include "System.hpp"
 #include "registry.hpp"
 
-void follow_path_system(registry &r, const sparse_array<Position> &positions, sparse_array<Velocity> &velocities, sparse_array<FollowPath> &paths) {
+void follow_path_system(registry &r, sparse_array<Position> &positions, sparse_array<Velocity> &velocities, sparse_array<FollowPath> &paths) {
     int16_t xToReach = 0;
     int16_t yToReach = 0;
     int16_t newXVelocity = 0;
@@ -35,6 +35,10 @@ void follow_path_system(registry &r, const sparse_array<Position> &positions, sp
             if (std::abs(pos.value()._x - xToReach) <= 10 && std::abs(pos.value()._y - yToReach) <= 10)
                 path.value()._currentCheckPoints += 1;
             vel.value().set_component(newXVelocity, newYVelocity);
+            if (i == 10) {
+                std::cout << "pos x FOLLOWPATH =  " << pos.value()._x << std::endl;
+                std::cout << "pos y FOLLOWPATH =  " << pos.value()._y << std::endl;
+            }
         }
     }
 }
