@@ -98,7 +98,7 @@ void Rtype::create_player(registry &r, entity newEntity, bool isControllable, co
 void Rtype::create_enemy_entity(registry &r, entity newEntity, const int16_t velX, const int16_t velY, const uint16_t posX, const uint16_t posY)
 {    
     r.emplace_component<Position>(newEntity, posX, posY);
-    r.emplace_component<Velocity>(newEntity, 0, 0);
+    r.emplace_component<Velocity>(newEntity, 1, 1);
     r.emplace_component<Drawable>(newEntity, ENEMYSHIP);
     r.emplace_component<Hitbox>(newEntity, 45, 45, ENEMYSHIP);
     r.emplace_component<Animatable>(newEntity, 90);
