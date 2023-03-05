@@ -74,19 +74,26 @@ class Engine {
          */
         ClientData buildClientData(Events events);
 
-        /**
-         * @brief Function used to send each player's data to the server
-         * 
-         * @param data struct corresponding to each player's data
-         */
-        void sendData(ClientData data);
+        template<typename T>
+        void addDataInSendBuffer(const T& data, int header, std::vector<char> &buffer) 
+        {
+            Header sendHeader{header};
+            const char* headerBytes = _network.getProtocol().serialiseData<Header>(sendHeader);
+            const char* dataBytes = _network.getProtocol().serialiseData<T>(data);
+
+            buffer.reserve(buffer.size() + sizeof(Header) + sizeof(T));
+            buffer.insert(buffer.end(), headerBytes, headerBytes + sizeof(Header));
+            buffer.insert(buffer.end(), dataBytes, dataBytes + sizeof(T));
+        }
+
+        void sendData(std::vector<char> &data);
 
         /**
          * @brief Function used to update the registery with data received from the server
          * 
          * @param data struct corresponding to every player's data
          */
-        void updateRegistry(char *data);
+        void updateRegistry(char *data, size_t dataSize);
     
         /**
          * @brief Runs network threads

@@ -123,9 +123,6 @@ void Rtype::initGame(registry &r)
     create_parallax(r, r.spawn_entity(), 0, 0, 9, PARA_3);
     create_parallax(r, r.spawn_entity(), 1920, 346, 12, PARA_4);
     create_parallax(r, r.spawn_entity(), 0, 346, 12, PARA_4);
-
-    create_enemy_entity(r, r.spawn_entity(), 1, 1, 500, 10);
-    create_enemy_entity(r, r.spawn_entity(), 1, 1, 500, 500);
 }
 
 void Rtype::handleInputs(registry &r, size_t entity, const uint16_t inputs[10])
@@ -248,7 +245,7 @@ void Rtype::checkStats(sparse_array<Hitbox> &hbxs, sparse_array<Stats> &sts, spa
     }
 }
 
-void Rtype::spawnEnemies(registry &r)
+bool Rtype::spawnEnemies(registry &r)
 {
     int posY = rand() % 1000;
     int posX = rand() % 500 + 400;
@@ -256,7 +253,9 @@ void Rtype::spawnEnemies(registry &r)
         create_enemy_entity(r, r.spawn_entity(), 1, 1, posX, posY);
         _enemyTimer = std::chrono::system_clock::now();
         _shootingTimer = std::chrono::system_clock::now();
+        return true;
     }
+    return false;
 }
 
 void Rtype::enemyShoot(registry &r, sparse_array<Hitbox> &hitboxes, sparse_array<Shootable> &shoot)
@@ -273,9 +272,17 @@ void Rtype::enemyShoot(registry &r, sparse_array<Hitbox> &hitboxes, sparse_array
     }
 }
 
+void Rtype::createEnemies(registry &r, EnemyData &data)
+{
+    if (!r.is_entity_alive(data.entities)) {
+        create_enemy_entity(r, entity(data.entities), 0, 0, data.posX, data.posY);
+    } else {
+        r.get_components<Position>()[data.entities].value().set_component(data.posX, data.posY);
+    }
+}
+
 void Rtype::run_gameLogic(registry &r, const Events &events) 
 {
     checkStats(r.get_components<Hitbox>(), r.get_components<Stats>(), r.get_components<Pet>());
-    spawnEnemies(r);
     enemyShoot(r, r.get_components<Hitbox>(), r.get_components<Shootable>());
 }

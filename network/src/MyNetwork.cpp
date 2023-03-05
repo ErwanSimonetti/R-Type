@@ -63,7 +63,7 @@ std::vector<EndpointInformation> &MyNetwork::getEndpoints()
     return _endpoints;
 }
 
-void MyNetwork::UDPReceiveClient(std::function<void(char *)> func, bool shouldCallback) 
+void MyNetwork::UDPReceiveClient(std::function<void(char *, size_t dataSize)> func, bool shouldCallback) 
 {
     std::memset(_recvBuffer, '\0', 1024);
     boost::asio::ip::udp::endpoint endpoint;
@@ -72,7 +72,7 @@ void MyNetwork::UDPReceiveClient(std::function<void(char *)> func, bool shouldCa
     [this, func] (boost::system::error_code ec, std::size_t recvd_bytes) {
         if (ec || recvd_bytes <= 0 && _shouldCallback)
             UDPReceiveClient(func, _shouldCallback);
-        func(_recvBuffer);
+        func(_recvBuffer, recvd_bytes);
         if (_shouldCallback)
             UDPReceiveClient(func, _shouldCallback);
     });

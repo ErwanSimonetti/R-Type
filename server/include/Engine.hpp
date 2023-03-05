@@ -77,7 +77,19 @@ class Engine {
          * 
          * @param data struct corresponding to each player's data
          */
-        void sendData(ServerData data);
+        template<typename T>
+        void addDataInSendBuffer(const T& data, int header, std::vector<char> &buffer) 
+        {
+            Header sendHeader{header};
+            const char* headerBytes = _network.getProtocol().serialiseData<Header>(sendHeader);
+            const char* dataBytes = _network.getProtocol().serialiseData<T>(data);
+
+            buffer.reserve(buffer.size() + sizeof(Header) + sizeof(T));
+            buffer.insert(buffer.end(), headerBytes, headerBytes + sizeof(Header));
+            buffer.insert(buffer.end(), dataBytes, dataBytes + sizeof(T));
+        }
+
+        void sendData(std::vector<char> &data);
 
         /**
          * @brief Function used to update the registery with data received from the server
@@ -103,7 +115,6 @@ class Engine {
          */
         void runServerCommandLine();
 
-
     protected:
     private:
 
@@ -117,6 +128,8 @@ class Engine {
          * @brief modules 
          **/
         std::shared_ptr<IGame> _game;
+
+        void sendEnemies(registry &r, sparse_array<Position> &positions, sparse_array<Velocity> &velocities, const sparse_array<Drawable> &drawable);
 };
 
 #endif /* !ENGINE_HPP_ */

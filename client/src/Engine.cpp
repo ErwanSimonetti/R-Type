@@ -93,35 +93,56 @@ ClientData Engine::buildClientData(Events events)
     return clientData;
 }
 
-void Engine::sendData(ClientData data) 
+void Engine::updateRegistry(char *data, size_t dataSize)
 {
-    std::vector<char> buffer;
-    Header header{3};
-    const char* headerBytes = _network.getProtocol().serialiseData<Header>(header);
-    const char* dataBytes = _network.getProtocol().serialiseData<ClientData>(data);
+    const char* dataEnd = data + dataSize;
 
-    buffer.reserve(sizeof(Header) + sizeof(ClientData));
-    buffer.insert(buffer.end(), headerBytes, headerBytes + sizeof(Header));
-    buffer.insert(buffer.end(), dataBytes, dataBytes + sizeof(ClientData));
-    _network.udpSend(buffer.data(), buffer.size(), _network.getServerEndpoint());
-}
+    std::cout << "Receive a buffer in client" << std::endl;
 
-void Engine::updateRegistry(char *data)
-{
-    GameData gameData[4];
-    Header* headerDeserialized = reinterpret_cast<Header*>(data);
+    while (data < dataEnd) {
+        Header* headerDeserialized = reinterpret_cast<Header*>(data);
 
-    if (headerDeserialized->_id == 3) {
-        ServerData* dataDeserialized = reinterpret_cast<ServerData*>(data + sizeof(Header));
-        for (int i = 0; i < 4; i++) {
-            gameData[i].entity = dataDeserialized->entities[i];
-            gameData[i].posX = dataDeserialized->posX[i];
-            gameData[i].posY = dataDeserialized->posY[i];
-            memcpy(gameData[i].inputs, dataDeserialized->inputs[i], sizeof(uint16_t) * 10);
+        std::cout << "Receive Hearder == " << headerDeserialized->_id << std::endl;
+        if (headerDeserialized->_id == 3) {
+            GameData gameData[4];
+            ServerData* dataDeserialized = reinterpret_cast<ServerData*>(data + sizeof(Header));
+            for (int i = 0; i < 4; i++) {
+                gameData[i].entity = dataDeserialized->entities[i];
+                gameData[i].posX = dataDeserialized->posX[i];
+                gameData[i].posY = dataDeserialized->posY[i];
+                memcpy(gameData[i].inputs, dataDeserialized->inputs[i], sizeof(uint16_t) * 10);
+            }
+            _game->updateRegistry(_reg, gameData);
+            data += sizeof(Header) + sizeof(ServerData);
+        } else if (headerDeserialized->_id == 8) {
+            EnemyData* dataDeserialized = reinterpret_cast<EnemyData*>(data + sizeof(Header));
+            data += sizeof(Header) + sizeof(EnemyData);
+            _game->createEnemies(_reg, *dataDeserialized);
+        } else {
+            break;
         }
     }
+    // GameData gameData[4];
+    // Header* headerDeserialized = reinterpret_cast<Header*>(data);
 
-    _game->updateRegistry(_reg, gameData);
+    // if (headerDeserialized->_id == 3) {
+    //     ServerData* dataDeserialized = reinterpret_cast<ServerData*>(data + sizeof(Header));
+    //     for (int i = 0; i < 4; i++) {
+    //         gameData[i].entity = dataDeserialized->entities[i];
+    //         gameData[i].posX = dataDeserialized->posX[i];
+    //         gameData[i].posY = dataDeserialized->posY[i];
+    //         memcpy(gameData[i].inputs, dataDeserialized->inputs[i], sizeof(uint16_t) * 10);
+    //     }
+    //     _game->updateRegistry(_reg, gameData);
+    // } else if (headerDeserialized->_id == 8) {
+    //     std::cout << "Receive ennemy" << std::endl;
+    // }
+
+}
+
+void Engine::sendData(std::vector<char> &data)
+{
+    _network.udpSendToAllClients(data.data(), data.size());
 }
 
 void Engine::runGame() 
@@ -140,7 +161,9 @@ void Engine::runGame()
         ClientData clientData = buildClientData(evt);
         if(clientData.entity == -1)
             continue;
-        sendData(clientData);
+        std::vector<char> buffer;
+        addDataInSendBuffer<ClientData>(clientData, 3, buffer);
+        sendData(buffer);
     }
 }
 
@@ -153,13 +176,15 @@ void Engine::connectToServer()
         clientData.inputs[i] = 0;
     }
 
-    _network.UDPReceiveClient(std::bind(&Engine::updateRegistry, this, std::placeholders::_1), false);
-    sendData(clientData);
+    _network.UDPReceiveClient(std::bind(&Engine::updateRegistry, this, std::placeholders::_1,  std::placeholders::_2), false);
+    std::vector<char> buffer;
+    addDataInSendBuffer<ClientData>(clientData, 3, buffer);
+    sendData(buffer);
 }
 
 void Engine::runNetwork() 
 {
-    _network.UDPReceiveClient(std::bind(&Engine::updateRegistry, this, std::placeholders::_1), true);
+    _network.UDPReceiveClient(std::bind(&Engine::updateRegistry, this, std::placeholders::_1, std::placeholders::_2), true);
     _network.getIOService().run();
 }
 

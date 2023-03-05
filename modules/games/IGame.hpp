@@ -12,6 +12,7 @@
 #include "GameEvents.hpp"
 #include "registry.hpp"
 #include "System.hpp"
+#include "EnemyData.hpp"
 
 struct GameData {
     int16_t entity;
@@ -68,7 +69,10 @@ class IGame {
          * 
          * @param r the registry comming from the Game Engine
         */
-        virtual void spawnEnemies(registry &r) = 0;
+        virtual bool spawnEnemies(registry &r) = 0;
+
+        virtual void createEnemies(registry &r, EnemyData &data) = 0;
+
     protected:
     private:
 };
