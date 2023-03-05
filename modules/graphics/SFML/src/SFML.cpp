@@ -47,7 +47,25 @@ void SFML::createAsset(uint16_t type, std::string texture, uint16_t width, uint1
     newAsset._texture = texture;
 
     _assets.insert(std::pair<uint16_t, Asset>(type, newAsset));
-    
+}
+
+void SFML::clique_system(sparse_array<Cliquable> &cliquables, sparse_array<Drawable> &drawables)
+{
+    if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+        for (int i = 0; i < cliquables.size() && i < drawables.size(); i++) {
+            auto &clic = cliquables[i];
+            auto &draw = drawables[i];
+            if (clic && draw) {
+                if ( _assets.find(draw.value()._type)->second._sprite.getGlobalBounds().contains(sf::Vector2f(sf::Mouse::getPosition(*_window))))
+                    clic.value()._play = true;
+            }
+        }
+    }
+}
+
+void SFML::closeWindow()
+{
+    _window->close();
 }
 
 void SFML::constructFromJson()

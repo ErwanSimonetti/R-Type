@@ -14,7 +14,7 @@
 #include "keyboard.hpp"
 
 enum GAME_EVENT {
-    WINDOW_CLOSE = -1
+    WINDOW_CLOSE = -1,
 };
 
 struct Events {

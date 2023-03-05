@@ -25,6 +25,7 @@ Engine::Engine(boost::asio::io_service &io_service, const std::string &host, con
     _reg.register_component<DrawableText>();
     _reg.register_component<Particulable>();
     _reg.register_component<SoundEffect>();
+    _reg.register_component<Cliquable>();
 
     _reg.add_system<Position, Hitbox>(collision_system);
     _reg.add_system<Position, Velocity, Controllable>(position_system);
@@ -57,6 +58,7 @@ void Engine::loadModules(std::string libName, MODULE_TYPE type)
             _reg.add_system<Animatable, Drawable>(std::bind(&IGraphic::animation_system, _graphic, std::placeholders::_1, std::placeholders::_2));
             _reg.add_system<Position, Drawable, Particulable, DrawableText>(std::bind(&IGraphic::draw_system, _graphic, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3, std::placeholders::_4)); 
             _reg.add_system<SoundEffect>(std::bind(&IGraphic::sound_system, _graphic, std::placeholders::_1));
+            _reg.add_system<Cliquable, Drawable>(std::bind(&IGraphic::clique_system, _graphic, std::placeholders::_1, std::placeholders::_2));
             break;
         }
         case MODULE_TYPE::GAME: {
@@ -128,15 +130,18 @@ void Engine::runGame()
 {
     loadModules(_graphicPath, MODULE_TYPE::GRAPHIC);
     Events evt;
+    std::vector<GAME_EVENT> gameEvents;
     while (1) {
         _reg.run_systems();
 
         evt = _graphic->run_graphic(_reg);
-        if (std::find(evt.gameEvents.begin(), evt.gameEvents.end(), GAME_EVENT::WINDOW_CLOSE) != evt.gameEvents.end()) {
+        
+        gameEvents = _game->run_gameLogic(_reg, evt);
+        if (std::find(evt.gameEvents.begin(), evt.gameEvents.end(), GAME_EVENT::WINDOW_CLOSE) != evt.gameEvents.end() || \
+        std::find(gameEvents.begin(), gameEvents.end(), GAME_EVENT::WINDOW_CLOSE) != gameEvents.end()) {
+            _graphic->closeWindow();
             return;
         }
-        
-        _game->run_gameLogic(_reg, evt);
         ClientData clientData = buildClientData(evt);
         if(clientData.entity == -1)
             continue;
