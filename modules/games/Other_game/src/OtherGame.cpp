@@ -20,7 +20,12 @@ OtherGame::~OtherGame()
 {
 }
 
-std::vector<entity> OtherGame::getPLayers() const 
+void OtherGame::setPlayers(std::vector<entity> newPlayers)
+{
+    _players = newPlayers;
+}
+
+std::vector<entity> &OtherGame::getPlayers()
 {
     return _players;
 }

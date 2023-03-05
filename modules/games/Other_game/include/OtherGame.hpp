@@ -28,7 +28,9 @@ class OtherGame : public IGame {
         OtherGame();
         ~OtherGame();
 
-        std::vector<entity> getPLayers() const;
+        void setPlayers(std::vector<entity> newPlayers);
+
+        std::vector<entity> &getPlayers();
 
         /**
          * @brief Function used to create all starting assets needed fro the game
