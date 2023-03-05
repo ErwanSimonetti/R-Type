@@ -19,6 +19,7 @@ class IGraphic {
         ~IGraphic() = default;
         virtual void loadModuleSystem(registry &reg) = 0;
         virtual Events run_graphic(registry &r) = 0;
+        virtual void closeWindow() = 0;
     protected:
     private:
 };

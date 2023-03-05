@@ -14,6 +14,7 @@ extern "C" std::shared_ptr<IGame> createLibrary()
 
 Rtype::Rtype()
 {
+    addMenuEvent();
 }
 
 Rtype::~Rtype()
@@ -23,6 +24,36 @@ Rtype::~Rtype()
 std::vector<entity> Rtype::getPLayers() const 
 {
     return _players;
+}
+
+void Rtype::addMenuEvent()
+{
+    _menuEvent[LAUNCHGAME] = std::bind(&Rtype::LaunchGame, this, std::placeholders::_1);
+    _menuEvent[EXITGAME] = std::bind(&Rtype::closeGame, this, std::placeholders::_1);
+}
+
+void Rtype::menuEvent(registry &reg, sparse_array<Cliquable> &cliquables)
+{
+    for(int i = 0; i < cliquables.size(); i++) {
+        auto &clic = cliquables[i];
+        if (clic && clic.has_value()) {
+            if (clic.value()._play == true) {
+                if (_menuEvent.find(clic.value()._event)->second) {
+                   _menuEvent[clic.value()._event](reg);
+                }
+                if (clic)
+                    clic.value()._play = false;
+            }
+        }
+    }   
+}
+
+void Rtype::createButton(registry &r, entity newEntity, int16_t posX, int16_t posY, int16_t type, uint16_t event)
+{
+    r.emplace_component<Cliquable>(newEntity, event);
+    r.emplace_component<Drawable>(newEntity, type);
+    r.emplace_component<Hitbox>(newEntity, 50, 50, type);
+    r.emplace_component<Position>(newEntity, posX, posY);
 }
 
 void Rtype::create_score(registry &r, entity newEntity, int16_t parentId, std::string score, const int16_t posX, const int16_t posY)
@@ -95,20 +126,19 @@ void Rtype::create_projectile(registry &r, entity newEntity, int16_t parentId, c
     r.emplace_component<Animatable>(newEntity, 10);
     r.emplace_component<Stats>(newEntity, 1, 0);
 
-} 
+}
 
-void Rtype::initGame(registry &r)
+void Rtype::LaunchGame(registry &r)
 {
-    create_static(r, r.spawn_entity_by_id(0), 0, 0, ENEMYSHIP);
-    create_parallax(r, r.spawn_entity(), 1920, 0, 3, PARA_1);
-    create_parallax(r, r.spawn_entity(), 0, 0, 3, PARA_1);
-    create_parallax(r, r.spawn_entity(), 1920, 0, 6, PARA_2);
-    create_parallax(r, r.spawn_entity(), 0, 0, 6, PARA_2);
-    create_parallax(r, r.spawn_entity(), 1920, 0, 9, PARA_3);
-    create_parallax(r, r.spawn_entity(), 0, 0, 9, PARA_3);
-    create_parallax(r, r.spawn_entity(), 1920, 346, 12, PARA_4);
-    create_parallax(r, r.spawn_entity(), 0, 346, 12, PARA_4);
 
+    auto &cliquables = r.get_components<Cliquable>();
+    for (int i = 0; i < cliquables.size(); i++){
+        if (cliquables[i]) {
+            r.kill_entity(entity(i));
+        }
+    }
+
+    create_static(r, r.spawn_entity(), 0, 0, ENEMYSHIP);
     create_enemy_entity(r, r.spawn_entity(), 1, 1, 500, 10);
     create_enemy_entity(r, r.spawn_entity(), 1, 1, 500, 500);
 }
@@ -224,7 +254,29 @@ void Rtype::checkStats(sparse_array<Hitbox> &hbxs, sparse_array<Stats> &sts, spa
     }
 }
 
-void Rtype::run_gameLogic(registry &r) 
+void Rtype::initGame(registry &r)
+{
+    create_parallax(r, r.spawn_entity_by_id(0), 1920, 0, 3, PARA_1);
+    create_parallax(r, r.spawn_entity(), 0, 0, 3, PARA_1);
+    create_parallax(r, r.spawn_entity(), 1920, 0, 6, PARA_2);
+    create_parallax(r, r.spawn_entity(), 0, 0, 6, PARA_2);
+    create_parallax(r, r.spawn_entity(), 1920, 0, 9, PARA_3);
+    create_parallax(r, r.spawn_entity(), 0, 0, 9, PARA_3);
+    create_parallax(r, r.spawn_entity(), 1920, 346, 12, PARA_4);
+    create_parallax(r, r.spawn_entity(), 0, 346, 12, PARA_4);
+    createButton(r, r.spawn_entity(), 750, 300, PLAY, LAUNCHGAME);
+    createButton(r, r.spawn_entity(), 750, 600, EXIT, EXITGAME);
+    createButton(r, r.spawn_entity(), 590, 30, RTYPE, LAUNCHGAME);
+}
+
+void Rtype::closeGame(registry &r)
+{
+    _gameEvents.emplace_back(WINDOW_CLOSE);
+}
+
+std::vector<GAME_EVENT> Rtype::run_gameLogic(registry &r) 
 {
     checkStats(r.get_components<Hitbox>(), r.get_components<Stats>(), r.get_components<Pet>());
+    menuEvent(r, r.get_components<Cliquable>());
+    return _gameEvents;
 }

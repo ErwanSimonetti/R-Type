@@ -29,6 +29,7 @@ Engine::Engine(boost::asio::io_service &io_service, const std::string &host, con
     _reg.register_component<DrawableText>();
     _reg.register_component<Particulable>();
     _reg.register_component<SoundEffect>();
+    _reg.register_component<Cliquable>();
 
     _reg.add_system<Velocity, Hitbox, Gravity>(gravity_system);
     _reg.add_system<Position, Velocity, Hitbox>(collision_system);
@@ -150,7 +151,6 @@ void Engine::runServerCommandLine()
 
 void Engine::runGame() 
 {
-    Events event;
     while (1) {
         auto currentTime = std::chrono::high_resolution_clock::now();
         auto elapsedTime = std::chrono::duration_cast<std::chrono::milliseconds>(currentTime - _clock);

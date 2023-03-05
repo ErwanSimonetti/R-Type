@@ -30,6 +30,7 @@ Engine::Engine(boost::asio::io_service &io_service, const std::string &host, con
     _reg.register_component<DrawableText>();
     _reg.register_component<Particulable>();
     _reg.register_component<SoundEffect>();
+    _reg.register_component<Cliquable>();
 
     _reg.add_system<Velocity, Hitbox, Gravity>(gravity_system);
     _reg.add_system<Position, Velocity, Hitbox>(collision_system);
@@ -133,6 +134,7 @@ void Engine::runGame()
 {
     loadModules(_graphicPath, MODULE_TYPE::GRAPHIC);
     Events evt;
+    std::vector<GAME_EVENT> gameEvents;
     while (1) {
         auto currentTime = std::chrono::high_resolution_clock::now();
         auto elapsedTime = std::chrono::duration_cast<std::chrono::milliseconds>(currentTime - _clock);
@@ -141,10 +143,13 @@ void Engine::runGame()
             _clock = currentTime;
         }
         evt = _graphic->run_graphic(_reg);
-        if (std::find(evt.gameEvents.begin(), evt.gameEvents.end(), GAME_EVENT::WINDOW_CLOSE) != evt.gameEvents.end()) {
+        
+        gameEvents = _game->run_gameLogic(_reg);
+        if (std::find(evt.gameEvents.begin(), evt.gameEvents.end(), GAME_EVENT::WINDOW_CLOSE) != evt.gameEvents.end() || \
+        std::find(gameEvents.begin(), gameEvents.end(), GAME_EVENT::WINDOW_CLOSE) != gameEvents.end()) {
+            _graphic->closeWindow();
             return;
         }
-        _game->run_gameLogic(_reg);
         ClientData clientData = buildClientData(evt);
         if(clientData.entity == -1)
             continue;

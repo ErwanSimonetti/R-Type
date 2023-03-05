@@ -37,6 +37,8 @@ class Raylib : public IGraphic {
         Events run_graphic(registry &r);
         void constructFromJson();
         void createCamera();
+        void clique_system(sparse_array<Cliquable> &cliquables, sparse_array<Drawable> &drawables) {};
+        void closeWindow(){};
 
     protected:
     private:

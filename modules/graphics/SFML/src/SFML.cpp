@@ -31,6 +31,7 @@ void SFML::loadModuleSystem(registry &reg)
     reg.add_system<Animatable, Drawable>(std::bind(&SFML::animation_system, this, std::placeholders::_1, std::placeholders::_2));
     reg.add_system<Position, Drawable, Particulable, DrawableText>(std::bind(&SFML::draw_system, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3, std::placeholders::_4)); 
     reg.add_system<SoundEffect>(std::bind(&SFML::sound_system, this, std::placeholders::_1));
+    reg.add_system<Cliquable, Drawable>(std::bind(&SFML::clique_system, this, std::placeholders::_1, std::placeholders::_2));
 }
 
 void SFML::set_text()
@@ -54,7 +55,25 @@ void SFML::createAsset(uint16_t type, std::string texture, uint16_t width, uint1
     newAsset._texture = texture;
 
     _assets.insert(std::pair<uint16_t, Asset>(type, newAsset));
-    
+}
+
+void SFML::clique_system(sparse_array<Cliquable> &cliquables, sparse_array<Drawable> &drawables)
+{
+    if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+        for (int i = 0; i < cliquables.size() && i < drawables.size(); i++) {
+            auto &clic = cliquables[i];
+            auto &draw = drawables[i];
+            if (clic && draw) {
+                if ( _assets.find(draw.value()._type)->second._sprite.getGlobalBounds().contains(sf::Vector2f(sf::Mouse::getPosition(*_window))))
+                    clic.value()._play = true;
+            }
+        }
+    }
+}
+
+void SFML::closeWindow()
+{
+    _window->close();
 }
 
 void SFML::constructFromJson()
@@ -111,6 +130,31 @@ void SFML::sound_system(sparse_array<SoundEffect> &sounds)
     }
 }
 
+ void SFML::draw_particles(sparse_array<Position> const &positions, sparse_array<Drawable> &drawables, sparse_array<Particulable> &particles)
+ {
+    if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+            std::pair<int, int> m_pos = std::pair<int, int>(sf::Mouse::getPosition().x, sf::Mouse::getPosition().y - 50);
+            _particles.emplace_back(m_pos);
+    }
+    for (size_t i = 0; i < drawables.size() && i < positions.size() && i < particles.size(); ++ i) {
+        auto &draw = drawables[i];
+        auto &pos = positions[i];
+        auto &part = particles[i];
+        if (draw && pos && part) {
+            if (part.value()._play == true) {
+                std::pair<int, int> m_pos =std::pair<int, int>(pos.value()._x, pos.value()._y);
+                _particles.emplace_back(ParticleSystem{m_pos});
+                part.value()._play = false;
+            }
+        }
+    }
+    _particles.erase(std::remove_if( _particles.begin(), _particles.end(), [this]( ParticleSystem& sys ){ 
+       sys.update();
+	   sys.draw(*_window);
+	   return sys.system.size() <= 0; 
+       }),  _particles.end());
+ }
+
 void SFML::draw_system(sparse_array<Position> const &positions, sparse_array<Drawable> &drawables, sparse_array<Particulable> &particles, sparse_array<DrawableText> &drawableTexts)
 {
     for (size_t i = 0; i < drawables.size() && i < positions.size(); ++ i) {
@@ -126,6 +170,8 @@ void SFML::draw_system(sparse_array<Position> const &positions, sparse_array<Dra
             _assets.find(draw.value()._type)->second._sprite.setTextureRect(newRect);
             _window->draw(_assets.find(draw.value()._type)->second._sprite);
         }
+        draw_particles(positions, drawables, particles);
+
     }
 
     for (size_t i = 0; i < drawableTexts.size() && i < positions.size(); ++i) {

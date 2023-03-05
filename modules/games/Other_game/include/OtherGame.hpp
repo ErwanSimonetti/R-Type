@@ -41,8 +41,9 @@ class OtherGame : public IGame {
          * @brief Function used to execute all the game logic (handling event or phases of the game)
          * 
          * @param r the registery comming from the Game Engine
+         * @param events the events that happened
          */
-        void run_gameLogic(registry &r);
+        std::vector<GAME_EVENT> run_gameLogic(registry &r);
 
         /**
          * @brief Function used to update the registery with data received from the server

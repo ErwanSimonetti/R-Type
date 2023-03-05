@@ -29,6 +29,7 @@
 #include "DrawableText.hpp"
 #include "Particulable.hpp"
 #include "Sound.hpp"
+#include "Cliquable.hpp"
 
 /**
  * @brief logging system displaying all nodes with their position & velocity

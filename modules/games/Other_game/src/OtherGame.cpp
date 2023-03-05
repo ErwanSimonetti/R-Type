@@ -179,6 +179,7 @@ void OtherGame::updateRegistry(registry &r, const GameData &data)
     }
 }
 
-void OtherGame::run_gameLogic(registry &r) 
+std::vector<GAME_EVENT> OtherGame::run_gameLogic(registry &r)
 {
+    return std::vector<GAME_EVENT>();
 }

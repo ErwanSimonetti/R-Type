@@ -21,14 +21,15 @@ INC_GAMES		=	-I games
 NAME_SFML		=	sfml.so
 
 SRC_SFML		=	graphics/SFML/src/SFML.cpp \
-					../utils/JSON/ReadJson.cpp
+					../utils/JSON/ReadJson.cpp \
+					graphics/SFML/src/SFMLParticle.cpp
 					
 
 OBJ_SFML		=	$(SRC_SFML:.cpp=.o)
 
 INC_SFML		=	$(INC_GRAPHICS) -I graphics/SFML/include
 
-LDFLAGS_SFML	=	-fPIC -shared -lsfml-graphics -lsfml-system -lsfml-window -lsfml-audio -ljsoncpp
+LDFLAGS_SFML	=	-fPIC -shared -lsfml-graphics -lsfml-system -lsfml-window -lsfml-audio -ljsoncpp 
 
 # RAYLIB
 
