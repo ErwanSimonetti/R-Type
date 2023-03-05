@@ -22,7 +22,7 @@ namespace CLI
         "help", "exit",
         "list_entities (optionnal) <size_t> [entity1] [entity2] ...",
         "spawn (optionnal) <size_t> [entity]", "kill <size_t> [entity]",
-        "list_players (optionnal) <size_t> [entity1] [entity2] ...",
+        "list_players",
         "kick <size_t> [player]"
     };
 
@@ -55,8 +55,16 @@ namespace CLI
                     entitiesToList = reg.get_entities();
                     break;
                 }
-                entity entityToAdd(std::stoi(entityToListStr));
-                entitiesToList.emplace_back(entityToAdd);
+                try
+                {
+                    entity entityToAdd(std::stoi(entityToListStr));
+                    entitiesToList.emplace_back(entityToAdd);
+                }
+                catch(const std::invalid_argument &error)
+                {
+                    std::cerr << "couldn't convert '" << entityToListStr << "' to a number." << std::endl;
+                    return;
+                }
             }
         }
         for (int i = 0; i < entitiesToList.size(); i += 1) {
@@ -82,7 +90,15 @@ namespace CLI
                 std::cerr << "failed to spawn entity '" << idToSpawn << "'." << std::endl;
             return;
         }
-        idToSpawn = std::stoi(entityToSpawnStr);
+        try
+        {
+            idToSpawn = std::stoi(entityToSpawnStr);
+        }
+        catch(const std::invalid_argument &error)
+        {
+            std::cerr << "couldn't convert '" << entityToSpawnStr << "' to a number." << std::endl;
+            return;
+        }        
         if (idToSpawn <= 0) {
             std::cout << "entity id must be superior to 0." << std::endl;
             return;
@@ -113,7 +129,15 @@ namespace CLI
             std::cout << "empty arg." << std::endl;
             return;
         }
-        idToKill = std::stoi(entityToKillStr);
+        try
+        {
+            idToKill = std::stoi(entityToKillStr);
+        }
+        catch(const std::exception& e)
+        {
+            std::cerr << "couldn't convert '" << entityToKillStr << "' to a number." << std::endl;
+            return;
+        }        
         if (idToKill < 0) {
             std::cout << "entity id must be superior to 0." << std::endl;
             return;
@@ -153,7 +177,7 @@ namespace CLI
 
     void kickPlayer(MyNetwork &network, registry &reg, const std::string &args, std::function<std::vector<entity>()> func)
     {
-        EndpointInformation endpointPlayer;
+        std::vector<EndpointInformation> endpoints = network.getEndpoints();
         std::istringstream iss(args);
         std::string playerIdToKillStr;
         int idToKick = -1;
@@ -167,33 +191,35 @@ namespace CLI
             std::cout << "empty arg." << std::endl;
             return;
         }
-        idToKick = std::stoi(playerIdToKillStr);
-        if (idToKick < 0) {
-            std::cout << "player id must be superior to 0." << std::endl;
+        try
+        {
+            idToKick = std::stoi(playerIdToKillStr);
+        }
+        catch(const std::invalid_argument &error)
+        {
+            std::cerr << "couldn't convert '" << playerIdToKillStr << "' to a number." << std::endl;
             return;
         }
-        if (network.getEndpoints().at(idToKick)._isAccepted == false) {
-            std::cout << "player '" << idToKick << "' already out of game" << std::endl;
+        if (idToKick < 0) {
+            std::cerr << "player id must be superior to 0." << std::endl;
+            return;
+        }
+        std::cout << "id to kick = " << idToKick << std::endl;
+        std::cout << "endpoints size = " << endpoints.size() << std::endl;
+        if (idToKick + 1 > endpoints.size()) {
+            std::cerr << "no player to kick with '" << idToKick << "' id." << std::endl;
             return;
         }
         reg.kill_entity(entity(func()[idToKick]));
-        CLI::sendDestroyEntityMessage(4, static_cast<size_t>(func()[idToKick]), network);
-        CLI::sendHeaderExpulse(5, network, network.getEndpoints().at(idToKick)._endpoint);
+        sendDestroyEntityMessage(4, static_cast<size_t>(func()[idToKick]), network);
+        sendHeaderExpulse(5, network, network.getEndpoints().at(idToKick)._endpoint);
         auto it =  network.getEndpoints().begin() + idToKick;
         network.getEndpoints().erase(it);
         std::vector<entity> players = func();
         auto ite = find(players.begin(), players.end(), entity(func()[idToKick]));
-        if (ite != players.end()) {
+        if (ite != players.end())
             players.erase(ite);
-        }
-        // my_vector.erase(it);
-        // network.getEndpoints().at(idToKick)._isAccepted = false; // FIXME(Erwan): done to kick player : currently changing this boolean does nothing
-        // if (network.getEndpoints().at(idToKick)._isAccepted == false) {
-        //     std::cout << "player '" << idToKick << "' kicked successfully" << std::endl;
-        //     std::cout << "Adress:'" << network.getEndpoints().at(idToKick)._endpoint.address() << "' has been kicked successfully" << std::endl;
-        // }
-        // if (network.getEndpoints().at(idToKick)._isAccepted == true)
-        //     std::cout << "failed to kick player '" << idToKick << "'" << std::endl;
+        std::cout << "player '" << idToKick << "' has been kicked successfully." << std::endl;
     }
 
     typedef std::map<std::string, std::function<void()>> script_map;
