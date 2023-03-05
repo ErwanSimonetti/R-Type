@@ -27,12 +27,31 @@ The Video Game Network Protocol uses a variety of communication protocols to sup
 Here's an example of differents struct message that could be sent between clients and the server and in what circumstances it is used:
 
 ```c++
+struct Header
+{
+    int _id;
+};
+```
+This first structure is always sent in messages and its purpose is to inform the receiver about the nature of the message.
+There are different codes for the message types.
+
+```c++
+struct DeleteEntities
+{
+    int _id;
+};
+```
+This structure is used to send information that an entity has been destroyed. It notifies the receiver to delete an entity.
+
+```c++
 struct ClientData {
     int16_t entity;
     uint16_t inputs[10];
 
 };
 ```
+This struct gets the actions done by a client and notifies the server which entity performs them.
+
 ```c++
 struct ServerData {
     int16_t entities[4];
@@ -41,3 +60,4 @@ struct ServerData {
     uint16_t inputs[4][10];
 };
 ```
+This last structure sends to all clients the positions and inputs of the different players.
