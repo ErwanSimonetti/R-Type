@@ -71,7 +71,7 @@ void Rtype::create_enemy_entity(registry &r, entity newEntity, const int16_t vel
     r.emplace_component<Drawable>(newEntity, ENEMYSHIP);
     r.emplace_component<Hitbox>(newEntity, 45, 45, ENEMYSHIP);
     r.emplace_component<Animatable>(newEntity, 90);
-    r.emplace_component<Stats>(newEntity, 5, 0);
+    r.emplace_component<Stats>(newEntity, 5, 10);
 
 }
 
@@ -217,14 +217,14 @@ void Rtype::checkStats(sparse_array<Hitbox> &hbxs, sparse_array<Stats> &sts, spa
         if (hbx && hbx.value()._type == BULLET && hbx.value()._obstacle == ENEMYSHIP) {
             if (pet && sts[pet.value()._ent].has_value()) {
                 int16_t ent = pet.value()._ent;
-                sts[ent].value().set_component(sts[ent].value()._health, sts[ent].value()._score + 5);
+                sts[ent].value().set_component(sts[ent].value()._health, sts[ent].value()._score + 10);
                 pet.value().set_component(0);
             }
         }
     }
 }
 
-void Rtype::run_gameLogic(registry &r, const Events &events) 
+void Rtype::run_gameLogic(registry &r) 
 {
     checkStats(r.get_components<Hitbox>(), r.get_components<Stats>(), r.get_components<Pet>());
 }

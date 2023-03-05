@@ -120,6 +120,7 @@ class Engine {
          **/
         std::shared_ptr<IGraphic> _graphic;
         std::shared_ptr<IGame> _game;
+        std::chrono::time_point<std::chrono::high_resolution_clock> _clock;
 };
 
 #endif /* !ENGINE_HPP_ */

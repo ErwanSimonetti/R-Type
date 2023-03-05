@@ -42,7 +42,7 @@ class OtherGame : public IGame {
          * 
          * @param r the registery comming from the Game Engine
          */
-        void run_gameLogic(registry &r, const Events &events);
+        void run_gameLogic(registry &r);
 
         /**
          * @brief Function used to update the registery with data received from the server
@@ -64,7 +64,7 @@ class OtherGame : public IGame {
          **/
         void create_player(registry &r, entity newEntity, bool isControllable, const int16_t velX, const int16_t velY, const int16_t posX, const int16_t posY, const int16_t posZ);
 
-        void create_static(registry &r, entity newEntity, const int16_t posX, const int16_t posY, const int16_t posZ, uint16_t type);
+        void create_static(registry &r, entity newEntity, const int16_t posX, const int16_t posY, const int16_t posZ, bool hasHitBoxe, uint16_t type);
         
     protected:
         void handleInputs(registry &r, size_t entity, const uint16_t inputs[10]);

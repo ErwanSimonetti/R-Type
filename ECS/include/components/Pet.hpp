@@ -10,7 +10,7 @@
 #include "../entity.hpp"
 
 struct Pet {
-    Pet() : _ent(0) {};
+    Pet() = default;
 
     void set_component(int16_t ent) {
         _ent = ent;

@@ -10,8 +10,10 @@
 Engine::Engine(boost::asio::io_service &io_service, const std::string &host, const std::string &port, const std::string &graphicModulePath, const std::string &gameModulePath) : _reg(), _network(io_service, host, port)
 {
     loadModules(gameModulePath, MODULE_TYPE::GAME);
+
     _graphicPath = graphicModulePath;
 
+    _clock = std::chrono::high_resolution_clock::now();
     _reg.register_component<Position>();
     _reg.register_component<Velocity>();
     _reg.register_component<Drawable>();
@@ -29,13 +31,14 @@ Engine::Engine(boost::asio::io_service &io_service, const std::string &host, con
     _reg.register_component<Particulable>();
     _reg.register_component<SoundEffect>();
 
-    _reg.add_system<Position, Hitbox>(collision_system);
-    _reg.add_system<Position, Velocity, Controllable>(position_system);
+    _reg.add_system<Velocity, Hitbox, Gravity>(gravity_system);
+    _reg.add_system<Position, Velocity, Hitbox>(collision_system);
+    _reg.add_system<Position, Velocity, Hitbox, Jump, Gravity>(jump_system);
+    _reg.add_system<Position, Velocity, Controllable, Hitbox>(position_system);
     _reg.add_system<Shootable>(shoot_system);
-    _reg.add_system<Animatable, Position, Parallax>(parallax_system);
-    _reg.add_system<Position, Velocity, Jump, Gravity>(jump_system);
-    // _reg.add_system<Position, Velocity, FollowPath>(followPathSystem);
     _reg.add_system<Stats, Position, Pet>(entity_killing_system);
+    _reg.add_system<Animatable, Position, Parallax>(parallax_system);
+    // _reg.add_system<Position, Velocity, FollowPath>(followPathSystem);
     _reg.add_system<Stats, DrawableText, Pet>(update_drawable_texts_system);
 }
 
@@ -131,14 +134,17 @@ void Engine::runGame()
     loadModules(_graphicPath, MODULE_TYPE::GRAPHIC);
     Events evt;
     while (1) {
-        _reg.run_systems();
-
+        auto currentTime = std::chrono::high_resolution_clock::now();
+        auto elapsedTime = std::chrono::duration_cast<std::chrono::milliseconds>(currentTime - _clock);
+        if (elapsedTime.count() >= 15) {
+            _reg.run_systems();
+            _clock = currentTime;
+        }
         evt = _graphic->run_graphic(_reg);
         if (std::find(evt.gameEvents.begin(), evt.gameEvents.end(), GAME_EVENT::WINDOW_CLOSE) != evt.gameEvents.end()) {
             return;
         }
-        
-        _game->run_gameLogic(_reg, evt);
+        _game->run_gameLogic(_reg);
         ClientData clientData = buildClientData(evt);
         if(clientData.entity == -1)
             continue;

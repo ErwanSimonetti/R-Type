@@ -12,6 +12,7 @@ Engine::Engine(boost::asio::io_service &io_service, const std::string &host, con
 {
     loadModules(gameModulePath, MODULE_TYPE::GAME);
 
+    _clock = std::chrono::high_resolution_clock::now();
     _reg.register_component<Position>();
     _reg.register_component<Velocity>();
     _reg.register_component<Drawable>();
@@ -26,10 +27,14 @@ Engine::Engine(boost::asio::io_service &io_service, const std::string &host, con
     _reg.register_component<Gravity>();
     _reg.register_component<Stats>();
     _reg.register_component<DrawableText>();
+    _reg.register_component<Particulable>();
+    _reg.register_component<SoundEffect>();
 
-    _reg.add_system<Position, Velocity, Controllable>(position_system);
+    _reg.add_system<Velocity, Hitbox, Gravity>(gravity_system);
+    _reg.add_system<Position, Velocity, Hitbox>(collision_system);
+    _reg.add_system<Position, Velocity, Hitbox, Jump, Gravity>(jump_system);
+    _reg.add_system<Position, Velocity, Controllable, Hitbox>(position_system);
     _reg.add_system<Shootable>(shoot_system);
-    _reg.add_system<Position, Hitbox>(collision_system);
     _reg.add_system<Stats, Position, Pet>(entity_killing_system);
 }
 
@@ -145,8 +150,15 @@ void Engine::runServerCommandLine()
 
 void Engine::runGame() 
 {
+    Events event;
     while (1) {
-        _reg.run_systems();
+        auto currentTime = std::chrono::high_resolution_clock::now();
+        auto elapsedTime = std::chrono::duration_cast<std::chrono::milliseconds>(currentTime - _clock);
+        if (elapsedTime.count() >= 15) {
+            _reg.run_systems();
+            _clock = currentTime;
+        }
+        _game->run_gameLogic(_reg);
     }
 }
 

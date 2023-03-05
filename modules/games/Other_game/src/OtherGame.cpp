@@ -25,11 +25,13 @@ std::vector<entity> OtherGame::getPLayers() const
     return _players;
 }
 
-void OtherGame::create_static(registry &r, entity newEntity, const int16_t posX, const int16_t posY, const int16_t posZ, uint16_t type)
+void OtherGame::create_static(registry &r, entity newEntity, const int16_t posX, const int16_t posY, const int16_t posZ, bool hasHitBoxe, uint16_t type)
 {
     r.emplace_component<Position>(newEntity, posX, posY, posZ);
-    r.emplace_component<Hitbox>(newEntity, posX+45, posY+45, type);
+    r.emplace_component<Velocity>(newEntity, 0, 0);
     r.emplace_component<Drawable>(newEntity, type, 10);
+    if (hasHitBoxe)
+        r.emplace_component<Hitbox>(newEntity, 20, 3, type);
 }
 
 void OtherGame::create_player(registry &r, entity newEntity, bool isControllable, const int16_t velX, const int16_t velY, const int16_t posX, const int16_t posY, const int16_t posZ)
@@ -39,8 +41,8 @@ void OtherGame::create_player(registry &r, entity newEntity, bool isControllable
     r.emplace_component<Animatable>(newEntity, 90);
     r.emplace_component<Position>(newEntity, posX, posY, posZ);
     r.emplace_component<Velocity>(newEntity, velX, velY);
-    r.emplace_component<Hitbox>(newEntity, posX+45, posY+45, 0);
-    r.emplace_component<Jump>(newEntity, 10);
+    r.emplace_component<Hitbox>(newEntity, 20, 10, 0);
+    r.emplace_component<Jump>(newEntity, 120);
     r.emplace_component<Gravity>(newEntity, 1);
 
 
@@ -53,25 +55,25 @@ void OtherGame::create_player(registry &r, entity newEntity, bool isControllable
 void OtherGame::initGame(registry &r)
 {
     for (int i = 0; i < 20; ++i) {
-        create_static(r, r.spawn_entity(), i*20, -50, 0, GRASS);
-        create_static(r, r.spawn_entity(), i*20, -50, -20, GRASS);
-        create_static(r, r.spawn_entity(), -i*20, -50, 0, GRASS);
-        create_static(r, r.spawn_entity(), -i*20, -50, -20, GRASS);
+        create_static(r, r.spawn_entity(), i*20, -50, 0, true, GRASS);
+        create_static(r, r.spawn_entity(), i*20, -50, -20, true, GRASS);
+        create_static(r, r.spawn_entity(), -i*20, -50, 0, true, GRASS);
+        create_static(r, r.spawn_entity(), -i*20, -50, -20, true, GRASS);
 
-        create_static(r, r.spawn_entity(), i*20, -50, 20, WATER);
-        create_static(r, r.spawn_entity(), i*20, -50, 40, WATER);
-        create_static(r, r.spawn_entity(), i*20, -50, 60, WATER);
-        create_static(r, r.spawn_entity(), -i*20, -50, 20, WATER);
-        create_static(r, r.spawn_entity(), -i*20, -50, 40, WATER);
-        create_static(r, r.spawn_entity(), -i*20, -50, 60, WATER);
+        create_static(r, r.spawn_entity(), i*20, -50, 20, false, WATER);
+        create_static(r, r.spawn_entity(), i*20, -50, 40, false, WATER);
+        create_static(r, r.spawn_entity(), i*20, -50, 60, false, WATER);
+        create_static(r, r.spawn_entity(), -i*20, -50, 20, false, WATER);
+        create_static(r, r.spawn_entity(), -i*20, -50, 40, false, WATER);
+        create_static(r, r.spawn_entity(), -i*20, -50, 60, false, WATER);
         if (i%2) {
-            create_static(r, r.spawn_entity(), -i*20, -45, -15, TREE);
-            create_static(r, r.spawn_entity(), i*20, -45, -15, TREE);
+            create_static(r, r.spawn_entity(), -i*20, -45, -15, false, TREE);
+            create_static(r, r.spawn_entity(), i*20, -45, -15, false, TREE);
         }
     }
 
     for (int i = 0; i < 10; ++i) {
-        create_static(r, r.spawn_entity(), 50 + i*20, 50, 0, GRASS);
+        create_static(r, r.spawn_entity(), 50 + i*20, 50, 0, true, GRASS);
     }
 }
 
@@ -97,7 +99,6 @@ void OtherGame::handleInputs(registry &r, size_t entity, const uint16_t inputs[1
                 auto &jump = r.get_components<Jump>()[entity];
                 if (jump && jump.value()._canJump == true) {
                     jump.value()._canJump = false;
-                    jump.value()._clock = std::chrono::high_resolution_clock::now();
                 }
             }
             break;
@@ -168,7 +169,7 @@ void OtherGame::updateRegistry(registry &r, const GameData data[4])
 void OtherGame::updateRegistry(registry &r, const GameData &data)
 {
     if (!r.is_entity_alive(data.entity)) {
-        create_player(r, r.spawn_entity(), true, 1, 1, -175, -45, 10);
+        create_player(r, r.spawn_entity(), true, 1, 1, -std::rand() % 200, -30, 0);
         return;
     }
     for (int i = 0; i < _players.size(); i++) {
@@ -178,6 +179,6 @@ void OtherGame::updateRegistry(registry &r, const GameData &data)
     }
 }
 
-void OtherGame::run_gameLogic(registry &r, const Events &events) 
+void OtherGame::run_gameLogic(registry &r) 
 {
 }

@@ -19,12 +19,16 @@ struct Jump {
     /**
      * @brief Set the Jump values
      * 
-     * @param jumpHeight the jumpHeight of the Jump
+     * @param jumpForce the jumpForce of the Jump
      */
-    void set_component(const int16_t &jumpHeight) {
+    void set_component(const int16_t &jumpForce) {
         _clock = std::chrono::high_resolution_clock::now();
-        _jumpHeight = jumpHeight;
+        _jumpForce = jumpForce;
+        _jumpHeight = jumpForce;
         _canJump = true;
+        _isJumping = false;
+        _hasReachedTheTop = false;
+        _stop = false;
     }
 
     /**
@@ -35,11 +39,15 @@ struct Jump {
      * @return std::ostream&, output.
      */
     friend std::ostream &operator<<(std::ostream &output, const Jump &D) {
-        output << "jumpHeight = " << D._jumpHeight  << std::endl;
+        output << "jumpForce = " << D._jumpForce  << std::endl;
         return output;
     }
+    int16_t _jumpForce;
     int16_t _jumpHeight;
     bool _canJump;
+    bool _stop;
+    bool _isJumping;
+    bool _hasReachedTheTop;
     std::chrono::time_point<std::chrono::high_resolution_clock> _clock;
 };
 

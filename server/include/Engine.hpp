@@ -117,6 +117,7 @@ class Engine {
          * @brief modules 
          **/
         std::shared_ptr<IGame> _game;
+        std::chrono::time_point<std::chrono::high_resolution_clock> _clock;
 };
 
 #endif /* !ENGINE_HPP_ */

@@ -42,7 +42,7 @@ class Rtype : public IGame {
          * 
          * @param r the registery comming from the Game Engine
          */
-        void run_gameLogic(registry &r, const Events &events);
+        void run_gameLogic(registry &r);
 
         /**
          * @brief Function used to update the registery with data received from the server
