@@ -16,7 +16,6 @@
 #include "MyNetwork.hpp"
 #include "registry.hpp"
 #include "System.hpp"
-#include "GameEvents.hpp"
 #include "IGame.hpp"
 #include "LoadLibrary.hpp"
 
@@ -85,7 +84,7 @@ class Engine {
          * 
          * @param data struct corresponding to every player's data
          */
-        void updateRegistry(ClientData data);
+        void updateRegistry(char *data);
 
         ServerData buildServerData(size_t id, uint16_t inputs[10]);
 

@@ -11,6 +11,18 @@
 #include "IGame.hpp"
 #include <memory>
 
+enum OBJECT_TYPE {
+    EMPTY = -1,
+    SHIP,
+    ENEMYSHIP,
+    BULLET,
+    PARA_1,
+    PARA_2,
+    PARA_3,
+    PARA_4,
+    HEALTH
+};
+
 class Rtype : public IGame {
     public:
         Rtype();
@@ -40,7 +52,9 @@ class Rtype : public IGame {
         void updateRegistry(registry &r, const GameData &data);
 
         void updateRegistry(registry &r, const GameData data[4]);
-        
+        void checkStats(sparse_array<Hitbox> &hbxs, sparse_array<Stats> &sts, sparse_array<Pet> &pets);
+        void create_score(registry &r, entity newEntity, int16_t parentId, std::string score, const int16_t posX, const int16_t posY);
+
         /** 
          * @brief Function used to create a friendly "character" entity, giving it an id, and various parameters 
          * @param r registry the registery to update
@@ -85,9 +99,9 @@ class Rtype : public IGame {
          * @return a projectile entity 
         */
         void create_projectile(registry &r, entity newEntity, int16_t parentId, const uint16_t velX, const uint16_t velY);
-        void create_parallax(registry &r, entity newEntity, const uint16_t posX, const uint16_t posY, const uint16_t speed, const OBJECT obj);
+        void create_parallax(registry &r, entity newEntity, const uint16_t posX, const uint16_t posY, const uint16_t speed, const int16_t obj);
 
-        void create_static(registry &r, entity newEntity, const uint16_t posX, const uint16_t posY, OBJECT type);
+        void create_static(registry &r, entity newEntity, const uint16_t posX, const uint16_t posY, int16_t type);
 
     protected:
         void handleInputs(registry &r, size_t entity, const uint16_t inputs[10]);

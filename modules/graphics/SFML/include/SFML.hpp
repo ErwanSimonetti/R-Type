@@ -12,6 +12,7 @@
 
 #include "IGraphic.hpp"
 #include "SFML_utils.hpp"
+#include <SFML/Audio.hpp>
 
 struct Asset {
     std::string _texture;
@@ -29,18 +30,22 @@ class SFML : public IGraphic {
         ~SFML();
         void createAsset(uint16_t type, std::string texture, uint16_t width, uint16_t height, uint16_t size);
         void animation_system(sparse_array<Animatable> &animatables, sparse_array<Drawable> &drawables);
-        void draw_system(sparse_array<Position> const &positions, sparse_array<Drawable> &drawables, sparse_array<Animatable> &animables);
+        void draw_system(sparse_array<Position> const &positions, sparse_array<Drawable> &drawables, sparse_array<Particulable> &particles, sparse_array<DrawableText> &drawableTexts);
+        void sound_system(sparse_array<SoundEffect> &sound);
         void initialize_rect(Drawable &draw);
         Events event_system(registry &reg);
         Events run_graphic(registry &r);
         void constructFromJson();
         void set_sprite();
         void loadModuleSystem(registry &reg);
-
+        void set_text();
     protected:
     private:
         std::shared_ptr<sf::RenderWindow> _window;
+        sf::Font _font;
         std::unordered_map<uint16_t, Asset> _assets;
+        std::unordered_map<uint16_t, sf::Sound> _sound;
+        sf::Music _music;
 };
 
 extern "C" std::shared_ptr<IGraphic> createLibrary();

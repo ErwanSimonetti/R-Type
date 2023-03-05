@@ -24,12 +24,19 @@ Engine::Engine(boost::asio::io_service &io_service, const std::string &host, con
     _reg.register_component<Shootable>();
     _reg.register_component<Jump>();
     _reg.register_component<Gravity>();
+    _reg.register_component<Stats>();
+    _reg.register_component<DrawableText>();
+    _reg.register_component<Particulable>();
+    _reg.register_component<SoundEffect>();
 
     _reg.add_system<Position, Hitbox>(collision_system);
     _reg.add_system<Position, Velocity, Controllable>(position_system);
     _reg.add_system<Shootable>(shoot_system);
     _reg.add_system<Animatable, Position, Parallax>(parallax_system);
     _reg.add_system<Position, Velocity, Jump, Gravity>(jump_system);
+    // _reg.add_system<Position, Velocity, FollowPath>(followPathSystem);
+    _reg.add_system<Stats, Position, Pet>(entity_killing_system);
+    _reg.add_system<Stats, DrawableText, Pet>(update_drawable_texts_system);
 }
 
 Engine::~Engine()
@@ -52,8 +59,6 @@ void Engine::loadModules(std::string libName, MODULE_TYPE type)
             create_d_graphic newGraphic = (create_d_graphic)library.getFunction(lib, "createLibrary");  
             _graphic = newGraphic();
             _graphic->loadModuleSystem(_reg);
-            // _reg.add_system<Animatable, Drawable>(std::bind(&IGraphic::animation_system, _graphic, std::placeholders::_1, std::placeholders::_2));
-            // _reg.add_system<Position, Drawable, Animatable>(std::bind(&IGraphic::draw_system, _graphic, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
             break;
         }
         case MODULE_TYPE::GAME: {
@@ -92,19 +97,30 @@ ClientData Engine::buildClientData(Events events)
 
 void Engine::sendData(ClientData data) 
 {
-    char *buffer = _network.getProtocol().serialiseData<ClientData>(data);
-    _network.udpSend<ClientData>(buffer, _network.getServerEndpoint());
+    std::vector<char> buffer;
+    Header header{3};
+    const char* headerBytes = _network.getProtocol().serialiseData<Header>(header);
+    const char* dataBytes = _network.getProtocol().serialiseData<ClientData>(data);
+
+    buffer.reserve(sizeof(Header) + sizeof(ClientData));
+    buffer.insert(buffer.end(), headerBytes, headerBytes + sizeof(Header));
+    buffer.insert(buffer.end(), dataBytes, dataBytes + sizeof(ClientData));
+    _network.udpSend(buffer.data(), buffer.size(), _network.getServerEndpoint());
 }
 
-void Engine::updateRegistry(ServerData data)
+void Engine::updateRegistry(char *data)
 {
     GameData gameData[4];
+    Header* headerDeserialized = reinterpret_cast<Header*>(data);
 
-    for (int i = 0; i < 4; i++) {
-        gameData[i].entity = data.entities[i];
-        gameData[i].posX = data.posX[i];
-        gameData[i].posY = data.posY[i];
-        memcpy(gameData[i].inputs, data.inputs[i], sizeof(uint16_t) * 10);
+    if (headerDeserialized->_id == 3) {
+        ServerData* dataDeserialized = reinterpret_cast<ServerData*>(data + sizeof(Header));
+        for (int i = 0; i < 4; i++) {
+            gameData[i].entity = dataDeserialized->entities[i];
+            gameData[i].posX = dataDeserialized->posX[i];
+            gameData[i].posY = dataDeserialized->posY[i];
+            memcpy(gameData[i].inputs, dataDeserialized->inputs[i], sizeof(uint16_t) * 10);
+        }
     }
 
     _game->updateRegistry(_reg, gameData);
@@ -116,10 +132,12 @@ void Engine::runGame()
     Events evt;
     while (1) {
         _reg.run_systems();
+
         evt = _graphic->run_graphic(_reg);
         if (std::find(evt.gameEvents.begin(), evt.gameEvents.end(), GAME_EVENT::WINDOW_CLOSE) != evt.gameEvents.end()) {
             return;
         }
+        
         _game->run_gameLogic(_reg, evt);
         ClientData clientData = buildClientData(evt);
         if(clientData.entity == -1)

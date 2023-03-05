@@ -16,9 +16,10 @@ SFML::SFML()
 {
     _window = std::make_shared<sf::RenderWindow>(sf::VideoMode(1920, 1080), "R-TYPE");
     _window->setFramerateLimit(30);
-
+    
     constructFromJson();
     set_sprite();
+    set_text();
 }
 
 SFML::~SFML()
@@ -28,7 +29,13 @@ SFML::~SFML()
 void SFML::loadModuleSystem(registry &reg)
 {
     reg.add_system<Animatable, Drawable>(std::bind(&SFML::animation_system, this, std::placeholders::_1, std::placeholders::_2));
-    reg.add_system<Position, Drawable, Animatable>(std::bind(&SFML::draw_system, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
+    reg.add_system<Position, Drawable, Particulable, DrawableText>(std::bind(&SFML::draw_system, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3, std::placeholders::_4)); 
+    reg.add_system<SoundEffect>(std::bind(&SFML::sound_system, this, std::placeholders::_1));
+}
+
+void SFML::set_text()
+{
+    _font.loadFromFile("./ressources/SYNNova.otf");
 }
 
 void SFML::createAsset(uint16_t type, std::string texture, uint16_t width, uint16_t height, uint16_t size)
@@ -54,10 +61,26 @@ void SFML::constructFromJson()
 {
     ReadJson reader("ressources/SFML/sfml.json");
     int nbAsset = reader.getNumberOfElement("asset");
+    int nbSound = reader.getNumberOfElement("sound");
 
     for (int i = 0; i < nbAsset; i++) {
         createAsset(reader.IntValueFromArray("asset", i, "type"), reader.readValueFromArray("asset", i, "texture"), \
         reader.IntValueFromArray("asset", i, "width"), reader.IntValueFromArray("asset", i, "height"), reader.IntValueFromArray("asset", i, "size"));
+    }
+
+    for (int i = 0; i < nbSound; i++) {
+        if (reader.IntValueFromArray("sound", i, "type") == 1) {
+            if(_music.openFromFile(reader.readValueFromArray("sound", i, "music"))) {
+                _music.play();
+            }
+        } else {
+            sf::SoundBuffer buffer;
+            if (buffer.loadFromFile(reader.readValueFromArray("sound", i, "music"))) {
+                sf::Sound sound;
+                sound.setBuffer(buffer);
+                _sound.insert(std::pair<uint16_t, sf::Sound>(reader.IntValueFromArray("sound", i, "type"), sound));
+            }
+        }
     }
 }
 
@@ -75,8 +98,21 @@ void SFML::initialize_rect(Drawable &draw){
     draw._rect = std::make_shared<spriteRect>(spriteRect{_assets.at(draw._type)._bounds.left, _assets.at(draw._type)._bounds.top, _assets.at(draw._type)._bounds.width, _assets.at(draw._type)._bounds.height});
 }
 
+void SFML::sound_system(sparse_array<SoundEffect> &sounds)
+{
+    for(size_t i = 0; i < sounds.size(); ++i) {
+        auto &sound = sounds[i];
+        if (sound) {
+            if (sound.value()._play) {
+                _sound.find(sound.value()._type)->second.play();
+                sound.value()._play = false;
+            }
+        }
+    }
+}
 
-void SFML::draw_system(sparse_array<Position> const &positions, sparse_array<Drawable> &drawables, sparse_array<Animatable> &animables) {
+void SFML::draw_system(sparse_array<Position> const &positions, sparse_array<Drawable> &drawables, sparse_array<Particulable> &particles, sparse_array<DrawableText> &drawableTexts)
+{
     for (size_t i = 0; i < drawables.size() && i < positions.size(); ++ i) {
         auto &draw = drawables[i];
         auto &pos = positions[i];
@@ -92,6 +128,16 @@ void SFML::draw_system(sparse_array<Position> const &positions, sparse_array<Dra
         }
     }
 
+    for (size_t i = 0; i < drawableTexts.size() && i < positions.size(); ++i) {
+        auto &dbs = drawableTexts[i];
+        auto &pos = positions[i];
+        if (dbs && pos) {
+            sf::Text text("Score: " + dbs.value()._text, _font, 48);
+            text.setFillColor(sf::Color::White);
+            text.setPosition(pos.value()._x, pos.value()._y);
+            _window->draw(text);
+        }
+    }
 }
 
 void SFML::animation_system(sparse_array<Animatable> &animatables, sparse_array<Drawable> &drawables) 

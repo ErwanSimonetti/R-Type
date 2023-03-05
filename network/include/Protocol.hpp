@@ -11,11 +11,6 @@
 #include <iostream>
 #include <cstring>
 
-struct Header {
-    uint16_t dataType;
-    uint16_t dataSize;
-};
-
 struct ClientData {
     int16_t entity;
     uint16_t inputs[10];
@@ -37,14 +32,8 @@ class Protocol {
         template <class Data>
         char *serialiseData(Data data) {
             char *buffer = new char[sizeof(Data)];
-            // Header header;
 
-            // header.dataType = type;
-            // header.dataSize = sizeof(Data);
-
-            // std::memcpy(buffer, &header, sizeof(Header));
             std::memcpy(buffer, &data, sizeof(Data));
-
             return buffer;
         };
 

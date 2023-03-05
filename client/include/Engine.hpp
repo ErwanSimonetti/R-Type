@@ -86,7 +86,7 @@ class Engine {
          * 
          * @param data struct corresponding to every player's data
          */
-        void updateRegistry(ServerData data);
+        void updateRegistry(char *data);
     
         /**
          * @brief Runs network threads
@@ -106,7 +106,6 @@ class Engine {
          */
         void run();
 
-
     protected:
     private:
 
@@ -116,7 +115,6 @@ class Engine {
          **/
         registry _reg;
         MyNetwork _network;
-
         /**
          * @brief modules 
          **/

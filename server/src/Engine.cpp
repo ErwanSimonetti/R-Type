@@ -24,10 +24,13 @@ Engine::Engine(boost::asio::io_service &io_service, const std::string &host, con
     _reg.register_component<Shootable>();
     _reg.register_component<Jump>();
     _reg.register_component<Gravity>();
+    _reg.register_component<Stats>();
+    _reg.register_component<DrawableText>();
 
     _reg.add_system<Position, Velocity, Controllable>(position_system);
     _reg.add_system<Shootable>(shoot_system);
     _reg.add_system<Position, Hitbox>(collision_system);
+    _reg.add_system<Stats, Position, Pet>(entity_killing_system);
 }
 
 Engine::~Engine()
@@ -90,23 +93,31 @@ ServerData Engine::buildServerData(size_t id, uint16_t inputs[10])
 
 void Engine::sendData(ServerData data) 
 {
-    char *buffer = _network.getProtocol().serialiseData<ServerData>(data);
-    ServerData serverData = _network.getProtocol().readServer(buffer);
+    std::vector<char> buffer;
+    Header header{3};
+    const char* headerBytes = _network.getProtocol().serialiseData<Header>(header);
+    const char* dataBytes = _network.getProtocol().serialiseData<ServerData>(data);
 
-    for (int it = 0; it < _network.getEndpoints().size(); it++) {
-        _network.udpSend<ServerData>(buffer, _network.getEndpoints().at(it));
-    }
+    buffer.reserve(sizeof(Header) + sizeof(ServerData));
+    buffer.insert(buffer.end(), headerBytes, headerBytes + sizeof(Header));
+    buffer.insert(buffer.end(), dataBytes, dataBytes + sizeof(ServerData));
+    _network.udpSendToAllClients(buffer.data(), buffer.size());
 }
 
-void Engine::updateRegistry(ClientData data)
+void Engine::updateRegistry(char *data)
 {
     GameData gameData;
+    Header* headerDeserialized = reinterpret_cast<Header*>(data);
 
-    gameData.entity = data.entity;
-    memcpy(gameData.inputs, data.inputs, sizeof(uint16_t) * 10);
+    if (headerDeserialized->_id == 3) {
+        ClientData* dataDeserialized = reinterpret_cast<ClientData*>(data + sizeof(Header));
 
-    _game->updateRegistry(_reg, gameData);
-    sendData(buildServerData(data.entity, data.inputs));
+        gameData.entity = dataDeserialized->entity;
+        memcpy(gameData.inputs, dataDeserialized->inputs, sizeof(uint16_t) * 10);
+
+        _game->updateRegistry(_reg, gameData);
+        sendData(buildServerData(dataDeserialized->entity, dataDeserialized->inputs));
+    }
 }
 
 void Engine::runNetwork() 

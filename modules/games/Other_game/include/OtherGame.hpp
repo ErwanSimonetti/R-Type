@@ -11,6 +11,18 @@
 #include "IGame.hpp"
 #include <memory>
 
+enum OBJECT_TYPE {
+    EMPTY = -1,
+    PLAYER,
+    WATER,
+    FLAG,
+    GRASS,
+    LADDER,
+    TREE,
+    PARA_4
+};
+
+
 class OtherGame : public IGame {
     public:
         OtherGame();

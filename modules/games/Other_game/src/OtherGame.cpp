@@ -28,18 +28,18 @@ std::vector<entity> OtherGame::getPLayers() const
 void OtherGame::create_static(registry &r, entity newEntity, const int16_t posX, const int16_t posY, const int16_t posZ, uint16_t type)
 {
     r.emplace_component<Position>(newEntity, posX, posY, posZ);
-    r.emplace_component<Hitbox>(newEntity, posX+45, posY+45, OBJECT(type));
-    r.emplace_component<Drawable>(newEntity, OBJECT(type), 10);
+    r.emplace_component<Hitbox>(newEntity, posX+45, posY+45, type);
+    r.emplace_component<Drawable>(newEntity, type, 10);
 }
 
 void OtherGame::create_player(registry &r, entity newEntity, bool isControllable, const int16_t velX, const int16_t velY, const int16_t posX, const int16_t posY, const int16_t posZ)
 {
     r.emplace_component<Shootable>(newEntity);
-    r.emplace_component<Drawable>(newEntity, OBJECT(0), 1, rotation({-90, 0, 90}));
+    r.emplace_component<Drawable>(newEntity, PLAYER, 1, rotation({-90, 0, 90}));
     r.emplace_component<Animatable>(newEntity, 90);
     r.emplace_component<Position>(newEntity, posX, posY, posZ);
     r.emplace_component<Velocity>(newEntity, velX, velY);
-    r.emplace_component<Hitbox>(newEntity, posX+45, posY+45, SHIP);
+    r.emplace_component<Hitbox>(newEntity, posX+45, posY+45, 0);
     r.emplace_component<Jump>(newEntity, 10);
     r.emplace_component<Gravity>(newEntity, 1);
 
@@ -53,25 +53,25 @@ void OtherGame::create_player(registry &r, entity newEntity, bool isControllable
 void OtherGame::initGame(registry &r)
 {
     for (int i = 0; i < 20; ++i) {
-        create_static(r, r.spawn_entity(), i*20, -50, 0, 3);
-        create_static(r, r.spawn_entity(), i*20, -50, -20, 3);
-        create_static(r, r.spawn_entity(), -i*20, -50, 0, 3);
-        create_static(r, r.spawn_entity(), -i*20, -50, -20, 3);
+        create_static(r, r.spawn_entity(), i*20, -50, 0, GRASS);
+        create_static(r, r.spawn_entity(), i*20, -50, -20, GRASS);
+        create_static(r, r.spawn_entity(), -i*20, -50, 0, GRASS);
+        create_static(r, r.spawn_entity(), -i*20, -50, -20, GRASS);
 
-        create_static(r, r.spawn_entity(), i*20, -50, 20, 1);
-        create_static(r, r.spawn_entity(), i*20, -50, 40, 1);
-        create_static(r, r.spawn_entity(), i*20, -50, 60, 1);
-        create_static(r, r.spawn_entity(), -i*20, -50, 20, 1);
-        create_static(r, r.spawn_entity(), -i*20, -50, 40, 1);
-        create_static(r, r.spawn_entity(), -i*20, -50, 60, 1);
+        create_static(r, r.spawn_entity(), i*20, -50, 20, WATER);
+        create_static(r, r.spawn_entity(), i*20, -50, 40, WATER);
+        create_static(r, r.spawn_entity(), i*20, -50, 60, WATER);
+        create_static(r, r.spawn_entity(), -i*20, -50, 20, WATER);
+        create_static(r, r.spawn_entity(), -i*20, -50, 40, WATER);
+        create_static(r, r.spawn_entity(), -i*20, -50, 60, WATER);
         if (i%2) {
-            create_static(r, r.spawn_entity(), -i*20, -45, -15, 5);
-            create_static(r, r.spawn_entity(), i*20, -45, -15, 5);
+            create_static(r, r.spawn_entity(), -i*20, -45, -15, TREE);
+            create_static(r, r.spawn_entity(), i*20, -45, -15, TREE);
         }
     }
 
     for (int i = 0; i < 10; ++i) {
-        create_static(r, r.spawn_entity(), 50 + i*20, 50, 0, 3);
+        create_static(r, r.spawn_entity(), 50 + i*20, 50, 0, GRASS);
     }
 }
 
@@ -85,8 +85,6 @@ void OtherGame::handleInputs(registry &r, size_t entity, const uint16_t inputs[1
     auto &drawables = r.get_components<Drawable>();
 
     for (int i = 0; i < 10; i++) {
-        if (stopLoop)
-            break;
         switch (inputs[i]) {
         case KEYBOARD::ARROW_LEFT:
             left = -1;

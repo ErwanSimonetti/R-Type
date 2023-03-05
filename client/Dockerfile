@@ -60,7 +60,6 @@ COPY ressources/ /app/ressources
 COPY modules/ /app/modules
 COPY utils /app/utils
 
-
 # Launch game
 RUN cd app/client && ./make_client
 RUN cd app/modules && rm -f *.so && make

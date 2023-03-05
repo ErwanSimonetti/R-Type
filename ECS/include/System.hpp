@@ -25,6 +25,10 @@
 #include "Shootable.hpp"
 #include "Jump.hpp"
 #include "Gravity.hpp"
+#include "Stats.hpp"
+#include "DrawableText.hpp"
+#include "Particulable.hpp"
+#include "Sound.hpp"
 
 /**
  * @brief logging system displaying all nodes with their position & velocity
@@ -72,5 +76,6 @@ void parallax_system(registry &r, sparse_array<Animatable> &animatable, sparse_a
 void animation_system(registry &r, sparse_array<Animatable> &animatable, sparse_array<Drawable> &drawable);
 void shoot_system(registry &r, sparse_array<Shootable> &shootable);
 void jump_system(registry &r, sparse_array<Position> &positions, sparse_array<Velocity> &velocities, sparse_array<Jump> &jumps, sparse_array<Gravity> &gravities);
-
+void entity_killing_system(registry &r, sparse_array<Stats> &stats, sparse_array<Position> &positions, sparse_array<Pet> &pets);
+void update_drawable_texts_system(registry &r, sparse_array<Stats> &stats, sparse_array<DrawableText> &drawableTexts, sparse_array<Pet> &pets);
 #endif /* !SYSTEM_HPP_ */

@@ -36,6 +36,7 @@ NAME_RAYLIB	=	raylib.so
 
 SRC_RAYLIB	=	graphics/Raylib/src/Raylib.cpp \
 				graphics/Raylib/src/RaylibWindow.cpp \
+				graphics/Raylib/src/RaylibParticle.cpp \
 				../utils/JSON/ReadJson.cpp
 
 OBJ_RAYLIB	=	$(SRC_RAYLIB:.cpp=.o)
