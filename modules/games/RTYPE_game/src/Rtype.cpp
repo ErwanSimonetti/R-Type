@@ -237,6 +237,18 @@ void Rtype::spawnEnemies(registry &r)
     if (std::chrono::system_clock::now() - _enemyTimer  > std::chrono::seconds(5)) {
         create_enemy_entity(r, r.spawn_entity(), 1, 1, posX, posY);
         _enemyTimer = std::chrono::system_clock::now();
+        _shootingTimer = std::chrono::system_clock::now();
+    }
+}
+
+void Rtype::enemyShoot(registry &r, sparse_array<Hitbox> &hitboxes)
+{
+    for (size_t i = 0; i < hitboxes.size(); ++i) {
+        auto &hbx = hitboxes[i];
+        if (hbx)
+            if (std::chrono::system_clock::now() - _shootingTimer > std::chrono::seconds(3)) {
+                create_projectile(r, r.spawn_entity(), int16_t(i), 15, 0);
+            }
     }
 }
 
@@ -244,4 +256,5 @@ void Rtype::run_gameLogic(registry &r, const Events &events)
 {
     checkStats(r.get_components<Hitbox>(), r.get_components<Stats>(), r.get_components<Pet>());
     spawnEnemies(r);
+    enemyShoot(r, r.get_components<Hitbox>());
 }
