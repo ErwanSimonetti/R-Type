@@ -10,7 +10,7 @@
 #include "System.hpp"
 #include "registry.hpp"
 
-void followPathSystem(registry &r, const sparse_array<Position> &positions, sparse_array<Velocity> &velocities, sparse_array<FollowPath> &paths) {
+void follow_path_system(registry &r, const sparse_array<Position> &positions, sparse_array<Velocity> &velocities, sparse_array<FollowPath> &paths) {
     int16_t xToReach = 0;
     int16_t yToReach = 0;
     int16_t newXVelocity = 0;
