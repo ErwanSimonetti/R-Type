@@ -99,6 +99,7 @@ void Rtype::create_projectile(registry &r, entity newEntity, int16_t parentId, c
 
 void Rtype::initGame(registry &r)
 {
+    _enemyTimer = std::chrono::system_clock::now();
     create_static(r, r.spawn_entity_by_id(0), 0, 0, ENEMYSHIP);
     create_parallax(r, r.spawn_entity(), 1920, 0, 3, PARA_1);
     create_parallax(r, r.spawn_entity(), 0, 0, 3, PARA_1);
@@ -229,7 +230,18 @@ void Rtype::checkStats(sparse_array<Hitbox> &hbxs, sparse_array<Stats> &sts, spa
     }
 }
 
+void Rtype::spawnEnemies(registry &r)
+{
+    int posY = rand() % 1000;
+    int posX = rand() % 500 + 400;
+    if (std::chrono::system_clock::now() - _enemyTimer  > std::chrono::seconds(5)) {
+        create_enemy_entity(r, r.spawn_entity(), 1, 1, posX, posY);
+        _enemyTimer = std::chrono::system_clock::now();
+    }
+}
+
 void Rtype::run_gameLogic(registry &r, const Events &events) 
 {
     checkStats(r.get_components<Hitbox>(), r.get_components<Stats>(), r.get_components<Pet>());
+    spawnEnemies(r);
 }

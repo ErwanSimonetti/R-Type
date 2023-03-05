@@ -145,6 +145,7 @@ void Engine::runGame()
 {
     while (1) {
         _reg.run_systems();
+        _game->spawnEnemies(_reg);
     }
 }
 

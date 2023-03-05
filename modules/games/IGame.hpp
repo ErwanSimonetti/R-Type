@@ -35,34 +35,40 @@ class IGame {
         /**
          * @brief Function used to create all starting assets needed fro the game
          * 
-         * @param r the registery comming from the Game Engine
+         * @param r the registry comming from the Game Engine
          */
         virtual void initGame(registry &r) = 0;
 
         /**
          * @brief Function used to execute all the game logic (handling event or phases of the game)
          * 
-         * @param r the registery comming from the Game Engine
+         * @param r the registry comming from the Game Engine
          * @param events the events that happened
          */
         virtual void run_gameLogic(registry &r, const Events &events) = 0;
 
         /**
-         * @brief Function used to update the registery with data received from the server
+         * @brief Function used to update the registry with data received from the server
          * 
-         * @param r the registery comming from the Game Engine
+         * @param r the registry comming from the Game Engine
          * @param data struct corresponding to every player's data
          */
         virtual void updateRegistry(registry &r, const GameData &data) = 0;
 
         /**
-         * @brief Function used to update the registery with data received from the server
+         * @brief Function used to update the registry with data received from the server
          * 
-         * @param r the registery comming from the Game Engine
+         * @param r the registry comming from the Game Engine
          * @param data struct corresponding to every players's datas
          */
         virtual void updateRegistry(registry &r, const GameData data[4]) = 0;
 
+        /**
+         * @brief function used to make enemies spawn every 5 seconds or so
+         * 
+         * @param r the registry comming from the Game Engine
+        */
+        virtual void spawnEnemies(registry &r) = 0;
     protected:
     private:
 };

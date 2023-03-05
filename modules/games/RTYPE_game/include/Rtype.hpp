@@ -10,6 +10,7 @@
 
 #include "IGame.hpp"
 #include <memory>
+#include <chrono>
 
 enum OBJECT_TYPE {
     EMPTY = -1,
@@ -100,7 +101,7 @@ class Rtype : public IGame {
         */
         void create_projectile(registry &r, entity newEntity, int16_t parentId, const uint16_t velX, const uint16_t velY);
         void create_parallax(registry &r, entity newEntity, const uint16_t posX, const uint16_t posY, const uint16_t speed, const int16_t obj);
-
+        void spawnEnemies(registry &r);
         void create_static(registry &r, entity newEntity, const uint16_t posX, const uint16_t posY, int16_t type);
 
     protected:
@@ -110,6 +111,7 @@ class Rtype : public IGame {
          * @brief players vector 
          **/ 
         std::vector<entity> _players;
+        std::chrono::time_point<std::chrono::system_clock> _enemyTimer;
 
 };
 
