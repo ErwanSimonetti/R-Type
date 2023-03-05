@@ -157,6 +157,7 @@ void Engine::run()
 void Engine::sendEnemies(registry &r, sparse_array<Position> &positions, sparse_array<Velocity> &velocities, const sparse_array<Drawable> &drawable)
 {
     std::vector<char> buffer;
+    EnemyData temp;
     for (size_t i = 0; i < positions.size() && i < velocities.size() && i < drawable.size(); ++ i) {
         auto &pos = positions[i];
         auto &vel = velocities[i];
@@ -164,14 +165,13 @@ void Engine::sendEnemies(registry &r, sparse_array<Position> &positions, sparse_
 
         if (pos && vel && draw) {
             if (draw.value()._type == 1) {
-                EnemyData temp;
                 temp.entities = i;
                 temp.posX = pos.value()._x;
                 temp.posY = pos.value()._y;
-                addDataInSendBuffer<EnemyData>(temp, 8, buffer);
             }
         }
     }
+    addDataInSendBuffer<EnemyData>(temp, 8, buffer);
     sendData(buffer);
 }
 

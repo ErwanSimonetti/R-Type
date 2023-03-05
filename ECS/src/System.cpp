@@ -134,8 +134,10 @@ void entity_killing_system(registry &r, sparse_array<Stats> &stats, sparse_array
         auto &sts = stats[i];
         auto &pos = positions[i];
         auto &pet = pets[i];
-        if (sts && sts && sts.value()._health <= 0)
+        if (sts && sts && sts.value()._health <= 0) {
+            std::cout << "entity killed : " << i << std::endl;
             r.kill_entity(entity(i));
+        }
         if (pet && pet.value()._ent == 0)
             r.kill_entity(entity(i)); 
     }

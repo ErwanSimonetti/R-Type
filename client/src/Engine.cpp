@@ -97,7 +97,7 @@ void Engine::updateRegistry(char *data, size_t dataSize)
 {
     const char* dataEnd = data + dataSize;
 
-    std::cout << "Receive a buffer in client" << std::endl;
+    // std::cout << "Receive a buffer in client" << std::endl;
 
     while (data < dataEnd) {
         Header* headerDeserialized = reinterpret_cast<Header*>(data);
