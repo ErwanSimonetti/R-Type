@@ -116,6 +116,9 @@ void Engine::updateRegistry(char *data, size_t dataSize)
             EnemyData* dataDeserialized = reinterpret_cast<EnemyData*>(data + sizeof(Header));
             data += sizeof(Header) + sizeof(EnemyData);
             _game->createEnemies(_reg, *dataDeserialized);
+        } else if (headerDeserialized->_id == 10) {
+            ProjectileData* dataDeserialized = reinterpret_cast<ProjectileData*>(data + sizeof(Header));
+            data += sizeof(Header) + sizeof(ProjectileData);
         } else {
             break;
         }

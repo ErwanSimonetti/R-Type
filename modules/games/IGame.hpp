@@ -13,6 +13,7 @@
 #include "registry.hpp"
 #include "System.hpp"
 #include "EnemyData.hpp"
+#include "ProjectileData.hpp"
 
 struct GameData {
     int16_t entity;
@@ -70,7 +71,7 @@ class IGame {
          * @param r the registry comming from the Game Engine
         */
         virtual bool spawnEnemies(registry &r) = 0;
-
+        virtual std::vector<ProjectileData> enemyShoot(registry &r, sparse_array<Hitbox> &hitboxes, sparse_array<Shootable> &shoot) = 0;
         virtual void createEnemies(registry &r, EnemyData &data) = 0;
 
     protected:

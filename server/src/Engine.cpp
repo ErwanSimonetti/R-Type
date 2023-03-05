@@ -7,6 +7,7 @@
 
 #include "Engine.hpp"
 #include "CLI.hpp"
+#include "ProjectileData.hpp"
 
 Engine::Engine(boost::asio::io_service &io_service, const std::string &host, const std::string &port, const std::string &gameModulePath) : _reg(), _network(io_service, port)
 {
@@ -138,6 +139,12 @@ void Engine::runGame()
         if (_game->spawnEnemies(_reg)) {
             sendEnemies(_reg, _reg.get_components<Position>(), _reg.get_components<Velocity>(), _reg.get_components<Drawable>());
         }
+        std::vector<ProjectileData> projectile(_game->enemyShoot(_reg, _reg.get_components<Hitbox>(), _reg.get_components<Shootable>()));
+        std::vector<char> buffer;
+        for (int i = 0; i < projectile.size(); i++) {
+            addDataInSendBuffer<ProjectileData>(projectile.at(i), 10, buffer);
+        }
+        sendData(buffer);
     }
 }
 

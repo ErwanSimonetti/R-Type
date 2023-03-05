@@ -18,6 +18,7 @@
 #include "IGraphic.hpp"
 #include "IGame.hpp"
 #include "LoadLibrary.hpp"
+#include "ProjectileData.hpp"
 
 using create_d_graphic = std::shared_ptr<IGraphic> (*)();
 using create_d_game = std::shared_ptr<IGame> (*)();

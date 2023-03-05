@@ -11,6 +11,7 @@
 #include "IGame.hpp"
 #include <memory>
 #include <chrono>
+#include "ProjectileData.hpp"
 
 enum OBJECT_TYPE {
     EMPTY = -1,
@@ -112,10 +113,10 @@ class Rtype : public IGame {
          * @param velY y velocity
          * @return a projectile entity 
         */
-        void create_enemy_projectile(registry &r, entity newEntity, int16_t parentId, const uint16_t velX, const uint16_t velY);
+        ProjectileData create_enemy_projectile(registry &r, entity newEntity, int16_t parentId, const int16_t velX, const int16_t velY);
         void create_parallax(registry &r, entity newEntity, const uint16_t posX, const uint16_t posY, const uint16_t speed, const int16_t obj);
 
-        void enemyShoot(registry &r, sparse_array<Hitbox> &hitboxes, sparse_array<Shootable> &shoot);
+        std::vector<ProjectileData> enemyShoot(registry &r, sparse_array<Hitbox> &hitboxes, sparse_array<Shootable> &shoot);
         bool spawnEnemies(registry &r);
         void create_static(registry &r, entity newEntity, const uint16_t posX, const uint16_t posY, int16_t type);
 

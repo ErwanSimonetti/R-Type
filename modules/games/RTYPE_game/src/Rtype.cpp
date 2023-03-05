@@ -97,7 +97,7 @@ void Rtype::create_projectile(registry &r, entity newEntity, int16_t parentId, c
     r.emplace_component<Stats>(newEntity, 1, 0);
 }
 
-void Rtype::create_enemy_projectile(registry &r, entity newEntity, int16_t parentId, const uint16_t velX, const uint16_t velY)
+ProjectileData Rtype::create_enemy_projectile(registry &r, entity newEntity, int16_t parentId, const int16_t velX, const int16_t velY)
 {
     int16_t posX = r.get_components<Position>()[parentId].value()._x;
     int16_t posY = r.get_components<Position>()[parentId].value()._y;
@@ -108,8 +108,8 @@ void Rtype::create_enemy_projectile(registry &r, entity newEntity, int16_t paren
     r.emplace_component<Pet>(newEntity, entity(parentId));
     r.emplace_component<Animatable>(newEntity, 10);
     r.emplace_component<Stats>(newEntity, 1, 0);
-
-
+    
+    return (ProjectileData{newEntity, posX, posY, velX, velY});
 }
 
 void Rtype::initGame(registry &r)
@@ -258,18 +258,22 @@ bool Rtype::spawnEnemies(registry &r)
     return false;
 }
 
-void Rtype::enemyShoot(registry &r, sparse_array<Hitbox> &hitboxes, sparse_array<Shootable> &shoot)
+std::vector<ProjectileData> Rtype::enemyShoot(registry &r, sparse_array<Hitbox> &hitboxes, sparse_array<Shootable> &shoot)
 {
+    std::vector<ProjectileData> projectile;
+
     for (size_t i = 0; i < hitboxes.size() && i < shoot.size(); ++i) {
         auto &hbx = hitboxes[i];
         auto &sht = shoot[i];
         if (sht && hbx && hbx.value()._type == ENEMYSHIP) {
             if (std::chrono::system_clock::now() - sht.value()._clock > std::chrono::seconds(3)) {
-                create_enemy_projectile(r, r.spawn_entity(), i, -15, 0);
+                ProjectileData data = create_enemy_projectile(r, r.spawn_entity(), i, -15, 0);
+                projectile.emplace_back(data);
                 sht.value()._clock = std::chrono::high_resolution_clock::now();
             }
         }
     }
+    return projectile;
 }
 
 void Rtype::createEnemies(registry &r, EnemyData &data)
@@ -284,5 +288,5 @@ void Rtype::createEnemies(registry &r, EnemyData &data)
 void Rtype::run_gameLogic(registry &r, const Events &events) 
 {
     checkStats(r.get_components<Hitbox>(), r.get_components<Stats>(), r.get_components<Pet>());
-    // enemyShoot(r, r.get_components<Hitbox>(), r.get_components<Shootable>());
+    enemyShoot(r, r.get_components<Hitbox>(), r.get_components<Shootable>());
 }
