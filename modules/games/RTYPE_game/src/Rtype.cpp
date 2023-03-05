@@ -71,7 +71,8 @@ void Rtype::create_enemy_entity(registry &r, entity newEntity, const int16_t vel
     r.emplace_component<Drawable>(newEntity, ENEMYSHIP);
     r.emplace_component<Hitbox>(newEntity, 45, 45, ENEMYSHIP);
     r.emplace_component<Animatable>(newEntity, 90);
-    r.emplace_component<Stats>(newEntity, 5, 0);
+    r.emplace_component<Stats>(newEntity, 1, 0);
+    r.emplace_component<Shootable>(newEntity);
 
 }
 
@@ -94,14 +95,27 @@ void Rtype::create_projectile(registry &r, entity newEntity, int16_t parentId, c
     r.emplace_component<Pet>(newEntity, entity(parentId));
     r.emplace_component<Animatable>(newEntity, 10);
     r.emplace_component<Stats>(newEntity, 1, 0);
+}
 
-} 
+void Rtype::create_enemy_projectile(registry &r, entity newEntity, int16_t parentId, const uint16_t velX, const uint16_t velY)
+{
+    int16_t posX = r.get_components<Position>()[parentId].value()._x;
+    int16_t posY = r.get_components<Position>()[parentId].value()._y;
+    r.emplace_component<Position>(newEntity, posX, posY);
+    r.emplace_component<Hitbox>(newEntity, 10, 10, EBULLET);
+    r.emplace_component<Velocity>(newEntity, velX, velY);
+    r.emplace_component<Drawable>(newEntity, EBULLET);
+    r.emplace_component<Pet>(newEntity, entity(parentId));
+    r.emplace_component<Animatable>(newEntity, 10);
+    r.emplace_component<Stats>(newEntity, 1, 0);
+
+
+}
 
 void Rtype::initGame(registry &r)
 {
     _enemyTimer = std::chrono::system_clock::now();
-    create_static(r, r.spawn_entity_by_id(0), 0, 0, ENEMYSHIP);
-    create_parallax(r, r.spawn_entity(), 1920, 0, 3, PARA_1);
+    create_parallax(r, r.spawn_entity_by_id(0), 1920, 0, 3, PARA_1);
     create_parallax(r, r.spawn_entity(), 0, 0, 3, PARA_1);
     create_parallax(r, r.spawn_entity(), 1920, 0, 6, PARA_2);
     create_parallax(r, r.spawn_entity(), 0, 0, 6, PARA_2);
@@ -218,9 +232,13 @@ void Rtype::checkStats(sparse_array<Hitbox> &hbxs, sparse_array<Stats> &sts, spa
         auto &hbx = hbxs[i];
         auto &stat = sts[i];
         auto &pet = pets[i];
-        if (stat && hbx && hbx.value()._type == ENEMYSHIP && hbx.value()._obstacle == BULLET)
+        if (stat && hbx && (hbx.value()._type == ENEMYSHIP && hbx.value()._obstacle == BULLET)) {
             stat.value().set_component(stat.value()._health - 1, 0);
-        if (hbx && hbx.value()._type == BULLET && hbx.value()._obstacle == ENEMYSHIP) {
+        }
+        if (stat && hbx && (hbx.value()._type == SHIP && hbx.value()._obstacle == EBULLET)) {
+            stat.value().set_component(stat.value()._health - 1, 0);
+        }
+        if (hbx && (hbx.value()._type == BULLET && hbx.value()._obstacle == ENEMYSHIP) ) {
             if (pet && sts[pet.value()._ent].has_value()) {
                 int16_t ent = pet.value()._ent;
                 sts[ent].value().set_component(sts[ent].value()._health, sts[ent].value()._score + 5);
@@ -241,14 +259,17 @@ void Rtype::spawnEnemies(registry &r)
     }
 }
 
-void Rtype::enemyShoot(registry &r, sparse_array<Hitbox> &hitboxes)
+void Rtype::enemyShoot(registry &r, sparse_array<Hitbox> &hitboxes, sparse_array<Shootable> &shoot)
 {
-    for (size_t i = 0; i < hitboxes.size(); ++i) {
+    for (size_t i = 0; i < hitboxes.size() && i < shoot.size(); ++i) {
         auto &hbx = hitboxes[i];
-        if (hbx)
-            if (std::chrono::system_clock::now() - _shootingTimer > std::chrono::seconds(3)) {
-                create_projectile(r, r.spawn_entity(), int16_t(i), 15, 0);
+        auto &sht = shoot[i];
+        if (sht && hbx && hbx.value()._type == ENEMYSHIP) {
+            if (std::chrono::system_clock::now() - sht.value()._clock > std::chrono::seconds(3)) {
+                create_enemy_projectile(r, r.spawn_entity(), i, -15, 0);
+                sht.value()._clock = std::chrono::high_resolution_clock::now();
             }
+        }
     }
 }
 
@@ -256,5 +277,5 @@ void Rtype::run_gameLogic(registry &r, const Events &events)
 {
     checkStats(r.get_components<Hitbox>(), r.get_components<Stats>(), r.get_components<Pet>());
     spawnEnemies(r);
-    enemyShoot(r, r.get_components<Hitbox>());
+    enemyShoot(r, r.get_components<Hitbox>(), r.get_components<Shootable>());
 }

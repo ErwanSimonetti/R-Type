@@ -21,6 +21,7 @@ enum OBJECT_TYPE {
     PARA_2,
     PARA_3,
     PARA_4,
+    EBULLET,
     HEALTH
 };
 
@@ -100,9 +101,21 @@ class Rtype : public IGame {
          * @return a projectile entity 
         */
         void create_projectile(registry &r, entity newEntity, int16_t parentId, const uint16_t velX, const uint16_t velY);
+        
+        /**
+         * @brief Generate a projectile using the id of a previously generated ship entity
+         * @param r registry the registery to update
+         * @param newEntity Entity ID, has to be unused
+         * @param parentId id of the parent ship
+         * @param col color
+         * @param velX x velocity
+         * @param velY y velocity
+         * @return a projectile entity 
+        */
+        void create_enemy_projectile(registry &r, entity newEntity, int16_t parentId, const uint16_t velX, const uint16_t velY);
         void create_parallax(registry &r, entity newEntity, const uint16_t posX, const uint16_t posY, const uint16_t speed, const int16_t obj);
         void spawnEnemies(registry &r);
-        void enemyShoot(registry &r, sparse_array<Hitbox> &hitboxes);
+        void enemyShoot(registry &r, sparse_array<Hitbox> &hitboxes, sparse_array<Shootable> &shoot);
         void create_static(registry &r, entity newEntity, const uint16_t posX, const uint16_t posY, int16_t type);
 
     protected:

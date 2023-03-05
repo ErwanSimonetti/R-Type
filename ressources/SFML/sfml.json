@@ -48,6 +48,13 @@
             "width" : 1920,
             "height": 734,
             "size": 1920
+        },
+        {
+            "type": 7,
+            "texture" : "ressources/SFML/shoot_enemy.png",
+            "width" : 43,
+            "height": 41,
+            "size": 174
         }
     ],
     
