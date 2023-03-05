@@ -37,6 +37,7 @@ Engine::Engine(boost::asio::io_service &io_service, const std::string &host, con
     _reg.add_system<Position, Velocity, Controllable, Hitbox>(position_system);
     _reg.add_system<Shootable>(shoot_system);
     _reg.add_system<Stats, Position, Pet>(entity_killing_system);
+    _reg.add_system<Position, Velocity, FollowPath>(follow_path_system);
 }
 
 Engine::~Engine()

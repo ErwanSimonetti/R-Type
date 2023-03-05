@@ -70,9 +70,9 @@ Events control_system(registry &r, std::vector<int> &directions, sparse_array<Po
  * @param velocities sparseArray containing entity velocities
  * @param paths paths to follow
  */
-// void followPathSystem(const sparse_array<Position> &positions, sparse_array<Velocity> &velocities, sparse_array<FollowPath> &paths);
 
 void collision_system(registry &r, sparse_array<Position> &positions, sparse_array<Velocity> &velocities,  sparse_array<Hitbox> &hitboxes);
+void follow_path_system(const sparse_array<Position> &positions, sparse_array<Velocity> &velocities, sparse_array<FollowPath> &paths);
 void parallax_system(registry &r, sparse_array<Animatable> &animatable, sparse_array<Position> &positions, sparse_array<Parallax> &parallax);
 void animation_system(registry &r, sparse_array<Animatable> &animatable, sparse_array<Drawable> &drawable);
 void shoot_system(registry &r, sparse_array<Shootable> &shootable);
@@ -80,4 +80,5 @@ void jump_system(registry &r, sparse_array<Position> &positions, sparse_array<Ve
 void entity_killing_system(registry &r, sparse_array<Stats> &stats, sparse_array<Position> &positions, sparse_array<Pet> &pets);
 void update_drawable_texts_system(registry &r, sparse_array<Stats> &stats, sparse_array<DrawableText> &drawableTexts, sparse_array<Pet> &pets);
 void gravity_system(registry &r, sparse_array<Velocity> &velocities, sparse_array<Hitbox> &hitboxes, sparse_array<Gravity> &gravities);
+
 #endif /* !SYSTEM_HPP_ */
