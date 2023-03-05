@@ -26,6 +26,7 @@
 #include "DrawableText.hpp"
 #include "Particulable.hpp"
 #include "Sound.hpp"
+#include "Cliquable.hpp"
 #include "GameEvents.hpp"
 
 /**

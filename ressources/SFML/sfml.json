@@ -48,6 +48,27 @@
             "width" : 1920,
             "height": 734,
             "size": 1920
+        },
+        {
+            "type": 7,
+            "texture" : "ressources/SFML/play.png",
+            "width" : 385,
+            "height": 184,
+            "size": 1155
+        },
+        {
+            "type": 8,
+            "texture" : "ressources/SFML/exit.png",
+            "width" : 385,
+            "height": 184,
+            "size": 1155
+        },
+        {
+            "type": 9,
+            "texture" : "ressources/SFML/rtype.png",
+            "width" : 696,
+            "height": 197,
+            "size": 696
         }
     ],
     

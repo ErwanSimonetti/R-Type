@@ -13,6 +13,7 @@
 #include "IGraphic.hpp"
 #include "SFML_utils.hpp"
 #include <SFML/Audio.hpp>
+// #include <SFML/Mouse.hpp>
 
 struct Asset {
     std::string _texture;
@@ -32,6 +33,7 @@ class SFML : public IGraphic {
         void animation_system(sparse_array<Animatable> &animatables, sparse_array<Drawable> &drawables);
         void draw_system(sparse_array<Position> const &positions, sparse_array<Drawable> &drawables, sparse_array<Particulable> &particles, sparse_array<DrawableText> &drawableTexts);
         void draw_particles(sparse_array<Position> const &positions, sparse_array<Drawable> &drawables, sparse_array<Particulable> &particles);
+        void clique_system(sparse_array<Cliquable> &cliquables, sparse_array<Drawable> &drawables);
         void sound_system(sparse_array<SoundEffect> &sound);
         void initialize_rect(Drawable &draw);
         Events event_system(registry &reg);
@@ -39,6 +41,7 @@ class SFML : public IGraphic {
         void constructFromJson();
         void set_sprite();
         void set_text();
+        void closeWindow();
     protected:
     private:
         std::shared_ptr<sf::RenderWindow> _window;

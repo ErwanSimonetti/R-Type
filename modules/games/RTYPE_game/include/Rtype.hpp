@@ -10,6 +10,7 @@
 
 #include "IGame.hpp"
 #include <memory>
+#include <unordered_map>
 
 enum OBJECT_TYPE {
     EMPTY = -1,
@@ -20,7 +21,15 @@ enum OBJECT_TYPE {
     PARA_2,
     PARA_3,
     PARA_4,
+    PLAY,
+    EXIT,
+    RTYPE,
     HEALTH
+};
+
+enum MENU_EVENT {
+    LAUNCHGAME,
+    EXITGAME
 };
 
 class Rtype : public IGame {
@@ -42,7 +51,7 @@ class Rtype : public IGame {
          * 
          * @param r the registery comming from the Game Engine
          */
-        void run_gameLogic(registry &r, const Events &events);
+        std::vector<GAME_EVENT> run_gameLogic(registry &r, const Events &events);
 
         /**
          * @brief Function used to update the registery with data received from the server
@@ -102,14 +111,22 @@ class Rtype : public IGame {
         void create_parallax(registry &r, entity newEntity, const uint16_t posX, const uint16_t posY, const uint16_t speed, const int16_t obj);
 
         void create_static(registry &r, entity newEntity, const uint16_t posX, const uint16_t posY, int16_t type);
+        void createButton(registry &r, entity newEntity, int16_t posX, int16_t posY, int16_t type, uint16_t event);
 
     protected:
         void handleInputs(registry &r, size_t entity, const uint16_t inputs[10]);
+        void menuEvent(registry &reg, sparse_array<Cliquable> &cliquables);
+        void addMenuEvent();
+        void LaunchGame(registry &r);
+        void closeGame(registry &r);
+
     private:
         /**
          * @brief players vector 
          **/ 
         std::vector<entity> _players;
+        std::unordered_map<int, std::function<void(registry&)>> _menuEvent;
+        std::vector<GAME_EVENT> _gameEvents;
 
 };
 
