@@ -106,7 +106,6 @@ void OtherGame::handleInputs(registry &r, size_t entity, const uint16_t inputs[1
         case KEYBOARD::NONE:
             break;
         default:
-            std::cout << "Unused input; " << inputs[i] << "\n";
             break;
         }
     }
