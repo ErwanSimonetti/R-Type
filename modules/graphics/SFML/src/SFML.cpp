@@ -64,7 +64,7 @@ void SFML::constructFromJson()
     for (int i = 0; i < nbSound; i++) {
         if (reader.IntValueFromArray("sound", i, "type") == 1) {
             if(_music.openFromFile(reader.readValueFromArray("sound", i, "music"))) {
-                _music.play();
+                // _music.play();
             }
         } else {
             sf::SoundBuffer buffer;

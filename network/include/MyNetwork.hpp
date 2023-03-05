@@ -29,7 +29,7 @@ class MyNetwork {
         void udpSend(char *buffer, const std::size_t &sizeOfBuffer, boost::asio::ip::udp::endpoint endpoint);
         void udpSendToAllClients(char *buffer, std::size_t const& sizeOfBuffer);
 
-        void UDPReceiveClient(std::function<void(char *)> func, bool shouldCallback);
+        void UDPReceiveClient(std::function<void(char *, size_t)> func, bool shouldCallback);
         void UDPReceiveServer(std::function<void(char *)> func);
 
         void addEndpoint(boost::asio::ip::udp::endpoint endpoint);

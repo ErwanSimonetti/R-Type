@@ -7,7 +7,7 @@
 
 CXX				=	g++ -std=c++17
 
-INC				=	-I include -I ../utils -I ../ECS/include -I ../utils/JSON -I ../ECS/include/components
+INC				=	-I include -I ../utils -I ../ECS/include -I ../utils/JSON -I ../ECS/include/components -I ../network/include
 
 INC_GRAPHICS	=	-I graphics
 

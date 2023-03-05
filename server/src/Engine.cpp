@@ -90,19 +90,6 @@ ServerData Engine::buildServerData(size_t id, uint16_t inputs[10])
     return data;
 }
 
-void Engine::sendData(ServerData data) 
-{
-    std::vector<char> buffer;
-    Header header{3};
-    const char* headerBytes = _network.getProtocol().serialiseData<Header>(header);
-    const char* dataBytes = _network.getProtocol().serialiseData<ServerData>(data);
-
-    buffer.reserve(sizeof(Header) + sizeof(ServerData));
-    buffer.insert(buffer.end(), headerBytes, headerBytes + sizeof(Header));
-    buffer.insert(buffer.end(), dataBytes, dataBytes + sizeof(ServerData));
-    _network.udpSendToAllClients(buffer.data(), buffer.size());
-}
-
 void Engine::updateRegistry(char *data)
 {
     GameData gameData;
@@ -115,7 +102,9 @@ void Engine::updateRegistry(char *data)
         memcpy(gameData.inputs, dataDeserialized->inputs, sizeof(uint16_t) * 10);
 
         _game->updateRegistry(_reg, gameData);
-        sendData(buildServerData(dataDeserialized->entity, dataDeserialized->inputs));
+        std::vector<char> buffer;
+        addDataInSendBuffer<ServerData>(buildServerData(dataDeserialized->entity, dataDeserialized->inputs), 3, buffer);
+        sendData(buffer);
     }
 }
 
@@ -146,7 +135,9 @@ void Engine::runGame()
 {
     while (1) {
         _reg.run_systems();
-        _game->spawnEnemies(_reg);
+        if (_game->spawnEnemies(_reg)) {
+            sendEnemies(_reg, _reg.get_components<Position>(), _reg.get_components<Velocity>(), _reg.get_components<Drawable>());
+        }
     }
 }
 
@@ -161,4 +152,30 @@ void Engine::run()
     gameThread.join();
     networkThread.join();
     serverCliThread.join();
+}
+
+void Engine::sendEnemies(registry &r, sparse_array<Position> &positions, sparse_array<Velocity> &velocities, const sparse_array<Drawable> &drawable)
+{
+    std::vector<char> buffer;
+    for (size_t i = 0; i < positions.size() && i < velocities.size() && i < drawable.size(); ++ i) {
+        auto &pos = positions[i];
+        auto &vel = velocities[i];
+        auto &draw = drawable[i];
+
+        if (pos && vel && draw) {
+            if (draw.value()._type == 1) {
+                EnemyData temp;
+                temp.entities = i;
+                temp.posX = pos.value()._x;
+                temp.posY = pos.value()._y;
+                addDataInSendBuffer<EnemyData>(temp, 8, buffer);
+            }
+        }
+    }
+    sendData(buffer);
+}
+
+void Engine::sendData(std::vector<char> &data)
+{
+    _network.udpSendToAllClients(data.data(), data.size());
 }
