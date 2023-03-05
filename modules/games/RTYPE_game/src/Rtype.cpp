@@ -103,7 +103,7 @@ void Rtype::create_enemy_entity(registry &r, entity newEntity, const int16_t vel
     r.emplace_component<Hitbox>(newEntity, 45, 45, ENEMYSHIP);
     r.emplace_component<Animatable>(newEntity, 90);
     r.emplace_component<Stats>(newEntity, 5, 10);
-    r.emplace_component<FollowPath>(newEntity, "test");
+    r.emplace_component<FollowPath>(newEntity, "middle_diagonal");
 }
 
 void Rtype::create_parallax(registry &r, entity newEntity, const uint16_t posX, const uint16_t posY, const uint16_t speed, const int16_t obj) 

@@ -13,7 +13,7 @@
 
 void FollowPath::parse_follow_path_file(const std::string &fileFollowPath)
 {
-    std::string actualFile = "./client/src/enemy_paths/" + fileFollowPath + ".csv";
+    std::string actualFile = "./ECS/src/enemy_paths/" + fileFollowPath + ".csv";
     std::ifstream is(actualFile);
     std::string line;
     std::stringstream lineStream;
